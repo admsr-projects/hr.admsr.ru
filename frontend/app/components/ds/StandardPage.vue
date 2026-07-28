@@ -26,7 +26,7 @@
         <main class="w-full min-w-0">
           <p
             v-if="intro"
-            class="text-body-lg text-text-secondary leading-relaxed text-pretty mb-8 lg:mb-10"
+            class="text-body-lg text-text-secondary leading-relaxed whitespace-pre-line text-pretty mb-8 lg:mb-10"
           >
             {{ intro }}
           </p>

@@ -43,15 +43,13 @@
 
             <figure
               v-if="post.imageUrl"
-              class="mx-auto mt-2 w-full max-w-5xl overflow-hidden rounded-3xl border border-default bg-elevated shadow-sm"
+              class="mt-2 w-full overflow-hidden rounded-3xl border border-default bg-elevated shadow-sm"
             >
               <img
                 :src="post.imageUrl"
                 :alt="post.title"
-                width="1280"
-                height="720"
                 loading="eager"
-                class="aspect-video w-full object-cover"
+                class="block h-auto w-full"
               >
             </figure>
           </template>
@@ -81,7 +79,7 @@
             <p
               v-for="(paragraph, index) in contentParagraphs"
               :key="index"
-              class="text-pretty text-base leading-8 text-text-secondary sm:text-lg sm:leading-8"
+              class="whitespace-pre-line text-pretty text-base leading-8 text-text-secondary sm:text-lg sm:leading-8"
               :class="index === 0 ? 'text-lg text-highlighted sm:text-xl' : undefined"
             >
               {{ paragraph }}
@@ -134,12 +132,12 @@
             >
               <div
                 v-if="item.imageUrl"
-                class="aspect-3/2 overflow-hidden bg-elevated"
+                class="w-full overflow-hidden bg-elevated"
               >
                 <img
                   :src="item.imageUrl"
                   :alt="item.title"
-                  class="size-full object-cover transition duration-500 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                  class="block h-auto w-full transition duration-500 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                   :loading="index === 0 ? 'eager' : 'lazy'"
                 >
               </div>
@@ -221,7 +219,7 @@ const contentParagraphs = computed(() => {
   if (!raw) return []
   return raw
     .split(/\n{2,}/g)
-    .map(p => p.replace(/\s+/g, ' ').trim())
+    .map(p => p.trim())
     .filter(Boolean)
 })
 

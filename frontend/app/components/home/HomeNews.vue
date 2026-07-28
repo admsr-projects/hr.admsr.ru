@@ -35,12 +35,12 @@
           >
             <div
               v-if="post.imageUrl"
-              class="aspect-3/2 overflow-hidden bg-elevated"
+              class="w-full overflow-hidden bg-elevated"
             >
               <img
                 :src="post.imageUrl"
                 :alt="post.title"
-                class="size-full object-cover transition duration-500 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                class="block h-auto w-full transition duration-500 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                 :loading="index === 0 ? 'eager' : 'lazy'"
               >
             </div>
