@@ -20,9 +20,9 @@ type YouthTab = 'practice' | 'internship' | 'school'
 const activeTab = ref<YouthTab>('practice')
 
 const tabItems: TabsItem[] = [
-  { label: 'Практика', value: 'practice', icon: 'i-lucide-clipboard-list' },
-  { label: 'Стажировка', value: 'internship', icon: 'i-lucide-briefcase' },
-  { label: 'Школьникам', value: 'school', icon: 'i-lucide-school' },
+  { label: 'Практика', value: 'practice' },
+  { label: 'Стажировка', value: 'internship' },
+  { label: 'Школьникам', value: 'school' },
 ]
 
 function resolveTab(value: unknown): YouthTab {
@@ -104,7 +104,7 @@ function parseStepParts(step: string): StepPart[] {
     <UTabs
       v-model="activeTab"
       color="primary"
-      variant="pill"
+      variant="link"
       size="lg"
       :items="tabItems"
       :unmount-on-hide="false"

@@ -1,27 +1,23 @@
 <template>
   <UCard
-    variant="subtle"
+    variant="outline"
     :ui="{
-      root: 'h-full transition-colors duration-200',
-      body: 'p-5 lg:p-6 space-y-3',
+      root: 'h-full rounded-lg bg-default transition-colors duration-200',
+      body: 'flex flex-col gap-2 p-6 sm:p-6',
     }"
   >
-    <div class="flex items-center gap-2.5">
-      <div
-        class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
-        aria-hidden="true"
-      >
-        <UIcon
-          :name="icon"
-          class="size-5"
-        />
-      </div>
-      <h3 class="text-h3 text-text-primary">
+    <UIcon
+      :name="icon"
+      class="size-6 shrink-0 text-primary"
+      aria-hidden="true"
+    />
+    <div class="flex flex-col gap-1">
+      <h3 class="text-base font-semibold text-text-primary">
         {{ title }}
       </h3>
-    </div>
-    <div class="text-body text-text-secondary leading-relaxed">
-      <slot />
+      <div class="text-sm text-text-muted">
+        <slot />
+      </div>
     </div>
   </UCard>
 </template>

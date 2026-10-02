@@ -7,7 +7,15 @@ export default defineAppConfig({
     },
     card: {
       slots: {
-        root: 'ring-1 ring-[var(--color-border-default)] shadow-xs',
+        root: 'ring-1 ring-[var(--color-border-default)] shadow-none',
+      },
+      variants: {
+        variant: {
+          // Карточка-панель из макета: серый фон без рамки
+          subtle: {
+            root: 'bg-elevated ring-0',
+          },
+        },
       },
     },
     input: {

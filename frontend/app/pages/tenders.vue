@@ -11,9 +11,9 @@ type CompetitionTypeTab = 'all' | 'vacancy' | 'reserve'
 const activeType = ref<CompetitionTypeTab>('all')
 
 const typeTabItems: TabsItem[] = [
-  { label: 'Все конкурсы', value: 'all', icon: 'i-lucide-layout-grid' },
-  { label: 'На замещение должности', value: 'vacancy', icon: 'i-lucide-briefcase' },
-  { label: 'На кадровый резерв', value: 'reserve', icon: 'i-lucide-users' },
+  { label: 'Все конкурсы', value: 'all' },
+  { label: 'На замещение должности', value: 'vacancy' },
+  { label: 'На кадровый резерв', value: 'reserve' },
 ]
 
 const typeFilter = computed(() => (activeType.value === 'all' ? null : activeType.value))
@@ -77,7 +77,7 @@ const activeSectionDescription = computed(() => {
       <UTabs
         v-model="activeType"
         color="primary"
-        variant="pill"
+        variant="link"
         size="lg"
         :content="false"
         :items="typeTabItems"

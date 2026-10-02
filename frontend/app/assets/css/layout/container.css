@@ -1,4 +1,4 @@
-/* Page container — same grid as UContainer / UHeader (ui.nuxt.com) */
+/* Page container — max 1440px вместе с отступами */
 
 @utility ds-container {
   @apply w-full max-w-(--ui-container) mx-auto px-4 sm:px-6 lg:px-8;

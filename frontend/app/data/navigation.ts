@@ -12,6 +12,7 @@ export interface NavGroup {
 export const navIcons: Record<string, string> = {
   '/': 'i-lucide-home',
   '/about': 'i-lucide-building-2',
+  '/about/structure': 'i-lucide-network',
   '/honorboard': 'i-lucide-award',
   '/contacts': 'i-lucide-phone',
   '/vacancies': 'i-lucide-briefcase',
@@ -31,7 +32,12 @@ export const navGroups: NavGroup[] = [
       {
         label: 'О нас',
         to: '/about',
-        description: 'Миссия, ценности и структура кадровой службы района',
+        description: 'Миссия, ценности и слово главы района',
+      },
+      {
+        label: 'Структура администрации',
+        to: '/about/structure',
+        description: 'Заместители главы района и курируемые ими органы'
       },
       {
         label: 'Доска почёта',
@@ -154,9 +160,13 @@ function applyNavActiveState(
 ): NavigationMenuItem[] {
   return items.map((item) => {
     if (item.children?.length) {
+      // Среди вложенных адресов (/about и /about/structure) активен самый точный
+      const bestMatch = item.children
+        .filter(child => child.to && isNavPathActive(currentPath, child.to))
+        .sort((a, b) => b.to!.length - a.to!.length)[0]
       const children = item.children.map(child => ({
         ...child,
-        active: child.to ? isNavPathActive(currentPath, child.to) : false,
+        active: child === bestMatch,
       }))
       const active = children.some(child => child.active)
 

@@ -49,9 +49,9 @@
 
 /* Nuxt UI layout tokens — align header & page grid with ui.nuxt.com */
 :root {
-  --ui-container: 96rem;
+  --ui-container: 1440px;
   --ui-header-height: --spacing(16);
-  --font-scale-base: 112.5%;
+  --font-scale-base: 100%;
 }
 
 html {

@@ -1,177 +1,112 @@
 <template>
-  <div class="bg-default">
-    <article>
-      <header class="border-b border-default">
-        <UContainer class="flex flex-col gap-6 py-10 lg:gap-8 lg:py-14">
-          <div
-            v-if="pending"
-            class="mx-auto w-full max-w-3xl space-y-4"
-            aria-busy="true"
-            aria-label="Загрузка новости"
-          >
-            <USkeleton class="h-6 w-28 rounded-full" />
-            <USkeleton class="h-12 w-full" />
-            <USkeleton class="h-12 w-5/6" />
-            <USkeleton class="h-20 w-full" />
-          </div>
+  <DsStandardPage
+    :title="pending ? 'Загрузка новости…' : post?.title ?? 'Новость'"
+    :description="post?.description"
+  >
+    <div
+      v-if="pending"
+      class="max-w-3xl space-y-3"
+      aria-busy="true"
+      aria-label="Загрузка новости"
+    >
+      <USkeleton class="h-5 w-28" />
+      <USkeleton class="h-64 w-full rounded-lg" />
+      <USkeleton class="h-5 w-full" />
+      <USkeleton class="h-5 w-11/12" />
+      <USkeleton class="h-5 w-4/5" />
+    </div>
 
-          <template v-else-if="post">
-            <div class="mx-auto flex w-full max-w-3xl flex-col items-start gap-4">
-              <UBadge
-                v-if="post.date"
-                color="primary"
-                variant="subtle"
-                size="lg"
-                class="rounded-full"
-              >
-                <time :datetime="post.date">
-                  {{ formatDate(post.date) }}
-                </time>
-              </UBadge>
+    <template v-else>
+      <time
+        v-if="post?.date"
+        :datetime="post.date"
+        class="text-sm text-text-muted"
+      >
+        {{ formatDate(post.date) }}
+      </time>
 
-              <h1 class="text-balance text-3xl font-bold tracking-tight text-highlighted sm:text-4xl lg:text-5xl lg:leading-[1.08]">
-                {{ post.title }}
-              </h1>
-
-              <p
-                v-if="post.description"
-                class="max-w-2xl text-pretty text-lg leading-8 text-muted sm:text-xl sm:leading-9"
-              >
-                {{ post.description }}
-              </p>
-            </div>
-
-            <figure
-              v-if="post.imageUrl"
-              class="mt-2 w-full overflow-hidden rounded-3xl border border-default bg-elevated shadow-sm"
-            >
-              <img
-                :src="post.imageUrl"
-                :alt="post.title"
-                loading="eager"
-                class="block h-auto w-full"
-              >
-            </figure>
-          </template>
-        </UContainer>
-      </header>
-
-      <UContainer class="py-10 lg:py-14">
-        <div
-          v-if="pending"
-          class="mx-auto max-w-2xl space-y-3"
-          aria-hidden="true"
+      <figure
+        v-if="post?.imageUrl"
+        class="w-full max-w-4xl overflow-hidden rounded-lg border border-default bg-elevated"
+      >
+        <img
+          :src="post.imageUrl"
+          :alt="post.title"
+          loading="eager"
+          class="block h-auto w-full"
         >
-          <USkeleton class="h-5 w-full" />
-          <USkeleton class="h-5 w-full" />
-          <USkeleton class="h-5 w-11/12" />
-          <USkeleton class="h-5 w-4/5" />
-        </div>
+      </figure>
 
-        <div
-          v-else
-          class="mx-auto max-w-2xl"
+      <div
+        v-if="contentParagraphs.length"
+        class="max-w-3xl space-y-4"
+      >
+        <p
+          v-for="(paragraph, index) in contentParagraphs"
+          :key="index"
+          class="whitespace-pre-line text-pretty text-base leading-6 text-text-muted"
         >
-          <div
-            v-if="contentParagraphs.length"
-            class="space-y-5 border-s-2 border-primary/25 ps-5 sm:ps-6"
-          >
-            <p
-              v-for="(paragraph, index) in contentParagraphs"
-              :key="index"
-              class="whitespace-pre-line text-pretty text-base leading-8 text-text-secondary sm:text-lg sm:leading-8"
-              :class="index === 0 ? 'text-lg text-highlighted sm:text-xl' : undefined"
-            >
-              {{ paragraph }}
-            </p>
-          </div>
+          {{ paragraph }}
+        </p>
+      </div>
 
-          <DsEmptyState
-            v-else
-            icon="i-lucide-file-text"
-            title="Полный текст готовится"
-            description="Мы опубликуем материал в ближайшее время."
-          />
-        </div>
-      </UContainer>
-    </article>
+      <DsEmptyState
+        v-else
+        icon="i-lucide-file-text"
+        title="Полный текст готовится"
+        description="Мы опубликуем материал в ближайшее время."
+      />
+    </template>
 
     <section
       v-if="!pending && relatedPosts.length"
-      class="border-t border-default bg-elevated/40"
+      aria-labelledby="news-related"
+      class="pt-4"
     >
-      <UContainer class="flex flex-col gap-8 py-16 lg:py-20">
-        <div class="flex max-w-2xl flex-col gap-3">
-          <UBadge
-            label="Также интересно"
-            color="primary"
-            variant="subtle"
-            size="lg"
-            class="w-fit rounded-full"
-          />
-          <h2
-            id="news-related"
-            class="text-3xl font-bold tracking-tight text-highlighted text-balance sm:text-4xl"
-          >
-            Ещё новости
-          </h2>
-          <p class="text-pretty text-lg leading-8 text-muted">
-            Другие события и материалы
-          </p>
-        </div>
+      <h2
+        id="news-related"
+        class="mb-4 text-xl font-bold text-text-primary"
+      >
+        Ещё новости
+      </h2>
 
-        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <article
-            v-for="(item, index) in relatedPosts"
-            :key="item.id"
-            class="group"
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <NuxtLink
+          v-for="(item, index) in relatedPosts"
+          :key="item.id"
+          :to="`/news/${item.id}`"
+          class="group flex h-full flex-col overflow-hidden rounded-lg border border-default bg-default transition-colors duration-200 hover:border-primary/40 motion-reduce:transition-none"
+        >
+          <img
+            v-if="item.imageUrl"
+            :src="item.imageUrl"
+            :alt="item.title"
+            class="block h-auto w-full"
+            :loading="index === 0 ? 'eager' : 'lazy'"
           >
-            <NuxtLink
-              :to="`/news/${item.id}`"
-              class="flex h-full flex-col overflow-hidden rounded-2xl border border-default bg-default transition hover:border-primary/40 hover:bg-elevated motion-reduce:transition-none"
+
+          <div class="flex flex-1 flex-col gap-1 p-6">
+            <time
+              v-if="item.date"
+              :datetime="item.date"
+              class="text-sm text-text-muted"
             >
-              <div
-                v-if="item.imageUrl"
-                class="w-full overflow-hidden bg-elevated"
-              >
-                <img
-                  :src="item.imageUrl"
-                  :alt="item.title"
-                  class="block h-auto w-full transition duration-500 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-                  :loading="index === 0 ? 'eager' : 'lazy'"
-                >
-              </div>
-
-              <div class="flex flex-1 flex-col gap-2 p-4">
-                <UBadge
-                  v-if="item.date"
-                  color="primary"
-                  variant="subtle"
-                  size="lg"
-                  class="w-fit rounded-full"
-                >
-                  <time :datetime="item.date">
-                    {{ formatDate(item.date) }}
-                  </time>
-                </UBadge>
-
-                <h3 class="text-base font-semibold leading-snug text-highlighted line-clamp-2 group-hover:text-primary">
-                  {{ item.title }}
-                </h3>
-
-                <p
-                  v-if="item.description"
-                  class="text-sm leading-5 text-muted line-clamp-2"
-                >
-                  {{ item.description }}
-                </p>
-              </div>
-            </NuxtLink>
-          </article>
-        </div>
-      </UContainer>
+              {{ formatDate(item.date) }}
+            </time>
+            <h3 class="text-base font-semibold leading-6 text-text-primary line-clamp-2 group-hover:text-primary">
+              {{ item.title }}
+            </h3>
+            <p
+              v-if="item.description"
+              class="text-sm leading-5 text-text-muted line-clamp-2"
+            >
+              {{ item.description }}
+            </p>
+          </div>
+        </NuxtLink>
+      </div>
     </section>
-  </div>
+  </DsStandardPage>
 </template>
 
 <script setup lang="ts">

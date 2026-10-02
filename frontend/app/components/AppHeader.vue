@@ -34,6 +34,7 @@
         childLinkLabel: 'font-medium',
         childLinkDescription: 'text-xs text-muted leading-snug whitespace-normal',
         viewport: 'p-1',
+        content: 'w-80 overflow-x-hidden',
       }"
     />
 

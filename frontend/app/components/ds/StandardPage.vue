@@ -1,75 +1,114 @@
 <template>
-  <div>
+  <div class="ds-inner">
+    <DsBreadcrumbs :items="breadcrumbs" />
+
     <DsSectionToolbar
       v-if="sectionNavItems.length"
       :items="sectionNavItems"
+      class="lg:hidden"
     />
 
-    <DsStandardPageHeader
-      :title="title"
-      :description="description"
-      :headline="badge"
-    >
-      <template
-        v-if="$slots.heroActions"
-        #actions
-      >
-        <slot name="heroActions" />
-      </template>
-    </DsStandardPageHeader>
-
-    <div class="ds-container py-6 lg:py-10">
+    <div class="ds-container pb-12 pt-4 lg:pb-16 lg:pt-0">
       <div
-        class="lg:grid lg:items-start lg:gap-10 xl:gap-12"
-        :class="tocLinks.length ? 'lg:grid-cols-[minmax(0,1fr)_17rem] xl:grid-cols-[minmax(0,1fr)_20rem]' : undefined"
+        class="lg:grid lg:items-start lg:gap-6"
+        :class="menu ? 'lg:grid-cols-[282px_minmax(0,1fr)]' : undefined"
       >
-        <main class="w-full min-w-0">
+        <aside
+          v-if="menu"
+          class="hidden lg:block lg:sticky lg:top-[calc(var(--ui-header-height,4rem)+1.5rem)]"
+        >
+          <DsSectionSidebar
+            :title="menu.title"
+            :items="sidebarItems"
+          />
+        </aside>
+
+        <main class="flex w-full min-w-0 flex-col gap-4">
+          <DsStandardPageHeader
+            :title="title"
+            :description="description"
+          >
+            <template
+              v-if="$slots.heroActions"
+              #actions
+            >
+              <slot name="heroActions" />
+            </template>
+          </DsStandardPageHeader>
+
           <p
             v-if="intro"
-            class="text-body-lg text-text-secondary leading-relaxed whitespace-pre-line text-pretty mb-8 lg:mb-10"
+            class="text-body-lg text-text-secondary leading-relaxed whitespace-pre-line text-pretty"
           >
             {{ intro }}
           </p>
 
-          <div class="space-y-10 lg:space-y-12">
+          <div class="flex flex-col gap-4">
             <slot />
           </div>
         </main>
-
-        <DsPageTocAside
-          v-if="tocLinks.length"
-          :links="tocLinks"
-          :has-section-toolbar="sectionNavItems.length > 0"
-        />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { provideStandardPageToc } from '~/composables/useStandardPageToc'
-import { resolveSidebarLinks, toNavigationMenuItems } from '~/data/standard-pages'
+import type { BreadcrumbItem } from '~/data/breadcrumbs'
+import {
+  type SidebarItem,
+  resolveSectionMenu,
+  resolveStandardSection,
+  toNavigationMenuItems
+} from '~/data/standard-pages'
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   title: string
   description?: string
   intro?: string
+  /** @deprecated Не отображается — контекст раздела даёт меню слева и хлебные крошки */
   badge?: string
 }>(), {
   description: undefined,
   intro: undefined,
-  badge: undefined,
+  badge: undefined
 })
 
 const route = useRoute()
-const { tocLinks } = provideStandardPageToc()
 
-const sectionNav = computed(() => resolveSidebarLinks(route.path))
+const menu = computed(() => resolveSectionMenu(route.path))
 
-const sectionNavItems = computed(() => {
-  if (!sectionNav.value || sectionNav.value.links.length <= 1) {
-    return []
+// Подпункты «Структуры администрации» (заместители → органы) нужны только на её страницах
+const inStructure = route.path.startsWith('/about/structure') || route.path.startsWith('/about/departments/')
+const structureGroups = inStructure ? useAdminStructureMenu() : undefined
+
+const sidebarItems = computed<SidebarItem[]>(() =>
+  (menu.value?.items ?? []).map(item =>
+    item.to === '/about/structure' && structureGroups
+      ? { ...item, expanded: true, children: structureGroups.value }
+      : item
+  )
+)
+
+const sectionNavItems = computed(() =>
+  menu.value ? toNavigationMenuItems(menu.value) : []
+)
+
+const breadcrumbs = computed<BreadcrumbItem[]>(() => {
+  const items: BreadcrumbItem[] = [{ label: 'Главная', to: '/', icon: 'i-lucide-home' }]
+  const section = resolveStandardSection(route.path)
+
+  if (section) {
+    items.push({ label: section.label })
   }
-  return toNavigationMenuItems(sectionNav.value.links)
+
+  if (route.path.startsWith('/about/departments/')) {
+    items.push({ label: 'Структура администрации', to: '/about/structure' })
+  }
+  else if (route.path.startsWith('/vacancyinfo/')) {
+    items.push({ label: 'Вакансии', to: '/vacancies' })
+  }
+
+  items.push({ label: props.title })
+  return items
 })
 </script>

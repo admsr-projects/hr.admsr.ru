@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { TabsItem } from '@nuxt/ui'
 import type { AntiCorruptionDocument } from '~/components/AntiCorruptionDocumentsList.vue'
-import { antiCorruptionCategoryIcon } from '~/data/anti-corruption-categories'
 
 interface AntiCorruptionInfo {
   intro?: string
@@ -48,7 +47,6 @@ const documentTabs = computed<TabsItem[]>(() =>
   (categories.value ?? []).map(category => ({
     label: category.tab_label,
     value: category.slug,
-    icon: antiCorruptionCategoryIcon(category.slug),
   })),
 )
 
@@ -254,7 +252,7 @@ function phoneHref(phone: string) {
         <UTabs
           v-model="activeDocTab"
           color="primary"
-          variant="pill"
+          variant="link"
           size="lg"
           :items="documentTabs"
           :unmount-on-hide="false"

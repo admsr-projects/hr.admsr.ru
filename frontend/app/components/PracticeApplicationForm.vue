@@ -188,7 +188,7 @@
                 <span class="text-pretty text-caption text-text-muted leading-relaxed">
                   С органами администрации можно ознакомиться в разделе
                   <NuxtLink
-                    to="/about#admin-structure"
+                    to="/about/structure"
                     class="text-primary underline-offset-2 hover:underline"
                   >
                     «О нас»
