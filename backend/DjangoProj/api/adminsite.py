@@ -53,7 +53,11 @@ class CustomAdminSite(AdminSite):
             },
             'Конкурсы': {
                 'app_label': 'tenders_group',
-                'models': ['Tender', 'Competition', 'CompetitionResult'],
+                'models': ['Tender', 'Competition', 'CompetitionDocument', 'CompetitionResult'],
+            },
+            'Рассылка заявок': {
+                'app_label': 'notifications_group',
+                'models': ['ApplicationRecipient'],
             },
             'Антикоррупция': {
                 'app_label': 'anticorruption_group',

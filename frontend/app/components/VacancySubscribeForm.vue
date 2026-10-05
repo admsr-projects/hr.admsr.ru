@@ -129,7 +129,18 @@ const form = reactive({
   email: '',
   branch: resolveInitialBranch(props.initialBranch) || ofoAnyValue,
   consentPersonalData: false,
+  // Резюме необязательно: можно приложить файл или заполнить поля прямо в форме
+  resumeMode: 'none' as 'none' | 'file' | 'form',
+  resumeFile: null as File | null,
+  phone: '',
+  desiredPosition: '',
+  education: '',
+  workExperience: '',
+  about: '',
 })
+
+const RESUME_MAX_BYTES = 10 * 1024 * 1024
+const RESUME_EXTENSIONS = ['.pdf', '.doc', '.docx', '.rtf', '.odt', '.txt']
 
 watch(() => props.initialBranch, (value) => {
   if (value) form.branch = resolveInitialBranch(value)
@@ -148,6 +159,18 @@ function validate(state: typeof form) {
   else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email.trim())) {
     errors.push({ name: 'email', message: 'Проверьте формат email' })
   }
+  if (state.resumeMode === 'file') {
+    const file = state.resumeFile
+    if (!file) errors.push({ name: 'resumeFile', message: 'Прикрепите файл резюме' })
+    else if (file.size > RESUME_MAX_BYTES) errors.push({ name: 'resumeFile', message: 'Размер файла не должен превышать 10 МБ' })
+    else if (!RESUME_EXTENSIONS.some(ext => file.name.toLowerCase().endsWith(ext))) {
+      errors.push({ name: 'resumeFile', message: 'Допустимые форматы: PDF, DOC, DOCX, RTF, ODT, TXT' })
+    }
+  }
+  if (state.resumeMode === 'form') {
+    if (!state.desiredPosition?.trim()) errors.push({ name: 'desiredPosition', message: 'Укажите желаемую должность' })
+    if (!state.phone?.trim()) errors.push({ name: 'phone', message: 'Укажите телефон' })
+  }
   if (!state.consentPersonalData) errors.push({ name: 'consentPersonalData', message: 'Необходимо согласие' })
   return errors
 }
@@ -157,6 +180,13 @@ function clearFields() {
   form.email = ''
   form.branch = resolveInitialBranch(props.initialBranch)
   form.consentPersonalData = false
+  form.resumeMode = 'none'
+  form.resumeFile = null
+  form.phone = ''
+  form.desiredPosition = ''
+  form.education = ''
+  form.workExperience = ''
+  form.about = ''
 }
 
 function resetForm() {
@@ -169,13 +199,25 @@ function resetForm() {
 async function onSubmit() {
   loading.value = true
   try {
+    const body = new FormData()
+    body.append('name', form.name.trim())
+    body.append('email', form.email.trim())
+    body.append('branch', ofoApiBranch(form.branch))
+
+    if (form.resumeMode === 'file' && form.resumeFile) {
+      body.append('resume', form.resumeFile)
+    }
+    if (form.resumeMode === 'form') {
+      body.append('phone', form.phone.trim())
+      body.append('desired_position', form.desiredPosition.trim())
+      body.append('education', form.education.trim())
+      body.append('work_experience', form.workExperience.trim())
+      body.append('about', form.about.trim())
+    }
+
     await $fetch(`${config.public.apiBaseUrl}/api/vacancy-subscribe/`, {
       method: 'POST',
-      body: {
-        name: form.name.trim(),
-        email: form.email.trim(),
-        branch: ofoApiBranch(form.branch),
-      },
+      body,
     })
 
     submittedEmail.value = form.email.trim()

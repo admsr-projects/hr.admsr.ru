@@ -10,7 +10,10 @@ from .models import (
     Tender, Vacancy, StaffMember, WorkSchedule, RequiredExperience, JobType,
     AntiCorruptionDocument, AntiCorruptionDocumentCategory, AntiCorruptionInfo, CorruptionReport, BranchesGlobal, Feedback, VacancySubscription,
     Competition, CompetitionResult, StaffReserveInfo, StaffReserveDocument, VacancyDocument, WorkPartner, YouthInfo, PracticeApplication,
-    TrainingEvent, TrainingFeedback, NewsPost, Department, Deputy,
+    TrainingEvent, TrainingFeedback, NewsPost, Department, Deputy, CompetitionDocument,
+)
+from .notifications import (
+    notify_recipients, KIND_VACANCIES, KIND_RESERVE, KIND_PRACTICE, KIND_TRAINING,
 )
 from .serializers import (
     TenderSerializer, VacancySerializer, StaffMemberSerializer,
@@ -21,7 +24,7 @@ from .serializers import (
     CompetitionSerializer, CompetitionResultSerializer, StaffReserveInfoSerializer, StaffReserveDocumentSerializer, VacancyDocumentSerializer,
     YouthInfoSerializer, PracticeApplicationSerializer,
     TrainingEventSerializer, TrainingFeedbackSerializer, NewsPostSerializer,
-    DepartmentSerializer, DeputySerializer,
+    DepartmentSerializer, DeputySerializer, CompetitionDocumentSerializer,
 )
 
 
@@ -173,6 +176,24 @@ def submit_practice_application(request):
     serializer = PracticeApplicationSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
+        app = serializer.instance
+        notify_recipients(
+            KIND_PRACTICE,
+            f'Заявка на практику: {app.last_name} {app.first_name}',
+            [
+                ('ФИО', ' '.join(filter(None, [app.last_name, app.first_name, app.middle_name]))),
+                ('Дата рождения', app.birth_date),
+                ('Телефон', app.phone),
+                ('Email', app.email),
+                ('Учебное заведение', app.educational_institution),
+                ('Курс', app.course),
+                ('Специальность', app.specialty),
+                ('Желаемый период практики', app.practice_period),
+                ('Желаемый орган', app.preferred_department),
+                ('Комментарий', app.comment),
+            ],
+            files=[app.application_letter],
+        )
         return Response(
             {
                 'message': 'Заявка на практику успешно отправлена!',
@@ -231,6 +252,15 @@ def submit_training_feedback(request):
     serializer = TrainingFeedbackSerializer(data=request.data)
     if serializer.is_valid():
         instance = serializer.save()
+        notify_recipients(
+            KIND_TRAINING,
+            'Предложение по обучению',
+            [
+                ('Имя', instance.name or 'Анонимно'),
+                ('Подразделение', instance.department),
+                ('Предложение', instance.message),
+            ],
+        )
         response = Response(
             {'message': 'Спасибо! Ваше предложение отправлено.', 'id': instance.id},
             status=status.HTTP_201_CREATED,
@@ -247,8 +277,18 @@ def submit_training_feedback(request):
 
 
 @api_view(['GET'])
+def competition_documents(request):
+    items = CompetitionDocument.objects.filter(is_active=True)
+    competition_type = request.query_params.get('type')
+    if competition_type in (Competition.TYPE_VACANCY, Competition.TYPE_RESERVE):
+        items = items.filter(competition_type=competition_type)
+    serializer = CompetitionDocumentSerializer(items, many=True, context={'request': request})
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
 def competition_results(request):
-    items = CompetitionResult.objects.all()
+    items = CompetitionResult.objects.prefetch_related('winners')
     competition_type = request.query_params.get('type')
     if competition_type in (Competition.TYPE_VACANCY, Competition.TYPE_RESERVE):
         items = items.filter(competition_type=competition_type)
@@ -332,6 +372,28 @@ def apply(request):
     serializer = JobApplicationSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
+        app = serializer.instance
+        kind = KIND_RESERVE if 'резерв' in (app.vacancy_title or '').lower() else KIND_VACANCIES
+        subject = f'Заявка на вакансию: {app.last_name} {app.first_name}'
+        if app.vacancy_title:
+            subject += f' — {app.vacancy_title}'
+        notify_recipients(
+            kind,
+            subject,
+            [
+                ('Вакансия', app.vacancy_title),
+                ('ФИО', ' '.join(filter(None, [app.last_name, app.first_name, app.middle_name]))),
+                ('Дата рождения', app.birth_date),
+                ('Телефон', app.phone),
+                ('Email', app.email),
+                ('Образование', app.education),
+                ('Специальность', app.specialty),
+                ('Стаж муниципальной службы', app.municipal_experience),
+                ('Трудовая деятельность', app.work_experience),
+                ('Откуда узнал(а)', app.vacancy_source),
+            ],
+            files=[app.resume, app.photo],
+        )
         return Response(
             {"message": "Заявка успешно отправлена!", "id": serializer.instance.id},
             status=status.HTTP_201_CREATED
@@ -344,6 +406,26 @@ def vacancy_subscribe(request):
     serializer = VacancySubscriptionSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
+        sub = serializer.instance
+        has_resume = bool(
+            sub.resume or sub.desired_position or sub.education or sub.work_experience or sub.about
+        )
+        if has_resume:
+            notify_recipients(
+                KIND_VACANCIES,
+                f'Резюме из подписки на вакансии: {sub.name or sub.email}',
+                [
+                    ('Имя', sub.name),
+                    ('Email', sub.email),
+                    ('Телефон', sub.phone),
+                    ('Отраслевой орган', sub.branch or 'любой'),
+                    ('Желаемая должность', sub.desired_position),
+                    ('Образование', sub.education),
+                    ('Опыт работы', sub.work_experience),
+                    ('О себе, навыки', sub.about),
+                ],
+                files=[sub.resume],
+            )
         return Response(
             {
                 'message': 'Подписка оформлена. Уведомления о новых вакансиях будут приходить на указанный email.',

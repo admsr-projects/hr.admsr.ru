@@ -90,6 +90,13 @@ const activeSectionDescription = computed(() => {
         class="mt-6"
         :type-filter="typeFilter"
       />
+
+      <CompetitionDocumentsList
+        v-if="activeType !== 'vacancy'"
+        class="mt-4"
+        type="reserve"
+        title="Нормативные документы, регламентирующие формирование кадрового резерва"
+      />
     </DsContentSection>
 
     <DsContentSection

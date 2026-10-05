@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import (
     Tender, StaffMember, Vacancy, JobApplication, Branch, WorkSchedule, RequiredExperience,
     JobType, AntiCorruptionDocument, AntiCorruptionDocumentCategory, AntiCorruptionInfo, CorruptionReport, BranchesGlobal, Feedback, VacancySubscription,
-    Competition, CompetitionResult, StaffReserveInfo, StaffReservePosition, StaffReserveDocument, VacancyDocument, WorkPartner, YouthInfo, PracticeApplication,
+    Competition, CompetitionResult, CompetitionDocument, CompetitionWinner, StaffReserveInfo, StaffReservePosition, StaffReserveDocument, VacancyDocument, WorkPartner, YouthInfo, PracticeApplication,
     TrainingEvent, TrainingFeedback, NewsPost, Department, Deputy,
 )
 
@@ -180,13 +180,28 @@ class FeedbackSerializer(serializers.ModelSerializer):
 
 
 class VacancySubscriptionSerializer(serializers.ModelSerializer):
+    MAX_RESUME_BYTES = 10 * 1024 * 1024
+    ALLOWED_RESUME_EXTENSIONS = ('.pdf', '.doc', '.docx', '.rtf', '.odt', '.txt')
+
     class Meta:
         model = VacancySubscription
-        fields = ['id', 'name', 'email', 'branch', 'created_at']
+        fields = [
+            'id', 'name', 'email', 'branch', 'created_at',
+            'resume', 'phone', 'desired_position', 'education', 'work_experience', 'about',
+        ]
         read_only_fields = ['id', 'created_at']
 
     def validate_email(self, value):
         return value.strip().lower()
+
+    def validate_resume(self, value):
+        if not value:
+            return value
+        if value.size > self.MAX_RESUME_BYTES:
+            raise serializers.ValidationError('Размер файла не должен превышать 10 МБ')
+        if not value.name.lower().endswith(self.ALLOWED_RESUME_EXTENSIONS):
+            raise serializers.ValidationError('Допустимые форматы: PDF, DOC, DOCX, RTF, ODT, TXT')
+        return value
 
 
 class CompetitionSerializer(serializers.ModelSerializer):
@@ -201,16 +216,49 @@ class CompetitionSerializer(serializers.ModelSerializer):
         ]
 
 
+class CompetitionDocumentSerializer(serializers.ModelSerializer):
+    link = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CompetitionDocument
+        fields = ['id', 'name', 'competition_type', 'link', 'order', 'created_at']
+
+    def get_link(self, obj):
+        if obj.file:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.file.url)
+            return obj.file.url
+        return None
+
+
+class CompetitionWinnerSerializer(serializers.ModelSerializer):
+    photo = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CompetitionWinner
+        fields = ['id', 'full_name', 'position', 'description', 'photo', 'order']
+
+    def get_photo(self, obj):
+        if obj.photo:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.photo.url)
+            return obj.photo.url
+        return None
+
+
 class CompetitionResultSerializer(serializers.ModelSerializer):
     decreeConductLink = serializers.SerializerMethodField()
     decreeResultsLink = serializers.SerializerMethodField()
     competitionTypeLabel = serializers.CharField(source='get_competition_type_display', read_only=True)
+    winners = CompetitionWinnerSerializer(many=True, read_only=True)
 
     class Meta:
         model = CompetitionResult
         fields = [
             'id', 'title', 'competition_type', 'competitionTypeLabel',
-            'decreeConductLink', 'decreeResultsLink', 'completed_at', 'created_at',
+            'decreeConductLink', 'decreeResultsLink', 'winners', 'completed_at', 'created_at',
         ]
 
     def _file_url(self, obj, field_name):
