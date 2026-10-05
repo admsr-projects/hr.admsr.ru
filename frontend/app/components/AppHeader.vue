@@ -24,6 +24,7 @@
       color="primary"
       content-orientation="vertical"
       aria-label="Основная навигация"
+      disable-hover-trigger
       arrow
       class="hidden lg:flex"
       :ui="{
