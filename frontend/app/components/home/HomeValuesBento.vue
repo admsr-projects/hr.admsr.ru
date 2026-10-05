@@ -1,16 +1,16 @@
 <template>
-  <section class="border-t border-default bg-default">
+  <section class="bg-default">
     <UContainer class="flex min-w-0 flex-col gap-8 py-12 sm:gap-10 sm:py-16 lg:py-20">
       <div class="flex max-w-2xl flex-col gap-3">
         <UBadge
           label="Принципы"
           color="primary"
-          variant="subtle"
-          class="w-fit rounded-full"
+          variant="soft"
+          class="w-fit"
         />
         <h2
           id="values"
-          class="text-balance text-xl font-bold tracking-tight text-highlighted sm:text-3xl lg:text-4xl"
+          class="text-h2 text-highlighted text-balance"
         >
           Для нас муниципальная служба — это:
         </h2>
@@ -30,10 +30,10 @@
             role="tab"
             :aria-selected="selectedId === value.id"
             aria-controls="values-panel"
-          class="flex items-start gap-3 rounded-2xl border p-3 text-left transition motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:gap-4 sm:p-4"
+          class="flex items-start gap-3 rounded-xl p-3 text-left transition motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:gap-4 sm:p-4"
             :class="selectedId === value.id
-              ? 'border-primary/50 bg-elevated'
-              : 'border-default bg-default hover:border-primary/30 hover:bg-elevated/60'"
+              ? 'bg-primary/10'
+              : 'bg-elevated hover:bg-accented'"
             @click="selectedId = value.id"
           >
             <span
@@ -64,13 +64,13 @@
           id="values-panel"
           role="tabpanel"
           :aria-labelledby="`value-tab-${activeValue.id}`"
-          class="flex flex-col gap-5 rounded-2xl border border-default bg-default p-4 sm:gap-6 sm:p-6 lg:col-span-8 lg:p-8"
+          class="flex flex-col gap-5 rounded-xl bg-elevated p-4 sm:gap-6 sm:p-6 lg:col-span-8 lg:p-8"
         >
           <div class="flex flex-col gap-2">
             <p class="text-sm font-medium text-primary">
               {{ activeValue.subtitle }}
             </p>
-            <h3 class="text-xl font-semibold text-highlighted sm:text-2xl">
+            <h3 class="text-h3 text-highlighted text-balance">
               {{ activeValue.title }}
             </h3>
           </div>
@@ -95,7 +95,7 @@
 
           <div
             v-if="activeValue.benefit || activeValue.footerLabel"
-            class="rounded-xl border border-default bg-elevated/50 p-4 sm:p-5"
+            class="rounded-xl bg-elevated p-4 sm:p-5"
           >
             <p class="text-pretty leading-7 text-muted">
               <template v-if="activeValue.benefit">

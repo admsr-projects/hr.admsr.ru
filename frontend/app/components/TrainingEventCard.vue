@@ -1,6 +1,6 @@
 <template>
   <UCard
-    variant="subtle"
+    variant="soft"
     :class="past && 'opacity-80'"
     :ui="{
       root: 'rounded-xl overflow-hidden',
@@ -12,9 +12,8 @@
         <UBadge
           v-if="showTypeBadge"
           color="primary"
-          variant="subtle"
-          size="lg"
-          class="rounded-full"
+          variant="soft"
+          
         >
           {{ event.eventTypeLabel }}
         </UBadge>

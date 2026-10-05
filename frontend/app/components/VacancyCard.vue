@@ -2,7 +2,7 @@
   <!-- В1 — карточка (сетка, главная, блок вакансий органа) -->
   <article
     v-if="layout === 'card'"
-    class="flex h-full flex-col gap-4 rounded-lg border border-default bg-default p-6"
+    class="flex h-full flex-col gap-4 rounded-xl bg-elevated p-6"
   >
     <p
       v-if="organization"
@@ -17,7 +17,7 @@
 
     <p
       v-if="salary"
-      class="text-2xl font-bold text-text-primary"
+      class="text-xl font-bold text-text-primary"
     >
       {{ salary }}
     </p>
@@ -46,7 +46,7 @@
         :aria-label="`Подробнее о вакансии: ${vacancy.title}`"
         :to="detailsLink"
         color="neutral"
-        variant="outline"
+        variant="soft"
       />
       <UButton
         label="Откликнуться"
@@ -60,7 +60,7 @@
   <!-- В2 — строка списка (страница «Вакансии») -->
   <article
     v-else
-    class="flex flex-col gap-4 rounded-lg border border-default bg-default p-6 transition-colors duration-200 hover:border-primary motion-reduce:transition-none lg:flex-row lg:items-center lg:gap-8"
+    class="flex flex-col gap-4 rounded-xl bg-elevated p-6 transition-colors duration-200 hover:bg-accented motion-reduce:transition-none lg:flex-row lg:items-center lg:gap-8"
   >
     <div class="min-w-0 lg:w-2/5">
       <div class="flex flex-wrap items-center gap-2">

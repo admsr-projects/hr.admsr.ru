@@ -32,7 +32,7 @@
             label="Кадровый резерв"
             to="/staffreserve"
             color="neutral"
-            variant="outline"
+            variant="soft"
             trailing-icon="i-lucide-arrow-right"
             class="cursor-pointer transition-colors duration-200"
           />
@@ -49,7 +49,7 @@
         :key="item.id"
       >
         <UCard
-          variant="subtle"
+          variant="soft"
           class="min-w-0"
           :ui="{
             root: 'overflow-hidden rounded-xl',
@@ -78,7 +78,7 @@
             </div>
             <UBadge
               color="primary"
-              variant="subtle"
+              variant="soft"
               class="shrink-0"
             >
               {{ item.competitionTypeLabel }}

@@ -9,7 +9,7 @@
       <UCard
         v-for="index in 3"
         :key="index"
-        variant="subtle"
+        variant="soft"
         :ui="{ body: 'p-4 lg:p-5 space-y-3' }"
       >
         <USkeleton class="h-5 w-3/4" />
@@ -33,7 +33,7 @@
         :key="doc.id"
       >
         <UCard
-          variant="subtle"
+          variant="soft"
           :ui="{
             root: 'rounded-xl transition-colors duration-200',
             body: 'flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between lg:p-5',
@@ -72,7 +72,6 @@
             target="_blank"
             external
             color="primary"
-            size="lg"
             class="w-full shrink-0 cursor-pointer sm:w-auto"
             :aria-label="`Скачать документ: ${doc.name}`"
           />

@@ -16,7 +16,7 @@
           <UCard
             v-for="cardIndex in 3"
             :key="cardIndex"
-            variant="subtle"
+            variant="soft"
             :ui="{ body: 'space-y-3 p-5' }"
           >
             <USkeleton class="h-6 w-3/4" />
@@ -45,7 +45,7 @@
         :aria-labelledby="`branch-${group.branchId}`"
       >
         <UCard
-          variant="subtle"
+          variant="soft"
           :ui="{ body: 'flex flex-col gap-2 p-5 sm:flex-row sm:items-center sm:gap-4' }"
         >
           <div
@@ -79,9 +79,8 @@
           <UBadge
             :label="`${group.members.length} ${groupMemberLabel(group.members.length)}`"
             color="neutral"
-            variant="subtle"
-            size="lg"
-            class="w-fit rounded-full sm:ms-auto"
+            variant="soft"
+            class="w-fit sm:ms-auto"
           />
         </UCard>
 

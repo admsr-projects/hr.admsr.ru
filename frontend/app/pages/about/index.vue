@@ -83,7 +83,6 @@ const missionCards = [
             label="Открыть структуру"
             to="/about/structure"
             color="primary"
-            size="lg"
             trailing-icon="i-lucide-arrow-right"
             class="cursor-pointer"
           />
@@ -115,7 +114,7 @@ const missionCards = [
             :icon="link.image ? undefined : link.icon"
             :label="link.label"
             color="neutral"
-            variant="outline"
+            variant="soft"
             class="cursor-pointer transition-colors duration-200"
           >
             <template

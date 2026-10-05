@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex h-full min-h-96 flex-col rounded-2xl border border-default bg-default p-6 sm:p-8"
+    class="flex h-full min-h-96 flex-col rounded-xl bg-elevated p-6 sm:p-8"
     aria-hidden="true"
   >
     <div class="flex items-start justify-between">

@@ -1,14 +1,14 @@
 <template>
-  <section class="border-t border-default bg-default">
+  <section class="bg-default">
     <UContainer class="flex flex-col gap-10 py-16 lg:py-20">
       <div class="flex max-w-2xl flex-col gap-3">
         <UBadge
           label="Преимущества"
           color="primary"
-          variant="subtle"
-          class="w-fit rounded-full"
+          variant="soft"
+          class="w-fit"
         />
-        <h2 class="text-3xl font-bold tracking-tight text-highlighted text-balance sm:text-4xl">
+        <h2 class="text-h2 text-highlighted text-balance">
           Почему выбирают нас
         </h2>
         <p class="text-pretty text-lg leading-8 text-muted">
@@ -22,7 +22,7 @@
           :key="item.title"
           tabindex="0"
           :aria-label="`${item.title}. ${item.description}`"
-          class="group flex flex-col gap-4 rounded-2xl border border-default bg-default p-5 transition hover:border-primary/40 hover:bg-elevated motion-reduce:transition-none"
+          class="group flex flex-col gap-4 rounded-xl bg-elevated p-5 transition hover:bg-accented motion-reduce:transition-none"
         >
           <div class="inline-flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition group-hover:bg-primary group-hover:text-inverted">
             <UIcon

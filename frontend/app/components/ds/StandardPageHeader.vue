@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-4">
     <header class="flex flex-col gap-4 border-b border-default pb-4">
-      <h1 class="text-3xl sm:text-4xl font-bold text-text-primary text-balance">
+      <h1 class="text-h1 text-text-primary text-balance">
         {{ title }}
       </h1>
       <p

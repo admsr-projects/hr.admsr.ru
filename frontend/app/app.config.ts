@@ -1,3 +1,5 @@
+// Глобальные настройки Nuxt UI. Правила — в docs/DESIGN-RULES.md (дизайн SOFT):
+// на месте эти значения не переопределять.
 export default defineAppConfig({
   ui: {
     colors: {
@@ -7,36 +9,47 @@ export default defineAppConfig({
     },
     card: {
       slots: {
-        root: 'ring-1 ring-[var(--color-border-default)] shadow-none',
+        root: 'rounded-xl shadow-none',
       },
       variants: {
         variant: {
-          // Карточка-панель из макета: серый фон без рамки
+          // Мягкая панель: серый фон без рамки и тени
+          soft: {
+            root: 'bg-elevated ring-0',
+          },
           subtle: {
             root: 'bg-elevated ring-0',
           },
         },
       },
+      defaultVariants: {
+        variant: 'soft',
+      },
     },
     input: {
       slots: {
         root: 'relative inline-flex items-center',
-        base: 'rounded-md ring-[var(--color-border-default)] bg-surface-raised text-text-primary',
+        base: 'rounded-lg ring-[var(--color-border-default)] bg-surface-raised text-text-primary',
       },
     },
     textarea: {
       slots: {
-        base: 'rounded-md ring-[var(--color-border-default)] bg-surface-raised text-text-primary',
+        base: 'rounded-lg ring-[var(--color-border-default)] bg-surface-raised text-text-primary',
       },
     },
     select: {
       slots: {
-        base: 'rounded-md',
+        base: 'rounded-lg',
+      },
+    },
+    selectMenu: {
+      slots: {
+        base: 'rounded-lg',
       },
     },
     inputDate: {
       slots: {
-        base: 'rounded-md',
+        base: 'rounded-lg',
       },
     },
     formField: {
@@ -50,15 +63,20 @@ export default defineAppConfig({
     },
     button: {
       slots: {
-        base: 'rounded-full',
-      },
-      defaultVariants: {
-        size: 'lg',
+        base: 'rounded-lg',
       },
     },
     badge: {
+      slots: {
+        base: 'rounded-md',
+      },
       defaultVariants: {
-        size: 'lg',
+        variant: 'soft',
+      },
+    },
+    alert: {
+      defaultVariants: {
+        variant: 'soft',
       },
     },
     checkbox: {

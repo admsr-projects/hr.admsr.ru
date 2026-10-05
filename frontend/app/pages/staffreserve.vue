@@ -73,7 +73,7 @@ const positions = computed(() => info.value?.positions ?? [])
           :key="index"
         >
           <UCard
-            variant="subtle"
+            variant="soft"
             :ui="{ body: 'p-5 lg:p-6 space-y-3' }"
           >
             <USkeleton class="h-6 w-2/3" />
@@ -91,7 +91,7 @@ const positions = computed(() => info.value?.positions ?? [])
           :key="position.id"
         >
           <UCard
-            variant="subtle"
+            variant="soft"
             :ui="{
               root: 'rounded-xl',
               body: 'p-5 lg:p-6 space-y-3',
@@ -152,7 +152,7 @@ const positions = computed(() => info.value?.positions ?? [])
           description="Актуальный перечень вакантных должностей в администрации Сургутского района."
           icon="i-lucide-briefcase"
           to="/vacancies"
-          variant="subtle"
+          variant="soft"
           class="h-full cursor-pointer"
           :ui="{
             root: 'h-full',
@@ -166,7 +166,7 @@ const positions = computed(() => info.value?.positions ?? [])
           description="Действующие конкурсы на замещение должностей и формирование кадрового резерва."
           icon="i-lucide-file-badge"
           to="/tenders?type=reserve"
-          variant="subtle"
+          variant="soft"
           class="h-full cursor-pointer"
           :ui="{
             root: 'h-full',

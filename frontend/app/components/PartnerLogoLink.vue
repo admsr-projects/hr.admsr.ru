@@ -3,7 +3,7 @@
     :to="logo.url"
     target="_blank"
     rel="noopener noreferrer"
-    class="group flex flex-col items-center gap-4 rounded-2xl border border-default bg-default p-5 text-center transition hover:border-primary/40 hover:bg-elevated motion-reduce:transition-none"
+    class="group flex flex-col items-center gap-4 rounded-xl bg-elevated p-5 text-center transition hover:bg-accented motion-reduce:transition-none"
     :class="$attrs.class"
   >
     <div class="flex h-14 w-full items-center justify-center">

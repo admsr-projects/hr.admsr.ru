@@ -49,13 +49,13 @@
 
           type="button"
 
-          class="group flex w-full items-center gap-3 rounded-xl border px-3 py-3 text-left transition-colors duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          class="group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition-colors duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
 
           :class="selectedIndex === index
 
-            ? 'border-primary/40 bg-primary/5 ring-1 ring-primary/20'
+            ? 'bg-primary/10'
 
-            : 'border-default bg-elevated/30 hover:border-primary/20 hover:bg-elevated/60'"
+            : 'bg-elevated hover:bg-accented'"
 
           :aria-pressed="selectedIndex === index"
 
@@ -145,11 +145,9 @@
 
               color="primary"
 
-              variant="subtle"
+              variant="soft"
 
-              size="lg"
-
-              class="w-fit rounded-full"
+              class="w-fit"
 
             />
 
@@ -189,11 +187,11 @@
 
             <UCard
 
-              variant="subtle"
+              variant="soft"
 
               :ui="{
 
-                root: 'h-full transition-all duration-200 group-hover:ring-1 group-hover:ring-primary/25 group-hover:bg-elevated/70',
+                root: 'h-full transition-colors duration-200 group-hover:bg-accented',
 
                 body: 'flex items-center gap-3 p-4',
 

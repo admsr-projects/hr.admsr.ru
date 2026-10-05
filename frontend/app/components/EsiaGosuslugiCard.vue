@@ -13,7 +13,7 @@
       container: 'gap-y-3 p-5 sm:p-6',
       leading: 'mb-1',
       title: 'esia-gosuslugi-card__title text-lg sm:text-xl',
-      description: 'esia-gosuslugi-card__description text-[15px] leading-6',
+      description: 'esia-gosuslugi-card__description text-sm',
     }"
   >
     <template #leading>
@@ -22,9 +22,8 @@
           v-if="showBadge"
           label="Госуслуги · ЕСИА"
           color="neutral"
-          variant="subtle"
-          size="lg"
-          class="esia-gosuslugi-card__badge rounded-full border border-white/20"
+          variant="soft"
+          class="esia-gosuslugi-card__badge border border-white/20"
         />
         <UIcon
           :name="icon"

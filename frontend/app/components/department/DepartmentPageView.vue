@@ -8,7 +8,6 @@
         label="Вакансии органа"
         :to="vacanciesLink"
         color="primary"
-        size="lg"
         icon="i-lucide-briefcase"
         class="cursor-pointer"
       />
@@ -16,8 +15,7 @@
         label="Обратная связь"
         to="/feedback"
         color="neutral"
-        variant="outline"
-        size="lg"
+        variant="soft"
         icon="i-lucide-message-square"
         class="cursor-pointer"
       />
@@ -186,7 +184,6 @@
             :label="`Все вакансии органа (${relatedVacancies.length})`"
             :to="vacanciesLink"
             color="primary"
-            size="lg"
             trailing-icon="i-lucide-arrow-right"
             class="cursor-pointer"
           />
@@ -206,7 +203,6 @@
             label="Смотреть все вакансии"
             to="/vacancies"
             color="primary"
-            size="lg"
             trailing-icon="i-lucide-arrow-right"
             class="cursor-pointer"
           />

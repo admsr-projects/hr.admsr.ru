@@ -1,6 +1,6 @@
 <template>
   <UCard
-    variant="subtle"
+    variant="soft"
     :ui="{
       root: 'overflow-hidden',
       body: 'p-0',

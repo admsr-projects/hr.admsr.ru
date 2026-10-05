@@ -32,7 +32,7 @@ const managementUnitTitle = computed(
     >
       <UCard
         v-if="managementHeadPending"
-        variant="subtle"
+        variant="soft"
         :ui="{ body: 'space-y-3 p-5' }"
       >
         <USkeleton class="h-7 w-3/4" />
@@ -69,7 +69,7 @@ const managementUnitTitle = computed(
           description="Задайте вопрос или оставьте предложение через форму на портале."
           icon="i-lucide-message-square"
           to="/feedback"
-          variant="subtle"
+          variant="soft"
           class="h-full cursor-pointer"
           :ui="{
             root: 'h-full',
@@ -83,7 +83,7 @@ const managementUnitTitle = computed(
           description="Узнайте, какие отраслевые органы курируют направления работы района."
           icon="i-lucide-network"
           to="/about/structure"
-          variant="subtle"
+          variant="soft"
           class="h-full cursor-pointer"
           :ui="{
             root: 'h-full',

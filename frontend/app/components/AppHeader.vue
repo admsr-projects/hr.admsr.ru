@@ -48,8 +48,7 @@
           to="/vacancies"
           icon="i-lucide-briefcase"
           color="primary"
-          size="lg"
-          class="hidden rounded-full lg:inline-flex"
+          class="hidden lg:inline-flex"
         />
       </div>
     </template>
@@ -61,8 +60,7 @@
         color="neutral"
         icon="i-lucide-search"
         label="Поиск по порталу"
-        class="mb-4"
-        size="lg"        
+        class="mb-4"        
         @click="openSearch"
       />
 
@@ -90,7 +88,7 @@
         color="primary"
         variant="solid"
         block
-        class="mt-4 rounded-full"
+        class="mt-4"
       />
     </template>
   </UHeader>

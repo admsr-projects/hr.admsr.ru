@@ -56,7 +56,6 @@ watch(activeTab, (value) => {
       v-model="activeTab"
       color="primary"
       variant="link"
-      size="lg"
       :items="tabItems"
       :unmount-on-hide="false"
       class="w-full"
@@ -85,7 +84,7 @@ watch(activeTab, (value) => {
           >
             <div class="space-y-4">
               <div
-                class="flex items-start gap-3 rounded-xl border border-default bg-elevated/40 px-4 py-4 sm:px-5"
+                class="flex items-start gap-3 rounded-xl bg-elevated px-4 py-4 sm:px-5"
                 role="note"
               >
                 <UIcon
@@ -127,7 +126,7 @@ watch(activeTab, (value) => {
           description="Телефоны, адреса и справочник сотрудников отделов кадровой политики."
           icon="i-lucide-phone"
           to="/contacts"
-          variant="subtle"
+          variant="soft"
           class="h-full cursor-pointer"
           :ui="{
             root: 'h-full',
@@ -141,7 +140,7 @@ watch(activeTab, (value) => {
           description="Порядок обработки персональных данных в соответствии с 152-ФЗ."
           icon="i-lucide-shield-check"
           to="/privacy"
-          variant="subtle"
+          variant="soft"
           class="h-full cursor-pointer"
           :ui="{
             root: 'h-full',

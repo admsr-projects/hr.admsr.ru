@@ -1,13 +1,13 @@
 <template>
   <component
     :is="promo ? 'section' : 'div'"
-    :class="promo ? 'border-t border-default bg-default overflow-x-clip' : embedded ? undefined : block ? undefined : 'ds-container py-8 lg:py-10'"
+    :class="promo ? 'bg-default overflow-x-clip' : embedded ? undefined : block ? undefined : 'ds-container py-8 lg:py-10'"
   >
     <UContainer
       v-if="promo"
       class="min-w-0 py-12 sm:py-16 lg:py-20"
     >
-      <article class="min-w-0 w-full overflow-hidden rounded-2xl border border-default bg-elevated/30 p-4 sm:rounded-3xl sm:p-6 lg:p-10 xl:p-12">
+      <article class="min-w-0 w-full overflow-hidden rounded-xl bg-elevated p-4 sm:rounded-xl sm:p-6 lg:p-10 xl:p-12">
         <PromoCardContent
           :heading-id="headingId"
           :highlights="highlights"
@@ -25,7 +25,7 @@
 
     <article
       v-else-if="block"
-      class="min-w-0 w-full overflow-hidden rounded-2xl border border-default bg-elevated/30 p-4 sm:rounded-3xl sm:p-6 lg:p-10 xl:p-12"
+      class="min-w-0 w-full overflow-hidden rounded-xl bg-elevated p-4 sm:rounded-xl sm:p-6 lg:p-10 xl:p-12"
     >
       <PromoCardContent
         compact
@@ -48,7 +48,7 @@
     >
       <div class="mx-auto flex max-w-2xl flex-col gap-4">
         <div class="flex flex-col gap-2">
-          <h2 class="text-2xl font-bold tracking-tight text-highlighted sm:text-3xl">
+          <h2 class="text-h2 text-highlighted text-balance">
             Подписка на новые вакансии
           </h2>
           <p class="text-pretty leading-7 text-muted">

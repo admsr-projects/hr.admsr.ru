@@ -1,17 +1,16 @@
 <template>
-  <section class="border-t border-default bg-elevated/40">
+  <section class="bg-elevated/40">
     <UContainer class="flex flex-col gap-8 py-16 lg:py-20">
       <div class="flex max-w-2xl flex-col gap-3">
         <UBadge
           label="Новости"
           color="primary"
-          variant="subtle"
-          size="lg"
-          class="w-fit rounded-full"
+          variant="soft"
+          class="w-fit"
         />
         <h2
           id="news"
-          class="text-3xl font-bold tracking-tight text-highlighted text-balance sm:text-4xl"
+          class="text-h2 text-highlighted text-balance"
         >
           Как живёт команда
         </h2>
@@ -34,7 +33,7 @@
 
       <div
         v-else
-        class="flex flex-col items-center gap-4 rounded-2xl border border-dashed border-default bg-elevated/40 px-6 py-14 text-center"
+        class="flex flex-col items-center gap-4 rounded-xl border border-dashed border-default bg-elevated/40 px-6 py-14 text-center"
       >
         <UIcon
           name="i-lucide-newspaper"

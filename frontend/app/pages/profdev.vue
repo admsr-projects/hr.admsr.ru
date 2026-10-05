@@ -102,7 +102,6 @@ function sectionMetaForTab(tab: ProfdevTab) {
       v-model="activeTab"
       color="primary"
       variant="link"
-      size="lg"
       :items="tabItems"
       :unmount-on-hide="false"
       class="w-full"

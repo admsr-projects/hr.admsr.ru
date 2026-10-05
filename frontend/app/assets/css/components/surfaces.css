@@ -1,9 +1,8 @@
 /* Surface primitives — opaque cards, no default glass */
 
 .ds-surface {
-  background: var(--color-surface-raised);
-  border: 1px solid var(--color-border-default);
-  border-radius: 0.5rem;
+  background: var(--color-surface-sunken);
+  border-radius: 0.75rem;
 }
 
 .ds-surface[data-elevation='none'] {

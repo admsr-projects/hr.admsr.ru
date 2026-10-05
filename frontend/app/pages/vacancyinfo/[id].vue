@@ -220,9 +220,8 @@ async function handleFormSubmit(formData: Record<string, unknown>) {
         <UButton
           label="Откликнуться"
           color="primary"
-          size="lg"
           trailing-icon="i-lucide-arrow-right"
-          class="cursor-pointer rounded-full"
+          class="cursor-pointer"
           @click="openApplicationForm"
         />
       </template>
@@ -254,8 +253,7 @@ async function handleFormSubmit(formData: Record<string, unknown>) {
             label="Вернуться к вакансиям"
             to="/vacancies"
             color="primary"
-            size="lg"
-            class="cursor-pointer rounded-full"
+            class="cursor-pointer"
           />
         </template>
       </DsEmptyState>
@@ -278,9 +276,8 @@ async function handleFormSubmit(formData: Record<string, unknown>) {
                 :key="tag"
                 :label="tag"
                 color="primary"
-                variant="subtle"
-                size="lg"
-                class="rounded-full"
+                variant="soft"
+                
               />
               <span
                 v-if="publishedLabel"
@@ -336,7 +333,7 @@ async function handleFormSubmit(formData: Record<string, unknown>) {
             <li
               v-for="skill in skills"
               :key="skill"
-              class="flex items-start gap-3 rounded-xl border border-default bg-elevated/30 p-4"
+              class="flex items-start gap-3 rounded-xl bg-elevated p-4"
             >
               <UIcon
                 name="i-lucide-check"
@@ -368,9 +365,8 @@ async function handleFormSubmit(formData: Record<string, unknown>) {
               <UButton
                 label="Откликнуться"
                 color="primary"
-                size="lg"
                 trailing-icon="i-lucide-arrow-right"
-                class="w-full cursor-pointer justify-center rounded-full sm:w-auto"
+                class="w-full cursor-pointer justify-center sm:w-auto"
                 @click="openApplicationForm"
               />
             </template>
@@ -390,7 +386,7 @@ async function handleFormSubmit(formData: Record<string, unknown>) {
               description="Вернуться к полному списку открытых должностей администрации района."
               icon="i-lucide-briefcase"
               to="/vacancies"
-              variant="subtle"
+              variant="soft"
               class="h-full cursor-pointer"
               :ui="{
                 root: 'h-full',
@@ -405,7 +401,7 @@ async function handleFormSubmit(formData: Record<string, unknown>) {
               :description="`Другие открытые должности в «${vacancy.branch}».`"
               icon="i-lucide-building-2"
               :to="orgVacanciesLink"
-              variant="subtle"
+              variant="soft"
               class="h-full cursor-pointer"
               :ui="{
                 root: 'h-full',
@@ -420,7 +416,7 @@ async function handleFormSubmit(formData: Record<string, unknown>) {
               :description="`Подробнее о деятельности «${relatedDepartment.name}».`"
               icon="i-lucide-network"
               :to="`/about/departments/${relatedDepartment.slug}`"
-              variant="subtle"
+              variant="soft"
               class="h-full cursor-pointer"
               :ui="{
                 root: 'h-full',
@@ -434,7 +430,7 @@ async function handleFormSubmit(formData: Record<string, unknown>) {
               description="Действующие конкурсы на замещение должностей и кадровый резерв."
               icon="i-lucide-clipboard-list"
               to="/tenders"
-              variant="subtle"
+              variant="soft"
               class="h-full cursor-pointer"
               :ui="{
                 root: 'h-full',
@@ -448,7 +444,7 @@ async function handleFormSubmit(formData: Record<string, unknown>) {
               description="Как вступить в резерв и развивать карьеру в администрации района."
               icon="i-lucide-users"
               to="/staffreserve"
-              variant="subtle"
+              variant="soft"
               class="h-full cursor-pointer"
               :ui="{
                 root: 'h-full',

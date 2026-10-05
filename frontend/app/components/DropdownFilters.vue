@@ -8,7 +8,7 @@
       :label="displayLabel"
       :trailing-icon="isOpen ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
       color="neutral"
-      variant="outline"
+      variant="soft"
       :aria-expanded="isOpen"
     />
   </UDropdownMenu>

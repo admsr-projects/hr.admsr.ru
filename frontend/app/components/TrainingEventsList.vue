@@ -9,7 +9,7 @@
       <UCard
         v-for="index in 3"
         :key="index"
-        variant="subtle"
+        variant="soft"
         :ui="{ body: 'p-5 lg:p-6 space-y-3' }"
       >
         <USkeleton class="h-5 w-28 rounded-full" />
@@ -87,7 +87,6 @@
             :total="pastEvents.length"
             :items-per-page="itemsPerPage"
             color="primary"
-            size="lg"
           />
         </div>
       </section>

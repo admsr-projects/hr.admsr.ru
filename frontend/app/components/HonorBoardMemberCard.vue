@@ -1,9 +1,9 @@
 <template>
   <UCard
-    variant="subtle"
+    variant="soft"
     class="group min-w-0"
     :ui="{
-      root: 'overflow-hidden rounded-xl transition-colors duration-200 hover:ring-1 hover:ring-primary/20',
+      root: 'overflow-hidden transition-colors duration-200 hover:bg-accented',
       body: 'p-0',
     }"
   >
