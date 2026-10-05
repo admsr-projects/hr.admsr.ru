@@ -88,98 +88,94 @@
         />
       </UFormField>
 
-      <fieldset class="flex min-w-0 flex-col gap-3 rounded-lg bg-default p-4">
-        <legend class="px-1 text-sm font-medium text-highlighted">
-          Резюме (необязательно)
-        </legend>
-
+      <UFormField
+        label="Резюме"
+        description="Необязательно"
+        name="resumeMode"
+        class="min-w-0 w-full"
+      >
         <URadioGroup
           v-model="form.resumeMode"
           :items="resumeModeItems"
-          orientation="horizontal"
-          variant="list"
-          legend="Способ передачи резюме"
-          :ui="{ fieldset: 'flex flex-wrap gap-x-6 gap-y-2', legend: 'sr-only' }"
+          class="mt-1"
         />
+      </UFormField>
 
-        <UFormField
-          v-if="form.resumeMode === 'file'"
-          name="resumeFile"
-        >
-          <UFileUpload
-            v-model="form.resumeFile"
-            variant="area"
-            accept=".pdf,.doc,.docx,.rtf,.odt,.txt"
-            label="Прикрепить резюме"
-            description="PDF, DOC, DOCX, RTF, ODT или TXT (макс. 10 МБ)"
+      <UFormField
+        v-if="form.resumeMode === 'file'"
+        label="Файл резюме"
+        name="resumeFile"
+        class="min-w-0 w-full"
+      >
+        <UFileUpload
+          v-model="form.resumeFile"
+          accept=".pdf,.doc,.docx,.rtf,.odt,.txt"
+          label="Перетащите файл или выберите"
+          description="PDF, DOC, DOCX, RTF, ODT или TXT (макс. 10 МБ)"
+          class="w-full min-w-0"
+        />
+      </UFormField>
+
+      <template v-else-if="form.resumeMode === 'form'">
+        <UFormField name="desiredPosition">
+          <template #label>
+            <DsRequiredLabel label="Желаемая должность" />
+          </template>
+          <UInput
+            v-model="form.desiredPosition"
+            placeholder="Например, специалист по кадрам"
             class="w-full min-w-0"
           />
         </UFormField>
 
-        <div
-          v-else-if="form.resumeMode === 'form'"
-          class="flex flex-col gap-4"
+        <UFormField name="phone">
+          <template #label>
+            <DsRequiredLabel label="Телефон" />
+          </template>
+          <UInput
+            v-model="form.phone"
+            type="tel"
+            placeholder="+7 (900) 000-00-00"
+            autocomplete="tel"
+            class="w-full min-w-0"
+          />
+        </UFormField>
+
+        <UFormField
+          label="Образование"
+          name="education"
         >
-          <UFormField name="desiredPosition">
-            <template #label>
-              <DsRequiredLabel label="Желаемая должность" />
-            </template>
-            <UInput
-              v-model="form.desiredPosition"
-              placeholder="Например, специалист по кадрам"
-              class="w-full min-w-0"
-            />
-          </UFormField>
+          <UInput
+            v-model="form.education"
+            placeholder="Учебное заведение, специальность, год окончания"
+            class="w-full min-w-0"
+          />
+        </UFormField>
 
-          <UFormField name="phone">
-            <template #label>
-              <DsRequiredLabel label="Телефон" />
-            </template>
-            <UInput
-              v-model="form.phone"
-              type="tel"
-              placeholder="+7 (900) 000-00-00"
-              autocomplete="tel"
-              class="w-full min-w-0"
-            />
-          </UFormField>
+        <UFormField
+          label="Опыт работы"
+          name="workExperience"
+        >
+          <UTextarea
+            v-model="form.workExperience"
+            :rows="4"
+            placeholder="Места работы, должности, периоды"
+            class="w-full min-w-0"
+          />
+        </UFormField>
 
-          <UFormField
-            label="Образование"
-            name="education"
-          >
-            <UInput
-              v-model="form.education"
-              placeholder="Учебное заведение, специальность, год окончания"
-              class="w-full min-w-0"
-            />
-          </UFormField>
-
-          <UFormField
-            label="Опыт работы"
-            name="workExperience"
-          >
-            <UTextarea
-              v-model="form.workExperience"
-              :rows="4"
-              placeholder="Места работы, должности, периоды"
-              class="w-full min-w-0"
-            />
-          </UFormField>
-
-          <UFormField
-            label="О себе, навыки"
-            name="about"
-          >
-            <UTextarea
-              v-model="form.about"
-              :rows="3"
-              placeholder="Ключевые навыки и достижения"
-              class="w-full min-w-0"
-            />
-          </UFormField>
-        </div>
-      </fieldset>
+        <UFormField
+          label="О себе, навыки"
+          name="about"
+        >
+          <UTextarea
+            v-model="form.about"
+            :rows="3"
+            placeholder="Ключевые навыки и достижения"
+            class="w-full min-w-0"
+          />
+        </UFormField>
+      </template>
 
       <UFormField
         name="consentPersonalData"
