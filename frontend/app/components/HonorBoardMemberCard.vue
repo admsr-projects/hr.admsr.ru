@@ -1,6 +1,6 @@
 <template>
   <article class="flex h-full min-w-0 flex-col overflow-hidden rounded-xl bg-elevated">
-    <div class="aspect-[4/3] w-full overflow-hidden bg-default">
+    <div class="aspect-[3/4] w-full overflow-hidden bg-default">
       <img
         v-if="member.image"
         :src="member.image"

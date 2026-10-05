@@ -11,7 +11,7 @@
         :key="index"
         class="overflow-hidden rounded-xl bg-elevated"
       >
-        <USkeleton class="aspect-[4/3] w-full rounded-none" />
+        <USkeleton class="aspect-[3/4] w-full rounded-none" />
         <div class="space-y-3 p-6">
           <USkeleton class="h-6 w-40" />
           <USkeleton class="h-6 w-2/3" />
