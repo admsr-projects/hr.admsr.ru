@@ -114,18 +114,17 @@
             v-for="(item, index) in carouselItems"
             :key="itemKey(item, index)"
             data-vacancy-slide
-            class="w-[min(92vw,24rem)] shrink-0 snap-start sm:w-104 lg:w-120"
+            class="w-[min(92vw,22rem)] shrink-0 snap-start sm:w-88"
           >
             <VacancyCard
               v-if="!isPlaceholderItem(item)"
               :vacancy="item"
-              size="lg"
               @apply="openApplicationForm"
             />
 
             <article
               v-else
-              class="flex h-full min-h-96 flex-col items-center justify-center gap-5 rounded-2xl border border-dashed border-default bg-default p-8 text-center transition hover:border-primary/40 hover:bg-elevated motion-reduce:transition-none"
+              class="flex h-full min-h-80 flex-col items-center justify-center gap-5 rounded-lg border border-dashed border-default bg-default p-8 text-center transition-colors duration-200 hover:border-primary motion-reduce:transition-none"
             >
               <div class="flex size-16 items-center justify-center rounded-full bg-primary/10 text-primary">
                 <UIcon
@@ -147,7 +146,6 @@
                 to="/vacancies"
                 color="primary"
                 trailing-icon="i-lucide-arrow-right"
-                class="rounded-full"
               />
             </article>
           </div>

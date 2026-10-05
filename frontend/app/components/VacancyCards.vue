@@ -34,7 +34,7 @@
 
       <div
         v-if="pending"
-        class="grid grid-cols-1 gap-4 sm:grid-cols-2"
+        :class="layout === 'grid' ? 'grid grid-cols-1 gap-4 sm:grid-cols-2' : 'flex flex-col gap-3'"
       >
         <DsSkeletonCard
           v-for="i in skeletonCount"
@@ -51,13 +51,13 @@
 
       <div
         v-else
-        class="grid grid-cols-1 gap-4 sm:grid-cols-2"
+        :class="layout === 'grid' ? 'grid grid-cols-1 gap-4 sm:grid-cols-2' : 'flex flex-col gap-3'"
       >
         <VacancyCard
           v-for="vacancy in vacancies"
           :key="vacancy.id ?? vacancy.title"
           :vacancy="vacancy"
-          size="lg"
+          :layout="layout === 'grid' ? 'card' : 'row'"
           @apply="openApplicationForm"
         />
       </div>
@@ -200,6 +200,11 @@ defineProps({
   skeletonCount: {
     type: Number,
     default: 6,
+  },
+  /** list — строки (страница «Вакансии»), grid — карточки в сетке */
+  layout: {
+    type: String,
+    default: 'list',
   },
 })
 </script>
