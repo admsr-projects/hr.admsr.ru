@@ -179,7 +179,6 @@ const facts = computed(() => {
   const v = props.vacancy
   const experience = v.requiredExperience || v.experience
   const items = [
-    v.employmentType && { icon: 'i-lucide-clock', text: v.employmentType },
     experience && { icon: 'i-lucide-briefcase', text: `Опыт ${experience}` },
     v.jobType && { icon: 'i-lucide-landmark', text: v.jobType },
   ].filter(Boolean) as { icon: string, text: string }[]
@@ -187,5 +186,5 @@ const facts = computed(() => {
   return items.slice(0, 4)
 })
 
-const rowFacts = computed(() => facts.value.filter(fact => fact.icon !== 'i-lucide-clock'))
+const rowFacts = computed(() => facts.value)
 </script>
