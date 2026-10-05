@@ -30,15 +30,15 @@
           size="xl"
         />
         <div class="min-w-0 flex-1">
-          <p class="text-sm text-text-muted">
-            {{ deputy.role }}
-          </p>
           <h2
             :id="`deputy-${index}-name`"
             class="text-h3 text-text-primary"
           >
             {{ deputyFullName(deputy) }}
           </h2>
+          <p class="text-sm text-text-muted">
+            {{ deputy.role }}
+          </p>
         </div>
       </header>
 
