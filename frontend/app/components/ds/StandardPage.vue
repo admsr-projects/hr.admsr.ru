@@ -11,15 +11,15 @@
     <div class="ds-container pb-12 pt-4 lg:pb-16 lg:pt-0">
       <div
         class="lg:grid lg:items-start lg:gap-6"
-        :class="menu ? 'lg:grid-cols-[282px_minmax(0,1fr)]' : undefined"
+        :class="sidebar ? 'lg:grid-cols-[282px_minmax(0,1fr)]' : undefined"
       >
         <aside
-          v-if="menu"
+          v-if="sidebar"
           class="hidden lg:block lg:sticky lg:top-[calc(var(--ui-header-height,4rem)+1.5rem)]"
         >
           <DsSectionSidebar
-            :title="menu.title"
-            :items="sidebarItems"
+            :title="sidebar.title"
+            :items="sidebar.items"
           />
         </aside>
 
@@ -77,20 +77,27 @@ const route = useRoute()
 
 const menu = computed(() => resolveSectionMenu(route.path))
 
-// Подпункты «Структуры администрации» (заместители → органы) нужны только на её страницах
+// Страницы структуры администрации и её органов: меню не раздела «Наша команда», а самой страницы —
+// все органы и заместители главы, которые их курируют
 const inStructure = route.path.startsWith('/about/structure') || route.path.startsWith('/about/departments/')
 const structureGroups = inStructure ? useAdminStructureMenu() : undefined
 
-const sidebarItems = computed<SidebarItem[]>(() =>
-  (menu.value?.items ?? []).map(item =>
-    item.to === '/about/structure' && structureGroups
-      ? { ...item, expanded: true, children: structureGroups.value }
-      : item
-  )
-)
+const sidebar = computed<{ title: string, items: SidebarItem[] } | null>(() => {
+  if (structureGroups) {
+    return {
+      title: 'Структура администрации',
+      items: [
+        { label: 'Все органы', to: '/about/structure', active: route.path === '/about/structure' },
+        ...structureGroups.value
+      ]
+    }
+  }
+  return menu.value ? { title: menu.value.title, items: menu.value.items } : null
+})
 
+// Горизонтальное меню на телефоне — только для страниц разделов (у структуры свой выбор заместителя на странице)
 const sectionNavItems = computed(() =>
-  menu.value ? toNavigationMenuItems(menu.value) : []
+  menu.value && !inStructure ? toNavigationMenuItems(menu.value) : []
 )
 
 const breadcrumbs = computed<BreadcrumbItem[]>(() => {
