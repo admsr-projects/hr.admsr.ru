@@ -19,7 +19,9 @@
       :aria-label="paginationLabel"
       :total="total"
       :items-per-page="pageSize"
-      color="primary"
+      color="neutral"
+      variant="subtle"
+      :ui="{ first: 'hidden', last: 'hidden' }"
     />
   </div>
 </template>

@@ -86,7 +86,9 @@
             v-model:page="pastPage"
             :total="pastEvents.length"
             :items-per-page="itemsPerPage"
-            color="primary"
+            color="neutral"
+            variant="subtle"
+            :ui="{ first: 'hidden', last: 'hidden' }"
           />
         </div>
       </section>
