@@ -116,32 +116,18 @@ watch(activeTab, (value) => {
       spacing="lg"
     >
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <UPageCard
+        <DsLinkCard
           title="Контакты"
           description="Телефоны, адреса и справочник сотрудников отделов кадровой политики."
           icon="i-lucide-phone"
           to="/contacts"
-          variant="soft"
-          class="h-full cursor-pointer"
-          :ui="{
-            root: 'h-full',
-            container: 'h-full',
-            wrapper: 'h-full',
-          }"
         />
 
-        <UPageCard
+        <DsLinkCard
           title="Политика персональных данных"
           description="Порядок обработки персональных данных в соответствии с 152-ФЗ."
           icon="i-lucide-shield-check"
           to="/privacy"
-          variant="soft"
-          class="h-full cursor-pointer"
-          :ui="{
-            root: 'h-full',
-            container: 'h-full',
-            wrapper: 'h-full',
-          }"
         />
       </div>
     </DsContentSection>

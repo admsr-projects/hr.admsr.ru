@@ -126,32 +126,18 @@ const activeSectionDescription = computed(() => {
       spacing="lg"
     >
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <UPageCard
+        <DsLinkCard
           title="Вакансии"
           description="Актуальный перечень вакантных должностей в администрации Сургутского района."
           icon="i-lucide-briefcase"
           to="/vacancies"
-          variant="soft"
-          class="h-full cursor-pointer"
-          :ui="{
-            root: 'h-full',
-            container: 'h-full',
-            wrapper: 'h-full',
-          }"
         />
 
-        <UPageCard
+        <DsLinkCard
           title="Кадровый резерв"
           description="Как вступить в резерв и развивать карьеру в администрации района."
           icon="i-lucide-users"
           to="/staffreserve"
-          variant="soft"
-          class="h-full cursor-pointer"
-          :ui="{
-            root: 'h-full',
-            container: 'h-full',
-            wrapper: 'h-full',
-          }"
         />
       </div>
     </DsContentSection>

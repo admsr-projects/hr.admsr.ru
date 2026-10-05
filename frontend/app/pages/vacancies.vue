@@ -129,32 +129,18 @@ function clearOrgFilter() {
       spacing="lg"
     >
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <UPageCard
+        <DsLinkCard
           title="Конкурсы"
           description="Действующие конкурсы на замещение вакантных должностей и на включение в кадровый резерв."
           icon="i-lucide-clipboard-list"
           to="/tenders"
-          variant="soft"
-          class="h-full cursor-pointer"
-          :ui="{
-            root: 'h-full',
-            container: 'h-full',
-            wrapper: 'h-full',
-          }"
         />
 
-        <UPageCard
+        <DsLinkCard
           title="Кадровый резерв"
           description="Как вступить в резерв и развивать карьеру в администрации района."
           icon="i-lucide-users"
           to="/staffreserve"
-          variant="soft"
-          class="h-full cursor-pointer"
-          :ui="{
-            root: 'h-full',
-            container: 'h-full',
-            wrapper: 'h-full',
-          }"
         />
       </div>
     </DsContentSection>

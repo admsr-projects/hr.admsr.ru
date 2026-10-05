@@ -60,32 +60,18 @@ const managementUnitTitle = computed(
       spacing="lg"
     >
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <UPageCard
+        <DsLinkCard
           title="Обратная связь"
           description="Задайте вопрос или оставьте предложение через форму на портале."
           icon="i-lucide-message-square"
           to="/feedback"
-          variant="soft"
-          class="h-full cursor-pointer"
-          :ui="{
-            root: 'h-full',
-            container: 'h-full',
-            wrapper: 'h-full',
-          }"
         />
 
-        <UPageCard
+        <DsLinkCard
           title="Структура администрации"
           description="Узнайте, какие отраслевые органы курируют направления работы района."
           icon="i-lucide-network"
           to="/about/structure"
-          variant="soft"
-          class="h-full cursor-pointer"
-          :ui="{
-            root: 'h-full',
-            container: 'h-full',
-            wrapper: 'h-full',
-          }"
         />
       </div>
     </DsContentSection>

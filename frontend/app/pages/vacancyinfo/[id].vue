@@ -381,76 +381,41 @@ async function handleFormSubmit(formData: Record<string, unknown>) {
           spacing="lg"
         >
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <UPageCard
+            <DsLinkCard
               title="Все вакансии"
               description="Вернуться к полному списку открытых должностей администрации района."
               icon="i-lucide-briefcase"
               to="/vacancies"
-              variant="soft"
-              class="h-full cursor-pointer"
-              :ui="{
-                root: 'h-full',
-                container: 'h-full',
-                wrapper: 'h-full',
-              }"
             />
 
-            <UPageCard
+            <DsLinkCard
               v-if="vacancy.branch"
               title="Вакансии подразделения"
               :description="`Другие открытые должности в «${vacancy.branch}».`"
               icon="i-lucide-building-2"
               :to="orgVacanciesLink"
-              variant="soft"
-              class="h-full cursor-pointer"
-              :ui="{
-                root: 'h-full',
-                container: 'h-full',
-                wrapper: 'h-full',
-              }"
             />
 
-            <UPageCard
+            <DsLinkCard
               v-if="relatedDepartment"
               title="Страница подразделения"
               :description="`Подробнее о деятельности «${relatedDepartment.name}».`"
               icon="i-lucide-network"
               :to="`/about/departments/${relatedDepartment.slug}`"
-              variant="soft"
-              class="h-full cursor-pointer"
-              :ui="{
-                root: 'h-full',
-                container: 'h-full',
-                wrapper: 'h-full',
-              }"
             />
 
-            <UPageCard
+            <DsLinkCard
               title="Конкурсы"
               description="Действующие конкурсы на замещение должностей и кадровый резерв."
               icon="i-lucide-clipboard-list"
               to="/tenders"
-              variant="soft"
-              class="h-full cursor-pointer"
-              :ui="{
-                root: 'h-full',
-                container: 'h-full',
-                wrapper: 'h-full',
-              }"
             />
 
-            <UPageCard
+            <DsLinkCard
               title="Кадровый резерв"
               description="Как вступить в резерв и развивать карьеру в администрации района."
               icon="i-lucide-users"
               to="/staffreserve"
-              variant="soft"
-              class="h-full cursor-pointer"
-              :ui="{
-                root: 'h-full',
-                container: 'h-full',
-                wrapper: 'h-full',
-              }"
             />
           </div>
         </DsContentSection>
