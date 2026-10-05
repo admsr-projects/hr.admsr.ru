@@ -1,112 +1,100 @@
 <template>
-  <DsStandardPage
-    :title="pending ? 'Загрузка новости…' : post?.title ?? 'Новость'"
-    :description="post?.description"
-  >
-    <div
-      v-if="pending"
-      class="max-w-3xl space-y-3"
-      aria-busy="true"
-      aria-label="Загрузка новости"
-    >
-      <USkeleton class="h-5 w-28" />
-      <USkeleton class="h-64 w-full rounded-lg" />
-      <USkeleton class="h-5 w-full" />
-      <USkeleton class="h-5 w-11/12" />
-      <USkeleton class="h-5 w-4/5" />
-    </div>
+  <div class="ds-inner">
+    <DsBreadcrumbs :items="breadcrumbs" />
 
-    <template v-else>
-      <time
-        v-if="post?.date"
-        :datetime="post.date"
-        class="text-sm text-text-muted"
+    <div class="ds-container pb-12 lg:pb-16">
+      <article
+        class="mx-auto flex max-w-3xl flex-col gap-4"
+        :aria-busy="pending"
       >
-        {{ formatDate(post.date) }}
-      </time>
+        <template v-if="pending">
+          <USkeleton class="h-4 w-28" />
+          <USkeleton class="h-10 w-full" />
+          <USkeleton class="h-10 w-3/4" />
+          <USkeleton class="aspect-video w-full rounded-lg" />
+          <USkeleton class="h-5 w-full" />
+          <USkeleton class="h-5 w-11/12" />
+        </template>
 
-      <figure
-        v-if="post?.imageUrl"
-        class="w-full max-w-4xl overflow-hidden rounded-lg border border-default bg-elevated"
-      >
-        <img
-          :src="post.imageUrl"
-          :alt="post.title"
-          loading="eager"
-          class="block h-auto w-full"
-        >
-      </figure>
-
-      <div
-        v-if="contentParagraphs.length"
-        class="max-w-3xl space-y-4"
-      >
-        <p
-          v-for="(paragraph, index) in contentParagraphs"
-          :key="index"
-          class="whitespace-pre-line text-pretty text-base leading-6 text-text-muted"
-        >
-          {{ paragraph }}
-        </p>
-      </div>
-
-      <DsEmptyState
-        v-else
-        icon="i-lucide-file-text"
-        title="Полный текст готовится"
-        description="Мы опубликуем материал в ближайшее время."
-      />
-    </template>
-
-    <section
-      v-if="!pending && relatedPosts.length"
-      aria-labelledby="news-related"
-      class="pt-4"
-    >
-      <h2
-        id="news-related"
-        class="mb-4 text-xl font-bold text-text-primary"
-      >
-        Ещё новости
-      </h2>
-
-      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <NuxtLink
-          v-for="(item, index) in relatedPosts"
-          :key="item.id"
-          :to="`/news/${item.id}`"
-          class="group flex h-full flex-col overflow-hidden rounded-lg border border-default bg-default transition-colors duration-200 hover:border-primary/40 motion-reduce:transition-none"
-        >
-          <img
-            v-if="item.imageUrl"
-            :src="item.imageUrl"
-            :alt="item.title"
-            class="block h-auto w-full"
-            :loading="index === 0 ? 'eager' : 'lazy'"
+        <template v-else-if="post">
+          <time
+            v-if="post.date"
+            :datetime="post.date"
+            class="text-sm text-text-muted"
           >
+            {{ formatDate(post.date) }}
+          </time>
 
-          <div class="flex flex-1 flex-col gap-1 p-6">
-            <time
-              v-if="item.date"
-              :datetime="item.date"
-              class="text-sm text-text-muted"
-            >
-              {{ formatDate(item.date) }}
-            </time>
-            <h3 class="text-base font-semibold leading-6 text-text-primary line-clamp-2 group-hover:text-primary">
-              {{ item.title }}
-            </h3>
+          <h1 class="text-3xl font-bold leading-tight text-text-primary text-balance sm:text-4xl">
+            {{ post.title }}
+          </h1>
+
+          <p
+            v-if="post.description"
+            class="text-xl leading-8 text-text-muted text-pretty"
+          >
+            {{ post.description }}
+          </p>
+
+          <DsBlurredImage
+            v-if="post.imageUrl"
+            :src="post.imageUrl"
+            :alt="post.title"
+            loading="eager"
+            class="rounded-lg"
+          />
+
+          <div
+            v-if="contentParagraphs.length"
+            class="flex flex-col gap-4"
+          >
             <p
-              v-if="item.description"
-              class="text-sm leading-5 text-text-muted line-clamp-2"
+              v-for="(paragraph, index) in contentParagraphs"
+              :key="index"
+              class="whitespace-pre-line text-lg leading-8 text-text-primary text-pretty"
             >
-              {{ item.description }}
+              {{ paragraph }}
             </p>
           </div>
-        </NuxtLink>
-      </div>
-    </section>
-  </DsStandardPage>
+
+          <DsEmptyState
+            v-else
+            icon="i-lucide-file-text"
+            title="Полный текст готовится"
+            description="Мы опубликуем материал в ближайшее время."
+          />
+        </template>
+
+        <DsEmptyState
+          v-else
+          icon="i-lucide-search-x"
+          title="Новость не найдена"
+          description="Материал снят с публикации или адрес указан неверно."
+        />
+      </article>
+
+      <section
+        v-if="!pending && relatedPosts.length"
+        aria-labelledby="news-related"
+        class="mt-12"
+      >
+        <h2
+          id="news-related"
+          class="mb-4 text-xl font-bold text-text-primary"
+        >
+          Ещё новости
+        </h2>
+
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <NewsCard
+            v-for="item in relatedPosts"
+            :key="item.id"
+            :post="item"
+          />
+        </div>
+      </section>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -148,6 +136,12 @@ const relatedPosts = computed(() =>
     .filter(item => String(item.id) !== postId.value)
     .slice(0, 3),
 )
+
+const breadcrumbs = computed(() => [
+  { label: 'Главная', to: '/', icon: 'i-lucide-home' },
+  { label: 'Новости', to: '/#news' },
+  { label: post.value?.title ?? 'Новость' },
+])
 
 const contentParagraphs = computed(() => {
   const raw = post.value?.content?.trim()

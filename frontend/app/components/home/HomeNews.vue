@@ -24,53 +24,12 @@
         v-if="displayPosts.length"
         class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
       >
-        <article
+        <NewsCard
           v-for="(post, index) in displayPosts"
           :key="post.id"
-          class="group"
-        >
-          <NuxtLink
-            :to="postLink(post)"
-            class="flex h-full flex-col overflow-hidden rounded-2xl border border-default bg-default transition hover:border-primary/40 hover:bg-elevated motion-reduce:transition-none"
-          >
-            <div
-              v-if="post.imageUrl"
-              class="w-full overflow-hidden bg-elevated"
-            >
-              <img
-                :src="post.imageUrl"
-                :alt="post.title"
-                class="block h-auto w-full transition duration-500 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-                :loading="index === 0 ? 'eager' : 'lazy'"
-              >
-            </div>
-
-            <div class="flex flex-1 flex-col gap-2 p-4">
-              <UBadge
-                v-if="post.date"
-                color="primary"
-                variant="subtle"
-                size="lg"
-                class="w-fit rounded-full"
-              >
-                <time :datetime="post.date">
-                  {{ formatDate(post.date) }}
-                </time>
-              </UBadge>
-
-              <h3 class="text-base font-semibold leading-snug text-highlighted line-clamp-2 group-hover:text-primary">
-                {{ post.title }}
-              </h3>
-
-              <p
-                v-if="post.description"
-                class="text-sm leading-5 text-muted line-clamp-2"
-              >
-                {{ post.description }}
-              </p>
-            </div>
-          </NuxtLink>
-        </article>
+          :post="post"
+          :eager="index === 0"
+        />
       </div>
 
       <div
@@ -110,20 +69,4 @@ const props = defineProps<{
 }>()
 
 const displayPosts = computed(() => props.posts?.slice(0, 3) ?? [])
-
-function postLink(post: NewsPost) {
-  return post.url ?? `/news/${post.id}`
-}
-
-function formatDate(value: string) {
-  try {
-    return new Intl.DateTimeFormat('ru-RU', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    }).format(new Date(value))
-  } catch {
-    return value
-  }
-}
 </script>
