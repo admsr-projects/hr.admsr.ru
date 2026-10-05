@@ -1,6 +1,6 @@
 <template>
   <div
-    class="overflow-hidden border-b border-default bg-default/75 backdrop-blur"
+    class="overflow-hidden border-b border-default bg-default"
     :class="sticky ? 'sticky top-[var(--ui-header-height,4rem)] z-40' : undefined"
   >
     <div

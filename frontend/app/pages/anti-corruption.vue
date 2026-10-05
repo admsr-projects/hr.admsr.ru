@@ -84,12 +84,6 @@ watch(activeDocTab, (value) => {
   }
 })
 
-const esiaUrl = computed(() =>
-  info.value?.esia_feedback_url
-  || config.public.esiaFeedbackUrl
-  || 'https://pos.gosuslugi.ru/landing/',
-)
-
 const officials = computed(() =>
   (info.value?.officialsList ?? []).map(parseOfficial),
 )
@@ -242,13 +236,6 @@ function phoneHref(phone: string) {
       </div>
 
       <template v-else-if="documentTabs.length">
-        <p
-          class="mb-4 text-caption leading-relaxed text-text-muted text-pretty"
-          role="note"
-        >
-          Документы в формате PDF подготовлены в соответствии с ГОСТ&nbsp;Р&nbsp;70176-2022. При затруднениях с чтением файла обратитесь в управление муниципальной службы, кадров и наград.
-        </p>
-
         <UTabs
           v-model="activeDocTab"
           color="primary"
@@ -282,10 +269,9 @@ function phoneHref(phone: string) {
       heading-id="anticorruption-report"
       spacing="lg"
     >
-      <EsiaGosuslugiCard
-        title="Перейти к подаче обращения через ЕСИА"
-        description="Официальная подача обращения о коррупционных правонарушениях на платформе Госуслуг"
-        :to="esiaUrl"
+      <GosuslugiPosBanner
+        title="Знаете о фактах коррупции?"
+        text="Сообщите о правонарушении через портал Госуслуг"
       />
     </DsContentSection>
   </DsStandardPage>
