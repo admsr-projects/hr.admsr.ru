@@ -3,23 +3,15 @@
     :title="department.name"
     :description="heroDescription"
   >
-    <template #heroActions>
-      <UButton
-        label="Вакансии органа"
-        :to="vacanciesLink"
-        color="primary"
-        icon="i-lucide-briefcase"
-        class="cursor-pointer"
-      />
-      <UButton
-        label="Обратная связь"
-        to="/feedback"
-        color="neutral"
-        variant="soft"
-        icon="i-lucide-message-square"
-        class="cursor-pointer"
-      />
-    </template>
+    <!-- Фото органа из админки: если не загружено — блок не показываем -->
+    <DsBlurredImage
+      v-if="department.image"
+      :src="department.image"
+      :alt="`Фото: ${department.name}`"
+      ratio-class="aspect-[21/9]"
+      loading="eager"
+      class="rounded-xl"
+    />
 
     <div class="grid gap-4 md:grid-cols-2">
       <DsPanelCard
