@@ -8,7 +8,6 @@ const config = useRuntimeConfig()
 const filters = reactive<Record<string, string | number | null>>({})
 
 const vacancyFilterDefs = [
-  { field: 'work_schedule', label: 'График работы' },
   { field: 'required_experience', label: 'Опыт работы' },
   { field: 'job_type', label: 'Тип должности' },
 ]

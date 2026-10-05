@@ -4,21 +4,12 @@
     v-if="layout === 'card'"
     class="flex h-full flex-col gap-4 rounded-lg border border-default bg-default p-6"
   >
-    <div
-      v-if="organization || vacancy.isNew"
-      class="flex items-start justify-between gap-3"
+    <p
+      v-if="organization"
+      class="text-sm text-text-muted line-clamp-2"
     >
-      <p class="text-sm text-text-muted line-clamp-2">
-        {{ organization }}
-      </p>
-      <UBadge
-        v-if="vacancy.isNew"
-        label="Новое"
-        color="primary"
-        variant="subtle"
-        class="ms-auto shrink-0"
-      />
-    </div>
+      {{ organization }}
+    </p>
 
     <h3 class="text-lg font-semibold leading-snug text-text-primary text-balance">
       {{ vacancy.title }}
@@ -81,12 +72,6 @@
             {{ vacancy.title }}
           </NuxtLink>
         </h3>
-        <UBadge
-          v-if="vacancy.isNew"
-          label="Новое"
-          color="primary"
-          variant="subtle"
-        />
       </div>
       <p
         v-if="organization"
@@ -172,7 +157,7 @@ defineEmits<{
   apply: [vacancy: Vacancy]
 }>()
 
-/** Орган показываем, только если он указан: «Администрация Сургутского района» по умолчанию не подставляем */
+/** Структурное подразделение показываем, только если он указан: «Администрация Сургутского района» по умолчанию не подставляем */
 const organization = computed(() => {
   const value = (props.vacancy.company || props.vacancy.branch || '').trim()
   return value === 'Администрация Сургутского района' ? '' : value
@@ -195,7 +180,6 @@ const facts = computed(() => {
   const experience = v.requiredExperience || v.experience
   const items = [
     v.employmentType && { icon: 'i-lucide-clock', text: v.employmentType },
-    v.workSchedule && { icon: 'i-lucide-calendar-clock', text: `График ${v.workSchedule}` },
     experience && { icon: 'i-lucide-briefcase', text: `Опыт ${experience}` },
     v.jobType && { icon: 'i-lucide-landmark', text: v.jobType },
   ].filter(Boolean) as { icon: string, text: string }[]
