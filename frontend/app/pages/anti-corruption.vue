@@ -236,13 +236,6 @@ function phoneHref(phone: string) {
       </div>
 
       <template v-else-if="documentTabs.length">
-        <p
-          class="mb-4 text-caption leading-relaxed text-text-muted text-pretty"
-          role="note"
-        >
-          Документы в формате PDF подготовлены в соответствии с ГОСТ&nbsp;Р&nbsp;70176-2022. При затруднениях с чтением файла обратитесь в управление муниципальной службы, кадров и наград.
-        </p>
-
         <UTabs
           v-model="activeDocTab"
           color="primary"
