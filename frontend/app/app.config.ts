@@ -63,7 +63,7 @@ export default defineAppConfig({
     },
     button: {
       slots: {
-        base: 'rounded-lg',
+        base: 'rounded-md',
       },
     },
     badge: {
