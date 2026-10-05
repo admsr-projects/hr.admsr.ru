@@ -84,12 +84,6 @@ watch(activeDocTab, (value) => {
   }
 })
 
-const esiaUrl = computed(() =>
-  info.value?.esia_feedback_url
-  || config.public.esiaFeedbackUrl
-  || 'https://pos.gosuslugi.ru/landing/',
-)
-
 const officials = computed(() =>
   (info.value?.officialsList ?? []).map(parseOfficial),
 )
@@ -285,12 +279,6 @@ function phoneHref(phone: string) {
       <GosuslugiPosBanner
         title="Знаете о фактах коррупции?"
         text="Сообщите о правонарушении через портал Госуслуг"
-      />
-
-      <EsiaGosuslugiCard
-        title="Перейти к подаче обращения через ЕСИА"
-        description="Официальная подача обращения о коррупционных правонарушениях на платформе Госуслуг"
-        :to="esiaUrl"
       />
     </DsContentSection>
   </DsStandardPage>

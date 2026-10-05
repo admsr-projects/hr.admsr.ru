@@ -101,12 +101,6 @@ export const siteContact = {
   hours: 'ПН 08:30-17:00, ВТ-ПТ 08:30-16:00',
 }
 
-export const footerResourceLinks: NavItem[] = [
-  { label: 'Администрация Сургутского района', to: 'https://admsr.ru' },
-  { label: 'ФСС России', to: 'https://lk.fss.ru/' },
-  { label: 'Минтруд России', to: 'https://mintrud.gov.ru' },
-]
-
 export const footerLegalLinks: NavItem[] = [
   { label: 'Обратная связь', to: '/feedback' },
   { label: 'Политика персональных данных', to: '/privacy' },
