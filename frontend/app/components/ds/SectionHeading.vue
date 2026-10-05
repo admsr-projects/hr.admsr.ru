@@ -7,19 +7,35 @@
       class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
       :class="align === 'center' && 'sm:flex-col sm:items-center'"
     >
-      <div :class="align === 'center' ? 'text-center' : ''">
+      <div
+        class="flex items-center gap-1.5"
+        :class="align === 'center' ? 'justify-center' : ''"
+      >
         <h2
           :id="headingId"
           class="text-xl font-bold text-text-primary text-balance scroll-mt-28"
         >
           {{ title }}
         </h2>
-        <p
+        <!-- Описание раздела — в подсказке по кнопке «i», чтобы не загромождать страницу -->
+        <UPopover
           v-if="description"
-          class="text-sm text-text-muted mt-1 text-pretty"
+          :content="{ side: 'bottom', align: 'start' }"
         >
-          {{ description }}
-        </p>
+          <UButton
+            icon="i-lucide-info"
+            color="neutral"
+            variant="ghost"
+            size="sm"
+            class="cursor-pointer text-text-muted"
+            :aria-label="`Описание раздела «${title}»`"
+          />
+          <template #content>
+            <p class="max-w-xs p-4 text-sm leading-5 text-text-muted text-pretty">
+              {{ description }}
+            </p>
+          </template>
+        </UPopover>
       </div>
       <div
         v-if="$slots.action"
