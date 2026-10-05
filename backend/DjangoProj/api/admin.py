@@ -7,7 +7,7 @@ from .models import (
     AntiCorruptionDocumentCategory, AntiCorruptionInfo, CorruptionReport, BranchesGlobal, Feedback, VacancySubscription,
     Competition, CompetitionResult, StaffReserveInfo, StaffReservePosition, StaffReserveDocument, VacancyDocument, WorkPartner, YouthInfo,
     PracticeApplication, TrainingEvent, TrainingFeedback, NewsPost, Department, Deputy,
-    DeputyDepartment,
+    DeputyDepartment, ApplicationRecipient, CompetitionDocument, CompetitionWinner,
 )
 from .adminsite import custom_admin_site
 from .admin_auth import register_auth_models
@@ -152,12 +152,19 @@ class WorkPartnerAdmin(admin.ModelAdmin):
 
 
 class VacancySubscriptionAdmin(admin.ModelAdmin):
-    list_display = ['name', 'email', 'branch_display', 'is_active', 'created_at']
+    list_display = ['name', 'email', 'branch_display', 'has_resume', 'is_active', 'created_at']
     list_filter = ['is_active', 'created_at']
-    search_fields = ['name', 'email', 'branch']
+    search_fields = ['name', 'email', 'branch', 'desired_position']
     list_editable = ['is_active']
     readonly_fields = ['created_at']
-    fields = ['name', 'email', 'branch', 'is_active', 'created_at']
+    fields = [
+        'name', 'email', 'branch', 'is_active', 'created_at',
+        'resume', 'phone', 'desired_position', 'education', 'work_experience', 'about',
+    ]
+
+    @admin.display(description='Резюме', boolean=True)
+    def has_resume(self, obj):
+        return bool(obj.resume or obj.desired_position or obj.education or obj.work_experience or obj.about)
 
     @admin.display(description='Отраслевой функциональный орган')
     def branch_display(self, obj):
@@ -171,12 +178,40 @@ class CompetitionAdmin(admin.ModelAdmin):
     list_editable = ['is_active']
 
 
+class CompetitionDocumentAdmin(admin.ModelAdmin):
+    list_display = ['name', 'competition_type', 'order', 'is_active', 'created_at']
+    list_editable = ['order', 'is_active']
+    list_filter = ['competition_type', 'is_active']
+    search_fields = ['name']
+    fields = ['name', 'competition_type', 'file', 'order', 'is_active']
+
+
+class CompetitionWinnerInline(admin.StackedInline):
+    model = CompetitionWinner
+    extra = 1
+    fields = ['full_name', 'position', 'description', 'photo', 'order']
+
+
+class ApplicationRecipientAdmin(admin.ModelAdmin):
+    list_display = [
+        'full_name', 'email', 'is_active', 'receives_vacancies',
+        'receives_reserve', 'receives_practice', 'receives_training',
+    ]
+    list_editable = [
+        'is_active', 'receives_vacancies', 'receives_reserve',
+        'receives_practice', 'receives_training',
+    ]
+    list_filter = ['is_active']
+    search_fields = ['full_name', 'email']
+
+
 class CompetitionResultAdmin(admin.ModelAdmin):
     list_display = ['title', 'competition_type', 'completed_at', 'created_at']
     list_editable = ['competition_type']
     list_filter = ['competition_type', 'completed_at', 'created_at']
     search_fields = ['title']
     fields = ['title', 'competition_type', 'decree_conduct', 'decree_results', 'completed_at']
+    inlines = [CompetitionWinnerInline]
 
 
 class StaffReserveInfoAdmin(admin.ModelAdmin):
@@ -309,6 +344,8 @@ custom_admin_site.register(Feedback, FeedbackAdmin)
 custom_admin_site.register(VacancySubscription, VacancySubscriptionAdmin)
 custom_admin_site.register(Competition, CompetitionAdmin)
 custom_admin_site.register(CompetitionResult, CompetitionResultAdmin)
+custom_admin_site.register(CompetitionDocument, CompetitionDocumentAdmin)
+custom_admin_site.register(ApplicationRecipient, ApplicationRecipientAdmin)
 custom_admin_site.register(StaffReserveInfo, StaffReserveInfoAdmin)
 custom_admin_site.register(StaffReservePosition, StaffReservePositionAdmin)
 custom_admin_site.register(StaffReserveDocument, StaffReserveDocumentAdmin)

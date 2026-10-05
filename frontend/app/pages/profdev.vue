@@ -13,11 +13,11 @@ type ProfdevTab = 'all' | 'training' | 'leadership' | 'masterclass' | 'best_prac
 const activeTab = ref<ProfdevTab>('all')
 
 const tabItems: TabsItem[] = [
-  { label: 'Все', value: 'all', icon: 'i-lucide-layout-grid' },
-  { label: 'Обучение', value: 'training', icon: 'i-lucide-graduation-cap' },
-  { label: 'Встречи', value: 'leadership', icon: 'i-lucide-users' },
-  { label: 'Мастер-классы', value: 'masterclass', icon: 'i-lucide-presentation' },
-  { label: 'Лучшие практики', value: 'best_practice', icon: 'i-lucide-award' },
+  { label: 'Все', value: 'all' },
+  { label: 'Обучение', value: 'training' },
+  { label: 'Встречи', value: 'leadership' },
+  { label: 'Мастер-классы', value: 'masterclass' },
+  { label: 'Лучшие практики', value: 'best_practice' },
 ]
 
 function resolveTab(value: unknown): ProfdevTab {
@@ -101,7 +101,7 @@ function sectionMetaForTab(tab: ProfdevTab) {
     <UTabs
       v-model="activeTab"
       color="primary"
-      variant="pill"
+      variant="link"
       size="lg"
       :items="tabItems"
       :unmount-on-hide="false"

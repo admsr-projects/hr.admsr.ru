@@ -392,6 +392,14 @@ class VacancySubscription(models.Model):
     is_active = models.BooleanField('Активна', default=True)
     created_at = models.DateTimeField('Дата подписки', auto_now_add=True)
 
+    # Резюме (необязательно): файлом или заполненное в электронной форме
+    resume = models.FileField('Файл резюме', upload_to='subscription_resumes/', blank=True, null=True)
+    phone = models.CharField('Телефон', max_length=30, blank=True)
+    desired_position = models.CharField('Желаемая должность', max_length=255, blank=True)
+    education = models.CharField('Образование', max_length=255, blank=True)
+    work_experience = models.TextField('Опыт работы', blank=True)
+    about = models.TextField('О себе, навыки', blank=True)
+
     class Meta:
         verbose_name = 'Подписка на вакансии'
         verbose_name_plural = 'Подписки на вакансии'
@@ -431,6 +439,29 @@ class Competition(models.Model):
         return self.title
 
 
+class CompetitionDocument(models.Model):
+    """Нормативные документы, регламентирующие порядок проведения конкурсов."""
+    name = models.CharField('Название', max_length=255)
+    competition_type = models.CharField(
+        'Для конкурсов',
+        max_length=20,
+        choices=Competition.TYPE_CHOICES,
+        default=Competition.TYPE_RESERVE,
+    )
+    file = models.FileField('Файл', upload_to='competitions/documents/')
+    order = models.PositiveIntegerField('Порядок', default=0)
+    is_active = models.BooleanField('Опубликован', default=True)
+    created_at = models.DateTimeField('Дата публикации', auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Нормативный документ конкурсов'
+        verbose_name_plural = 'Нормативные документы конкурсов'
+        ordering = ['order', '-created_at']
+
+    def __str__(self):
+        return self.name
+
+
 class CompetitionResult(models.Model):
     title = models.CharField('Название', max_length=255)
     competition_type = models.CharField(
@@ -451,6 +482,29 @@ class CompetitionResult(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class CompetitionWinner(models.Model):
+    """Победитель конкурса — отдельное информационное окно в результатах."""
+    result = models.ForeignKey(
+        CompetitionResult,
+        on_delete=models.CASCADE,
+        related_name='winners',
+        verbose_name='Результат конкурса',
+    )
+    full_name = models.CharField('ФИО', max_length=255)
+    position = models.CharField('Должность / орган', max_length=500, blank=True)
+    description = models.TextField('Информация', blank=True)
+    photo = models.ImageField('Фото', upload_to='competitions/winners/', blank=True, null=True)
+    order = models.PositiveIntegerField('Порядок', default=0)
+
+    class Meta:
+        verbose_name = 'Победитель конкурса'
+        verbose_name_plural = 'Победители конкурса'
+        ordering = ['order', 'id']
+
+    def __str__(self):
+        return self.full_name
 
 
 class StaffReserveInfo(models.Model):
@@ -662,6 +716,25 @@ class TrainingFeedback(models.Model):
     def __str__(self):
         label = self.name or 'Анонимно'
         return f'{label} ({self.created_at.strftime("%d.%m.%Y %H:%M")})'
+
+
+class ApplicationRecipient(models.Model):
+    """Уполномоченные лица, на почту которых дублируются заявки с портала."""
+    full_name = models.CharField('ФИО', max_length=255)
+    email = models.EmailField('Email для рассылки заявок')
+    is_active = models.BooleanField('Получает письма', default=True)
+    receives_vacancies = models.BooleanField('Вакансии и подписка с резюме', default=True)
+    receives_reserve = models.BooleanField('Кадровый резерв', default=True)
+    receives_practice = models.BooleanField('Практика', default=True)
+    receives_training = models.BooleanField('Обучение', default=True)
+
+    class Meta:
+        verbose_name = 'Получатель заявок'
+        verbose_name_plural = 'Получатели заявок'
+        ordering = ['full_name']
+
+    def __str__(self):
+        return f'{self.full_name} <{self.email}>'
 
 
 class Department(models.Model):

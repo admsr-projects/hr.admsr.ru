@@ -9,7 +9,7 @@
     <div class="flex h-14 w-full items-center justify-center">
       <img
         :src="logo.image"
-        :alt="logo.name"
+        alt=""
         width="56"
         height="56"
         loading="lazy"
@@ -19,6 +19,7 @@
 
     <span class="text-sm font-medium leading-snug text-highlighted">
       {{ logo.name }}
+      <span class="sr-only"> (откроется в новой вкладке)</span>
     </span>
   </NuxtLink>
 </template>

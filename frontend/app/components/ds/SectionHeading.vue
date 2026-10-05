@@ -1,35 +1,22 @@
 <template>
   <header
-    class="mb-6 lg:mb-8"
-    :class="align === 'center' ? 'text-center mx-auto max-w-2xl' : 'max-w-2xl'"
+    class="mb-4"
+    :class="align === 'center' ? 'text-center mx-auto max-w-2xl' : undefined"
   >
     <div
-      class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+      class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
       :class="align === 'center' && 'sm:flex-col sm:items-center'"
     >
       <div :class="align === 'center' ? 'text-center' : ''">
-        <div
-          v-if="overline"
-          class="mb-3"
-          :class="align === 'center' ? 'flex justify-center' : undefined"
-        >
-          <UBadge
-            :label="overline"
-            color="primary"
-            variant="subtle"
-            size="lg"
-            class="rounded-full"
-          />
-        </div>
         <h2
           :id="headingId"
-          class="text-h2 text-text-primary text-balance scroll-mt-28"
+          class="text-xl font-bold text-text-primary text-balance scroll-mt-28"
         >
           {{ title }}
         </h2>
         <p
           v-if="description"
-          class="text-body-lg text-text-secondary mt-3 text-pretty"
+          class="text-sm text-text-muted mt-1 text-pretty"
         >
           {{ description }}
         </p>
@@ -48,6 +35,7 @@
 withDefaults(defineProps<{
   title: string
   description?: string
+  /** @deprecated Не отображается */
   overline?: string
   headingId?: string
   align?: 'left' | 'center'

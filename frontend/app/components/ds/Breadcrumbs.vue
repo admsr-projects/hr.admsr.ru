@@ -2,7 +2,7 @@
   <nav
     v-if="items.length > 1"
     :aria-label="ariaLabel"
-    :class="embedded ? undefined : 'ds-container pt-4 pb-2'"
+    :class="embedded ? undefined : 'ds-container py-4'"
   >
     <UBreadcrumb
       :items="breadcrumbItems"
@@ -11,11 +11,11 @@
         root: embedded ? 'mb-0' : undefined,
         list: 'flex-wrap gap-y-1',
         link: [
-          'text-caption text-text-muted hover:text-text-accent transition-colors duration-200',
+          'text-sm text-text-muted hover:text-text-primary transition-colors duration-200',
           embedded && 'px-0',
         ],
         linkLeadingIcon: 'size-3.5 text-text-muted',
-        linkLabel: 'text-caption font-normal',
+        linkLabel: 'text-sm font-normal',
         separator: 'text-text-muted/50',
         separatorIcon: 'size-3.5',
       }"

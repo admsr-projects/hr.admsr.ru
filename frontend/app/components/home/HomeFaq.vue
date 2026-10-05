@@ -62,7 +62,7 @@
           </button>
         </div>
 
-        <article
+        <div
           v-if="activeItem"
           id="faq-panel"
           role="tabpanel"
@@ -116,7 +116,7 @@
               />
             </div>
           </div>
-        </article>
+        </div>
       </div>
     </UContainer>
   </section>

@@ -59,6 +59,7 @@
         class="flex justify-center pt-2"
       >
         <UPagination
+          aria-label="Страницы списка документов о вакансиях"
           v-model:page="currentPage"
           :total="documents.length"
           :items-per-page="itemsPerPage"

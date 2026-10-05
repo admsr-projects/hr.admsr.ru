@@ -94,6 +94,13 @@ defineProps<{
     email: string
     branch: string
     consentPersonalData: boolean
+    resumeMode: 'none' | 'file' | 'form'
+    resumeFile: File | null
+    phone: string
+    desiredPosition: string
+    education: string
+    workExperience: string
+    about: string
   }
   loading: boolean
   submitted: boolean
@@ -104,6 +111,13 @@ defineProps<{
     email: string
     branch: string
     consentPersonalData: boolean
+    resumeMode: 'none' | 'file' | 'form'
+    resumeFile: File | null
+    phone: string
+    desiredPosition: string
+    education: string
+    workExperience: string
+    about: string
   }) => { name: string, message: string }[]
 }>()
 

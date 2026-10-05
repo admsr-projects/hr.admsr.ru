@@ -49,7 +49,7 @@
       >
         <UFileUpload
           v-model="form.photo"
-          variant="button"
+          variant="area"
           size="lg"
           accept="image/*"
           label="Прикрепить изображение"

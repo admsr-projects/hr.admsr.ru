@@ -23,6 +23,7 @@
       variant="link"
       color="primary"
       content-orientation="vertical"
+      aria-label="Основная навигация"
       arrow
       class="hidden lg:flex"
       :ui="{
@@ -34,17 +35,13 @@
         childLinkLabel: 'font-medium',
         childLinkDescription: 'text-xs text-muted leading-snug whitespace-normal',
         viewport: 'p-1',
+        content: 'w-80 overflow-x-hidden',
       }"
     />
 
     <template #right>
       <div class="flex items-center gap-1.5">
         <AppSearch />
-        <AccessibilityPanel
-          compact
-          class="hidden sm:inline-flex"
-          
-        />
         <UColorModeButton />
         <UButton
           label="Вакансии"
@@ -85,8 +82,6 @@
           childLinkDescription: 'text-xs text-muted leading-snug',
         }"
       />
-
-      <AccessibilityPanel class="mt-4" />
 
       <UButton
         label="Вакансии"

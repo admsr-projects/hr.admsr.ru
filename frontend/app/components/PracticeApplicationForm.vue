@@ -188,8 +188,8 @@
                 <span class="text-pretty text-caption text-text-muted leading-relaxed">
                   С органами администрации можно ознакомиться в разделе
                   <NuxtLink
-                    to="/about#admin-structure"
-                    class="text-primary underline-offset-2 hover:underline"
+                    to="/about/structure"
+                    class="text-primary underline underline-offset-2 hover:no-underline"
                   >
                     «О нас»
                   </NuxtLink>.
@@ -240,7 +240,7 @@
             >
               <UFileUpload
                 v-model="form.applicationLetter"
-                variant="button"
+                variant="area"
                 size="lg"
                 accept=".pdf,.doc,.docx"
                 label="Прикрепить файл"
@@ -261,7 +261,7 @@
                     Даю согласие на
                     <NuxtLink
                       to="/privacy"
-                      class="text-primary underline-offset-2 hover:underline"
+                      class="text-primary underline underline-offset-2 hover:no-underline"
                     >
                       обработку персональных данных
                     </NuxtLink>

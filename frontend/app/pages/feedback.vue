@@ -12,8 +12,8 @@ type FeedbackTab = 'message' | 'esia'
 const activeTab = ref<FeedbackTab>('message')
 
 const tabItems: TabsItem[] = [
-  { label: 'Сообщение на портале', value: 'message', icon: 'i-lucide-message-square' },
-  { label: 'Госуслуги', value: 'esia', icon: 'i-lucide-landmark' },
+  { label: 'Сообщение на портале', value: 'message' },
+  { label: 'Госуслуги', value: 'esia' },
 ]
 
 const esiaUrl = computed(() =>
@@ -55,7 +55,7 @@ watch(activeTab, (value) => {
     <UTabs
       v-model="activeTab"
       color="primary"
-      variant="pill"
+      variant="link"
       size="lg"
       :items="tabItems"
       :unmount-on-hide="false"

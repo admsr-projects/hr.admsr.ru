@@ -59,6 +59,7 @@
         class="flex justify-center pt-2"
       >
         <UPagination
+          aria-label="Страницы списка документов о конкурсах"
           v-model:page="currentPage"
           :total="rules.length"
           :items-per-page="itemsPerPage"

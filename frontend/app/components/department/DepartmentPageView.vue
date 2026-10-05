@@ -2,170 +2,159 @@
   <DsStandardPage
     :title="department.name"
     :description="heroDescription"
-    badge="Наша команда"
   >
-    <UCard
-      variant="subtle"
-      :ui="{
-        root: 'overflow-hidden',
-        body: 'p-0',
-      }"
-    >
-      <div class="relative aspect-[21/9] min-h-48 sm:min-h-56 lg:min-h-64">
-        <img
-          :src="departmentImage"
-          :alt="`Фото: ${department.name}`"
-          class="size-full object-cover"
-          loading="eager"
-        >
-        <div
-          class="absolute inset-0 bg-linear-to-t from-default/70 via-default/10 to-transparent"
-          aria-hidden="true"
-        />
-      </div>
-    </UCard>
+    <template #heroActions>
+      <UButton
+        label="Вакансии органа"
+        :to="vacanciesLink"
+        color="primary"
+        size="lg"
+        icon="i-lucide-briefcase"
+        class="cursor-pointer"
+      />
+      <UButton
+        label="Обратная связь"
+        to="/feedback"
+        color="neutral"
+        variant="outline"
+        size="lg"
+        icon="i-lucide-message-square"
+        class="cursor-pointer"
+      />
+    </template>
 
-    <DsContentSection
-      title="Функции и задачи"
-      description="Краткое описание деятельности отраслевого (функционального) органа"
-      overline="Деятельность"
-      heading-id="dept-activity"
-      spacing="lg"
-    >
-      <div
-        v-if="aboutParagraphs.length"
-        class="space-y-4"
+    <div class="grid gap-4 md:grid-cols-2">
+      <DsPanelCard
+        title="Контакты"
+        heading-id="dept-contacts"
       >
-        <p
-          v-for="(paragraph, index) in aboutParagraphs"
-          :key="index"
-          class="text-body-lg text-text-secondary leading-relaxed text-pretty"
+        <ul
+          v-if="contactPhone || contactEmail"
+          class="space-y-1.5 text-base text-text-muted"
         >
-          {{ paragraph }}
-        </p>
-      </div>
-
-      <div
-        v-if="department.units?.length"
-        class="space-y-4"
-      >
-        <h3 class="text-h3 text-text-primary">
-          {{ unitsHeading }}
-        </h3>
-        <ul class="grid gap-2 sm:grid-cols-2">
           <li
-            v-for="unit in department.units"
-            :key="unit"
-            class="flex items-center gap-2 rounded-lg border border-default bg-elevated/25 px-3 py-2.5 text-body text-text-secondary"
+            v-if="contactPhone"
+            class="flex items-center gap-1.5"
           >
             <UIcon
-              name="i-lucide-check"
-              class="size-4 shrink-0 text-primary"
+              name="i-lucide-phone"
+              class="size-5 shrink-0"
               aria-hidden="true"
             />
-            {{ unit }}
+            <a
+              v-if="phoneHref"
+              :href="phoneHref"
+              class="hover:text-text-primary transition-colors duration-200"
+            >
+              {{ contactPhone }}
+            </a>
+            <span v-else>{{ contactPhone }}</span>
+          </li>
+          <li
+            v-if="contactEmail"
+            class="flex items-center gap-1.5"
+          >
+            <UIcon
+              name="i-lucide-mail"
+              class="size-5 shrink-0"
+              aria-hidden="true"
+            />
+            <a
+              :href="`mailto:${contactEmail}`"
+              class="break-all hover:text-text-primary transition-colors duration-200"
+            >
+              {{ contactEmail }}
+            </a>
           </li>
         </ul>
-      </div>
+        <p
+          v-else
+          class="text-base text-text-muted"
+        >
+          Контактная информация будет опубликована администрацией.
+        </p>
+      </DsPanelCard>
 
-      <div
-        v-if="department.tasks?.length"
-        class="space-y-4"
+      <DsPanelCard
+        title="Руководитель"
+        heading-id="dept-head"
       >
-        <h3 class="text-h3 text-text-primary">
-          {{ tasksHeading }}
-        </h3>
-        <div class="grid gap-3 sm:grid-cols-2">
-          <div
-            v-for="task in department.tasks"
-            :key="task"
-            class="flex gap-3 rounded-xl border border-default bg-elevated/30 p-4"
-          >
-            <UIcon
-              name="i-lucide-circle-check"
-              class="size-5 shrink-0 text-primary mt-0.5"
-              aria-hidden="true"
-            />
-            <p class="text-body text-text-secondary leading-relaxed">
-              {{ task }}
+        <div
+          v-if="department.head"
+          class="flex items-center gap-2.5"
+        >
+          <UAvatar
+            :alt="department.head.name"
+            size="xl"
+          />
+          <div class="min-w-0">
+            <p class="text-base font-medium text-text-primary">
+              {{ department.head.name }}
+            </p>
+            <p class="text-sm text-text-muted">
+              {{ department.head.role }}
             </p>
           </div>
         </div>
-      </div>
+        <p
+          v-else
+          class="text-base text-text-muted"
+        >
+          Информация о руководителе будет опубликована администрацией.
+        </p>
+      </DsPanelCard>
+    </div>
 
-      <p
-        v-if="!aboutParagraphs.length && !department.tasks?.length && !department.units?.length"
-        class="text-body text-text-muted"
-      >
-        Подробное описание функций и задач органа будет дополнено администрацией.
-      </p>
-    </DsContentSection>
-
-    <DsContentSection
-      title="Контакты"
-      description="Телефон и адрес электронной почты для связи с органом"
-      overline="Связь"
-      heading-id="dept-contacts"
-      spacing="lg"
+    <DsPanelCard
+      title="Функции отраслевого функционального органа"
+      heading-id="dept-activity"
     >
-      <div class="grid gap-4 sm:grid-cols-2">
-        <DsInfoCard
-          v-if="contactPhone"
-          title="Телефон"
-          icon="i-lucide-phone"
+      <div class="space-y-4 text-base text-text-muted">
+        <p
+          v-for="(paragraph, index) in aboutParagraphs"
+          :key="index"
+          class="text-pretty"
         >
-          <a
-            v-if="phoneHref"
-            :href="phoneHref"
-            class="text-primary hover:underline transition-colors duration-200"
-          >
-            {{ contactPhone }}
-          </a>
-          <span v-else>{{ contactPhone }}</span>
-        </DsInfoCard>
+          {{ paragraph }}
+        </p>
 
-        <DsInfoCard
-          v-if="contactEmail"
-          title="Электронная почта"
-          icon="i-lucide-mail"
-        >
-          <a
-            :href="`mailto:${contactEmail}`"
-            class="text-primary hover:underline break-all transition-colors duration-200"
-          >
-            {{ contactEmail }}
-          </a>
-        </DsInfoCard>
+        <div v-if="department.units?.length">
+          <h3 class="mb-2 text-base font-semibold text-text-primary">
+            {{ unitsHeading }}
+          </h3>
+          <ul class="space-y-1 ps-5 list-disc marker:text-text-muted/60">
+            <li
+              v-for="unit in department.units"
+              :key="unit"
+            >
+              {{ unit }}
+            </li>
+          </ul>
+        </div>
+
+        <div v-if="department.tasks?.length">
+          <h3 class="mb-2 text-base font-semibold text-text-primary">
+            {{ tasksHeading }}
+          </h3>
+          <ul class="space-y-1 ps-5 list-disc marker:text-text-muted/60">
+            <li
+              v-for="task in department.tasks"
+              :key="task"
+            >
+              {{ task }}
+            </li>
+          </ul>
+        </div>
+
+        <p v-if="!aboutParagraphs.length && !department.tasks?.length && !department.units?.length">
+          Подробное описание функций и задач органа будет дополнено администрацией.
+        </p>
       </div>
-
-      <UCard
-        v-if="department.head"
-        variant="subtle"
-        :ui="{ body: 'p-5 lg:p-6' }"
-      >
-        <p class="text-overline uppercase tracking-wide text-text-muted mb-2">
-          Руководитель
-        </p>
-        <p class="text-body font-semibold text-text-primary">
-          {{ department.head.name }}
-        </p>
-        <p class="text-body text-text-secondary mt-1">
-          {{ department.head.role }}
-        </p>
-      </UCard>
-
-      <p
-        v-if="!contactPhone && !contactEmail"
-        class="text-body text-text-muted"
-      >
-        Контактная информация будет опубликована администрацией.
-      </p>
-    </DsContentSection>
+    </DsPanelCard>
 
     <DsContentSection
       title="Открытые вакансии"
       :description="careerDescription"
-      overline="Карьера"
       heading-id="dept-vacancies"
       spacing="lg"
     >
@@ -223,25 +212,11 @@
         </template>
       </DsCalloutPanel>
     </DsContentSection>
-
-    <div class="pt-2">
-      <UButton
-        label="К структуре администрации"
-        to="/about#admin-structure"
-        color="neutral"
-        variant="ghost"
-        icon="i-lucide-arrow-left"
-        class="cursor-pointer"
-      />
-    </div>
   </DsStandardPage>
 </template>
 
 <script setup lang="ts">
-import {
-  defaultDepartmentImage,
-  type Department,
-} from '~/data/departments'
+import type { Department } from '~/data/departments'
 import type { Vacancy } from '~/components/VacancyCard.vue'
 
 const props = defineProps<{
@@ -251,21 +226,14 @@ const props = defineProps<{
   vacanciesPending?: boolean
 }>()
 
-const departmentImage = computed(
-  () => props.department.image ?? defaultDepartmentImage,
+const heroDescription = computed(
+  () => props.department.intro ?? props.department.aboutParagraphs?.[0],
 )
 
-const aboutParagraphs = computed(
-  () => props.department.aboutParagraphs
-    ?? (props.department.intro ? [props.department.intro] : []),
+/** Абзацы описания без того, что уже показано под заголовком страницы */
+const aboutParagraphs = computed(() =>
+  (props.department.aboutParagraphs ?? []).filter(paragraph => paragraph !== heroDescription.value),
 )
-
-const heroDescription = computed(() => {
-  if (props.department.aboutParagraphs?.length) {
-    return props.department.aboutParagraphs.join(' ')
-  }
-  return props.department.intro
-})
 
 const unitsHeading = computed(() =>
   props.department.aboutParagraphs?.length

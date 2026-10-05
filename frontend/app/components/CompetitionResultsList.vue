@@ -89,6 +89,71 @@
             class="cursor-pointer transition-colors duration-200"
           />
         </div>
+
+        <div
+          role="group"
+          :aria-labelledby="`winners-${entry.id}`"
+          class="rounded-lg border border-default bg-default p-4"
+        >
+          <h4
+            :id="`winners-${entry.id}`"
+            class="mb-3 flex items-center gap-2 text-base font-semibold text-text-primary"
+          >
+            <UIcon
+              name="i-lucide-trophy"
+              class="size-5 text-primary"
+              aria-hidden="true"
+            />
+            Победители
+          </h4>
+
+          <ul
+            v-if="entry.winners?.length"
+            class="grid gap-3 sm:grid-cols-2"
+          >
+            <li
+              v-for="winner in entry.winners"
+              :key="winner.id"
+              class="flex items-start gap-3 rounded-lg bg-elevated p-3"
+            >
+              <img
+                v-if="winner.photo"
+                :src="winner.photo"
+                :alt="winner.full_name"
+                class="size-12 shrink-0 rounded-full object-cover"
+                loading="lazy"
+              >
+              <UAvatar
+                v-else
+                :alt="winner.full_name"
+                size="xl"
+              />
+              <div class="min-w-0">
+                <p class="text-base font-medium text-text-primary">
+                  {{ winner.full_name }}
+                </p>
+                <p
+                  v-if="winner.position"
+                  class="text-sm text-text-muted"
+                >
+                  {{ winner.position }}
+                </p>
+                <p
+                  v-if="winner.description"
+                  class="mt-1 whitespace-pre-line text-sm text-text-muted"
+                >
+                  {{ winner.description }}
+                </p>
+              </div>
+            </li>
+          </ul>
+          <p
+            v-else
+            class="text-sm text-text-muted"
+          >
+            Информация о победителях будет опубликована после подведения итогов.
+          </p>
+        </div>
       </UCard>
 
       <div
@@ -96,6 +161,7 @@
         class="flex justify-center pt-2"
       >
         <UPagination
+          aria-label="Страницы списка результатов конкурсов"
           v-model:page="currentPage"
           :total="results.length"
           :items-per-page="itemsPerPage"
@@ -108,6 +174,14 @@
 </template>
 
 <script setup lang="ts">
+export interface CompetitionWinnerItem {
+  id: number
+  full_name: string
+  position?: string
+  description?: string
+  photo?: string | null
+}
+
 export interface CompetitionResultItem {
   id: number
   title: string
@@ -116,6 +190,7 @@ export interface CompetitionResultItem {
   decreeConductLink?: string | null
   decreeResultsLink?: string | null
   completed_at?: string | null
+  winners?: CompetitionWinnerItem[]
 }
 
 const props = withDefaults(defineProps<{
