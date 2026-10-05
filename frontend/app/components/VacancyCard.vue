@@ -4,16 +4,19 @@
     v-if="layout === 'card'"
     class="flex h-full flex-col gap-4 rounded-lg border border-default bg-default p-6"
   >
-    <div class="flex items-start justify-between gap-3">
+    <div
+      v-if="organization || vacancy.isNew"
+      class="flex items-start justify-between gap-3"
+    >
       <p class="text-sm text-text-muted line-clamp-2">
-        {{ organization }}<template v-if="postedDate"> · {{ postedDate }}</template>
+        {{ organization }}
       </p>
       <UBadge
         v-if="vacancy.isNew"
         label="Новое"
         color="primary"
         variant="subtle"
-        class="shrink-0"
+        class="ms-auto shrink-0"
       />
     </div>
 
@@ -85,8 +88,11 @@
           variant="subtle"
         />
       </div>
-      <p class="mt-1 text-sm text-text-muted">
-        {{ organization }}<template v-if="postedDate"> · {{ postedDate }}</template>
+      <p
+        v-if="organization"
+        class="mt-1 text-sm text-text-muted"
+      >
+        {{ organization }}
       </p>
     </div>
 
@@ -166,9 +172,11 @@ defineEmits<{
   apply: [vacancy: Vacancy]
 }>()
 
-const organization = computed(() =>
-  props.vacancy.company || props.vacancy.branch || 'Администрация Сургутского района',
-)
+/** Орган показываем, только если он указан: «Администрация Сургутского района» по умолчанию не подставляем */
+const organization = computed(() => {
+  const value = (props.vacancy.company || props.vacancy.branch || '').trim()
+  return value === 'Администрация Сургутского района' ? '' : value
+})
 
 const detailsLink = computed(() => {
   if (props.vacancy.detailsLink) return props.vacancy.detailsLink
@@ -182,19 +190,10 @@ const salary = computed(() => {
   return /^[-–—\s]*$/.test(value) ? '' : value
 })
 
-const postedDate = computed(() => {
-  const raw = props.vacancy.created_at
-  if (!raw) return ''
-  const date = new Date(raw)
-  if (Number.isNaN(date.getTime())) return ''
-  return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })
-})
-
 const facts = computed(() => {
   const v = props.vacancy
   const experience = v.requiredExperience || v.experience
   const items = [
-    v.location && { icon: 'i-lucide-map-pin', text: v.location },
     v.employmentType && { icon: 'i-lucide-clock', text: v.employmentType },
     v.workSchedule && { icon: 'i-lucide-calendar-clock', text: `График ${v.workSchedule}` },
     experience && { icon: 'i-lucide-briefcase', text: `Опыт ${experience}` },
