@@ -2,23 +2,15 @@
   <div>
     <div
       v-if="pending"
-      class="space-y-4"
+      class="flex flex-col gap-3 rounded-xl bg-elevated p-6"
       aria-busy="true"
       aria-label="Загрузка результатов конкурсов"
     >
-      <UCard
-        v-for="index in 2"
+      <USkeleton
+        v-for="index in 3"
         :key="index"
-        variant="soft"
-        :ui="{ body: 'p-5 lg:p-6 space-y-4' }"
-      >
-        <USkeleton class="h-6 w-2/3" />
-        <USkeleton class="h-4 w-1/4" />
-        <div class="flex flex-wrap gap-3">
-          <USkeleton class="h-9 w-52" />
-          <USkeleton class="h-9 w-52" />
-        </div>
-      </UCard>
+        class="h-12 w-full"
+      />
     </div>
 
     <DsEmptyState
@@ -30,142 +22,147 @@
 
     <div
       v-else
-      class="space-y-4"
+      class="flex flex-col gap-4"
     >
-      <UCard
-        v-for="entry in paginatedResults"
-        :key="entry.id"
-        variant="soft"
-        :ui="{
-          root: 'rounded-xl',
-          body: 'p-5 lg:p-6 space-y-4',
-        }"
-      >
-        <div class="flex flex-wrap items-start justify-between gap-3">
-          <div class="min-w-0 space-y-2">
-            <h3 class="text-h3 text-text-primary text-balance">
-              {{ entry.title }}
-            </h3>
-            <UBadge
-              v-if="showTypeBadge && entry.competitionTypeLabel"
-              color="primary"
-              variant="soft"
-            >
-              {{ entry.competitionTypeLabel }}
-            </UBadge>
-          </div>
-          <time
-            v-if="entry.completed_at"
-            :datetime="entry.completed_at"
-            class="text-caption text-text-muted shrink-0"
-          >
-            {{ formatDate(entry.completed_at) }}
-          </time>
-        </div>
+      <DsTableSearch
+        v-model="search"
+        placeholder="Поиск по названию или победителю"
+      />
 
-        <div class="flex flex-wrap gap-3">
-          <UButton
-            v-if="entry.decreeConductLink"
-            label="Постановление о проведении"
-            icon="i-lucide-download"
-            :to="entry.decreeConductLink"
-            target="_blank"
-            external
-            color="primary"
-            variant="soft"
-            class="cursor-pointer"
-          />
-          <UButton
-            v-if="entry.decreeResultsLink"
-            label="Постановление о результатах"
-            icon="i-lucide-download"
-            :to="entry.decreeResultsLink"
-            target="_blank"
-            external
-            color="primary"
-            variant="soft"
-            class="cursor-pointer transition-colors duration-200"
-          />
-        </div>
-
-        <div
-          role="group"
-          :aria-labelledby="`winners-${entry.id}`"
-          class="rounded-lg bg-elevated p-4"
-        >
-          <h4
-            :id="`winners-${entry.id}`"
-            class="mb-3 flex items-center gap-2 text-base font-semibold text-text-primary"
-          >
-            <UIcon
-              name="i-lucide-trophy"
-              class="size-5 text-primary"
-              aria-hidden="true"
-            />
-            Победители
-          </h4>
-
-          <ul
-            v-if="entry.winners?.length"
-            class="grid gap-3 sm:grid-cols-2"
-          >
-            <li
-              v-for="winner in entry.winners"
-              :key="winner.id"
-              class="flex items-start gap-3 rounded-lg bg-elevated p-3"
-            >
-              <img
-                v-if="winner.photo"
-                :src="winner.photo"
-                :alt="winner.full_name"
-                class="size-12 shrink-0 rounded-full object-cover"
-                loading="lazy"
-              >
-              <UAvatar
-                v-else
-                :alt="winner.full_name"
-                size="xl"
+      <div class="rounded-xl bg-elevated p-2 sm:p-4">
+        <table class="block w-full text-left sm:table">
+          <caption class="sr-only">
+            Результаты завершённых конкурсов
+          </caption>
+          <thead class="max-sm:sr-only sm:table-header-group">
+            <tr class="text-caption font-medium text-text-muted">
+              <DsSortableTh
+                label="Дата"
+                class="w-36"
+                :sort="ariaSort('date')"
+                @sort="toggleSort('date')"
               />
-              <div class="min-w-0">
-                <p class="text-base font-medium text-text-primary">
-                  {{ winner.full_name }}
-                </p>
-                <p
-                  v-if="winner.position"
-                  class="text-sm text-text-muted"
+              <DsSortableTh
+                label="Конкурс"
+                :sort="ariaSort('title')"
+                @sort="toggleSort('title')"
+              />
+              <th
+                scope="col"
+                class="px-4 py-3 font-medium"
+              >
+                Победители
+              </th>
+              <th
+                scope="col"
+                class="px-4 py-3 font-medium"
+              >
+                Постановления
+              </th>
+            </tr>
+          </thead>
+          <tbody class="block sm:table-row-group">
+            <tr
+              v-for="entry in paginatedResults"
+              :key="entry.id"
+              class="block border-t border-default py-3 first:border-t-0 sm:table-row sm:py-0"
+            >
+              <td class="block px-4 py-1 text-caption text-text-muted sm:table-cell sm:w-36 sm:whitespace-nowrap sm:py-4 sm:align-top">
+                <time
+                  v-if="entry.completed_at"
+                  :datetime="entry.completed_at"
                 >
-                  {{ winner.position }}
+                  {{ formatDate(entry.completed_at) }}
+                </time>
+                <span v-else>—</span>
+              </td>
+              <td class="block px-4 py-1 sm:table-cell sm:max-w-md sm:py-4 sm:align-top">
+                <p class="text-base font-semibold text-text-primary text-pretty">
+                  {{ entry.title }}
                 </p>
-                <p
-                  v-if="winner.description"
-                  class="mt-1 whitespace-pre-line text-sm text-text-muted"
+                <UBadge
+                  v-if="showTypeBadge && entry.competitionTypeLabel"
+                  :label="entry.competitionTypeLabel"
+                  color="primary"
+                  variant="soft"
+                  class="mt-2"
+                />
+              </td>
+              <td class="block px-4 py-1 sm:table-cell sm:py-4 sm:align-top">
+                <ul
+                  v-if="entry.winners?.length"
+                  class="flex flex-col gap-2"
                 >
-                  {{ winner.description }}
-                </p>
-              </div>
-            </li>
-          </ul>
-          <p
-            v-else
-            class="text-sm text-text-muted"
-          >
-            Информация о победителях будет опубликована после подведения итогов.
-          </p>
-        </div>
-      </UCard>
-
-      <div
-        v-if="results.length > itemsPerPage"
-        class="flex justify-center pt-2"
-      >
-        <UPagination
-          aria-label="Страницы списка результатов конкурсов"
-          v-model:page="currentPage"
-          :total="results.length"
-          :items-per-page="itemsPerPage"
-          color="primary"
-        />
+                  <li
+                    v-for="winner in entry.winners"
+                    :key="winner.id"
+                  >
+                    <p class="text-caption font-medium text-text-primary">
+                      {{ winner.full_name }}
+                    </p>
+                    <p
+                      v-if="winner.position"
+                      class="text-caption text-text-muted text-pretty"
+                    >
+                      {{ winner.position }}
+                    </p>
+                  </li>
+                </ul>
+                <span
+                  v-else
+                  class="text-caption text-text-muted"
+                >
+                  Будут опубликованы после подведения итогов
+                </span>
+              </td>
+              <td class="block px-4 py-1 sm:table-cell sm:py-4 sm:align-top">
+                <div class="flex flex-wrap gap-2 sm:flex-col sm:items-start">
+                  <UButton
+                    v-if="entry.decreeConductLink"
+                    label="О проведении"
+                    icon="i-lucide-download"
+                    :to="entry.decreeConductLink"
+                    target="_blank"
+                    external
+                    color="neutral"
+                    variant="soft"
+                    class="cursor-pointer"
+                    :aria-label="`Постановление о проведении: ${entry.title}`"
+                  />
+                  <UButton
+                    v-if="entry.decreeResultsLink"
+                    label="О результатах"
+                    icon="i-lucide-download"
+                    :to="entry.decreeResultsLink"
+                    target="_blank"
+                    external
+                    color="neutral"
+                    variant="soft"
+                    class="cursor-pointer"
+                    :aria-label="`Постановление о результатах: ${entry.title}`"
+                  />
+                </div>
+              </td>
+            </tr>
+            <tr v-if="!paginatedResults.length">
+              <td
+                colspan="4"
+                class="block px-4 py-6 text-center text-base text-text-muted sm:table-cell"
+              >
+                Ничего не найдено
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+
+      <DsTableFooter
+        v-model:page="currentPage"
+        v-model:page-size="pageSize"
+        :total="total"
+        :total-all="results.length"
+        pagination-label="Страницы списка результатов конкурсов"
+      />
     </div>
   </div>
 </template>
@@ -196,8 +193,6 @@ const props = withDefaults(defineProps<{
   typeFilter: null,
 })
 
-const itemsPerPage = 5
-const currentPage = ref(1)
 const config = useRuntimeConfig()
 
 const showTypeBadge = computed(() => !props.typeFilter)
@@ -228,13 +223,20 @@ const { data: resultsData, pending } = await useAsyncData(
 
 const results = computed(() => resultsData.value ?? [])
 
-const paginatedResults = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage
-  return results.value.slice(start, start + itemsPerPage)
-})
-
-watch(() => props.typeFilter, () => {
-  currentPage.value = 1
+const {
+  search,
+  pageSize,
+  currentPage,
+  total,
+  pageItems: paginatedResults,
+  toggleSort,
+  ariaSort,
+} = useTableView(results, {
+  sort: {
+    date: entry => (entry.completed_at ? new Date(entry.completed_at).getTime() : null),
+    title: entry => entry.title,
+  },
+  searchText: entry => [entry.title, ...(entry.winners ?? []).map(winner => winner.full_name)].join(' '),
 })
 
 function formatDate(dateStr: string) {
