@@ -63,12 +63,22 @@ export default defineAppConfig({
     },
     button: {
       slots: {
-        base: 'rounded-md',
+        base: 'rounded-full',
       },
     },
     badge: {
       slots: {
-        base: 'rounded-md',
+        base: 'rounded-full',
+      },
+      // Скругление у Nuxt UI задано в размерах метки, поэтому переопределяем каждый
+      variants: {
+        size: {
+          xs: { base: 'rounded-full' },
+          sm: { base: 'rounded-full' },
+          md: { base: 'rounded-full' },
+          lg: { base: 'rounded-full' },
+          xl: { base: 'rounded-full' },
+        },
       },
       defaultVariants: {
         variant: 'soft',

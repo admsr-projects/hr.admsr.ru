@@ -65,7 +65,7 @@
             loading="eager"
             class="block size-full object-cover"
           >
-          <div class="absolute left-3 top-3 flex max-w-[calc(100%-1.5rem)] items-center gap-2 rounded-md bg-default/85 px-3 py-1.5 text-xs font-medium text-highlighted backdrop-blur-md sm:left-4 sm:top-4">
+          <div class="absolute left-3 top-3 flex max-w-[calc(100%-1.5rem)] items-center gap-2 rounded-full bg-default/85 px-3 py-1.5 text-xs font-medium text-highlighted backdrop-blur-md sm:left-4 sm:top-4">
             <span class="relative flex size-2 shrink-0">
               <span class="absolute inline-flex size-full animate-ping rounded-full bg-primary opacity-75 motion-reduce:hidden" />
               <span class="relative inline-flex size-2 rounded-full bg-primary" />
