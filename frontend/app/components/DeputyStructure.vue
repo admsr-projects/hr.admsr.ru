@@ -40,11 +40,6 @@
             {{ deputyFullName(deputy) }}
           </h2>
         </div>
-        <UBadge
-          :label="`${deputy.departmentSlugs.length} ${pluralOrgans(deputy.departmentSlugs.length)}`"
-          color="neutral"
-          class="shrink-0"
-        />
       </header>
 
       <ul class="grid gap-3 px-6 pb-6 sm:grid-cols-2">
@@ -57,8 +52,8 @@
             class="group flex h-full items-center gap-3 rounded-lg bg-default p-4 transition-colors duration-200 hover:bg-accented focus-visible:outline-2 focus-visible:outline-primary motion-reduce:transition-none"
           >
             <UIcon
-              name="i-lucide-building-2"
-              class="size-5 shrink-0 text-text-muted"
+              :name="departmentIcon(slug)"
+              class="size-5 shrink-0 text-primary"
               aria-hidden="true"
             />
             <span class="min-w-0 flex-1 text-sm font-medium leading-snug text-text-primary text-pretty">
@@ -85,6 +80,7 @@
 
 <script setup lang="ts">
 import type { Deputy } from '~/data/departments'
+import { departmentIcon } from '~/data/department-icons'
 
 const { data: deputiesData, pending } = await useDeputiesList()
 const { departmentName } = useDepartmentNameMap()
@@ -92,13 +88,5 @@ const deputies = computed(() => deputiesData.value ?? [])
 
 function deputyFullName(deputy: Deputy) {
   return `${deputy.surname} ${deputy.name} ${deputy.patronymic}`
-}
-
-function pluralOrgans(count: number) {
-  const mod10 = count % 10
-  const mod100 = count % 100
-  if (mod10 === 1 && mod100 !== 11) return 'орган'
-  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return 'органа'
-  return 'органов'
 }
 </script>
