@@ -1,32 +1,38 @@
 <template>
-  <UCard
-    variant="soft"
-    :ui="{
-      root: 'h-full min-w-0 transition-colors duration-200',
-      body: 'flex h-full flex-col gap-4 p-5',
-    }"
-  >
-    <div class="min-w-0 space-y-2">
-      <h3 class="text-h3 text-text-primary text-balance">
-        {{ fullName }}
-      </h3>
-      <StaffRoleLabel :role="member.role" />
+  <div class="flex min-w-0 flex-col gap-3 rounded-lg bg-default p-4 md:flex-row md:items-center md:gap-6">
+    <div class="flex min-w-0 items-center gap-3 md:w-2/5">
+      <UAvatar
+        :alt="fullName"
+        size="lg"
+        class="shrink-0"
+      />
+      <div class="min-w-0">
+        <p class="text-base font-semibold leading-snug text-text-primary text-pretty">
+          {{ fullName }}
+        </p>
+        <p
+          v-if="member.role"
+          class="text-sm text-text-muted text-pretty"
+        >
+          {{ member.role }}
+        </p>
+      </div>
     </div>
 
-    <ul class="mt-auto space-y-3">
+    <ul class="flex min-w-0 flex-1 flex-wrap gap-x-6 gap-y-2 text-sm text-text-primary">
       <li
         v-if="member.phone"
-        class="flex items-start gap-3 text-body text-text-secondary"
+        class="flex items-center gap-2"
       >
         <UIcon
           name="i-lucide-phone"
-          class="size-4 shrink-0 text-primary mt-0.5"
+          class="size-4 shrink-0 text-text-muted"
           aria-hidden="true"
         />
         <a
           v-if="phoneHref"
           :href="phoneHref"
-          class="text-primary hover:underline transition-colors duration-200"
+          class="hover:text-primary transition-colors duration-200"
         >
           {{ member.phone }}
         </a>
@@ -34,35 +40,35 @@
       </li>
 
       <li
-        v-if="member.email"
-        class="flex items-start gap-3 text-body text-text-secondary"
-      >
-        <UIcon
-          name="i-lucide-mail"
-          class="size-4 shrink-0 text-primary mt-0.5"
-          aria-hidden="true"
-        />
-        <a
-          :href="`mailto:${member.email}`"
-          class="text-primary hover:underline break-all transition-colors duration-200"
-        >
-          {{ member.email }}
-        </a>
-      </li>
-
-      <li
         v-if="member.cabinet_number"
-        class="flex items-start gap-3 text-body text-text-secondary"
+        class="flex items-center gap-2"
       >
         <UIcon
           name="i-lucide-door-open"
-          class="size-4 shrink-0 text-primary mt-0.5"
+          class="size-4 shrink-0 text-text-muted"
           aria-hidden="true"
         />
         <span>Кабинет {{ member.cabinet_number }}</span>
       </li>
+
+      <li
+        v-if="member.email"
+        class="flex min-w-0 items-center gap-2"
+      >
+        <UIcon
+          name="i-lucide-mail"
+          class="size-4 shrink-0 text-text-muted"
+          aria-hidden="true"
+        />
+        <a
+          :href="`mailto:${member.email}`"
+          class="break-all hover:text-primary transition-colors duration-200"
+        >
+          {{ member.email }}
+        </a>
+      </li>
     </ul>
-  </UCard>
+  </div>
 </template>
 
 <script setup lang="ts">

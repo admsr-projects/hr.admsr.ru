@@ -30,20 +30,16 @@ const managementUnitTitle = computed(
       heading-id="contacts-hr-management"
       spacing="lg"
     >
-      <UCard
-        v-if="managementHeadPending"
-        variant="soft"
-        :ui="{ body: 'space-y-3 p-5' }"
-      >
-        <USkeleton class="h-7 w-3/4" />
-        <USkeleton class="h-12 w-full rounded-lg" />
-        <USkeleton class="h-5 w-1/2" />
-      </UCard>
-
-      <ContactMemberCard
-        v-else-if="managementHead"
-        :member="managementHead"
-      />
+      <div class="rounded-xl bg-elevated p-6">
+        <USkeleton
+          v-if="managementHeadPending"
+          class="h-20 w-full rounded-lg"
+        />
+        <ContactMemberCard
+          v-else-if="managementHead"
+          :member="managementHead"
+        />
+      </div>
     </DsContentSection>
 
     <DsContentSection
