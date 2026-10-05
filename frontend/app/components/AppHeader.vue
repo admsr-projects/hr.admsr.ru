@@ -1,5 +1,5 @@
 <template>
-  <UHeader>
+  <UHeader :ui="{ root: 'bg-default backdrop-blur-none' }">
     <template #left>
       <NuxtLink
         to="/"

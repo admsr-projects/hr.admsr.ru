@@ -28,12 +28,12 @@
         </div>
 
         <div class="bf-2__btn-wrap">
-          <!-- pos-banner-btn_2 не удалять; другие классы не добавлять -->
+          <!-- pos-banner-btn_2 не удалять; другие классы не добавлять. Надпись кнопки подставляет скрипт Госуслуг -->
           <button
             class="pos-banner-btn_2"
             type="button"
           >
-            {{ buttonLabel }}
+            Сообщить о проблеме
           </button>
         </div>
       </div>
@@ -45,11 +45,9 @@
 withDefaults(defineProps<{
   title?: string
   text?: string
-  buttonLabel?: string
 }>(), {
   title: 'Знаете о фактах коррупции?',
-  text: 'Сообщите о правонарушении через портал Госуслуг',
-  buttonLabel: 'Сообщить о проблеме'
+  text: 'Сообщите о правонарушении через портал Госуслуг'
 })
 
 declare global {

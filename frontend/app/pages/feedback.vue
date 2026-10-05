@@ -5,7 +5,6 @@ useHead({ title: 'Обратная связь' })
 
 const route = useRoute()
 const router = useRouter()
-const config = useRuntimeConfig()
 
 type FeedbackTab = 'message' | 'esia'
 
@@ -16,9 +15,6 @@ const tabItems: TabsItem[] = [
   { label: 'Госуслуги', value: 'esia' },
 ]
 
-const esiaUrl = computed(() =>
-  config.public.esiaFeedbackUrl || 'https://pos.gosuslugi.ru/landing/',
-)
 
 function resolveTab(value: unknown): FeedbackTab {
   return value === 'esia' ? 'esia' : 'message'
@@ -102,10 +98,9 @@ watch(activeTab, (value) => {
                 </div>
               </div>
 
-              <EsiaGosuslugiCard
-                title="Перейти на платформу обратной связи"
-                description="Подать обращение через ЕСИА на портале Госуслуг"
-                :to="esiaUrl"
+              <GosuslugiPosBanner
+                title="Хотите обратиться в администрацию?"
+                text="Направьте обращение через портал Госуслуг"
               />
             </div>
           </DsContentSection>
