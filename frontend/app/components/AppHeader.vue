@@ -42,11 +42,6 @@
     <template #right>
       <div class="flex items-center gap-1.5">
         <AppSearch />
-        <AccessibilityPanel
-          compact
-          class="hidden sm:inline-flex"
-          
-        />
         <UColorModeButton />
         <UButton
           label="Вакансии"
@@ -54,7 +49,7 @@
           icon="i-lucide-briefcase"
           color="primary"
           size="lg"
-          class="js-header-cta hidden rounded-full lg:inline-flex"
+          class="hidden rounded-full lg:inline-flex"
         />
       </div>
     </template>
@@ -87,8 +82,6 @@
           childLinkDescription: 'text-xs text-muted leading-snug',
         }"
       />
-
-      <AccessibilityPanel class="mt-4" />
 
       <UButton
         label="Вакансии"

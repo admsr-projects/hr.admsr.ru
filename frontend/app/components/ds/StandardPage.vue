@@ -1,21 +1,21 @@
 <template>
   <div class="ds-inner">
-    <DsBreadcrumbs :items="breadcrumbs" />
-
     <DsSectionToolbar
       v-if="sectionNavItems.length"
       :items="sectionNavItems"
-      class="js-section-toolbar lg:hidden"
+      class="lg:hidden"
     />
+
+    <DsBreadcrumbs :items="breadcrumbs" />
 
     <div class="ds-container pb-12 pt-4 lg:pb-16 lg:pt-0">
       <div
-        class="js-page-grid lg:grid lg:items-start lg:gap-6"
+        class="lg:grid lg:items-start lg:gap-6"
         :class="menu ? 'lg:grid-cols-[282px_minmax(0,1fr)]' : undefined"
       >
         <aside
           v-if="menu"
-          class="js-section-sidebar hidden lg:block lg:sticky lg:top-[calc(var(--ui-header-height,4rem)+1.5rem)]"
+          class="hidden lg:block lg:sticky lg:top-[calc(var(--ui-header-height,4rem)+1.5rem)]"
         >
           <DsSectionSidebar
             :title="menu.title"

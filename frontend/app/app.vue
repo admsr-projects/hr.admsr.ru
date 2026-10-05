@@ -34,8 +34,6 @@ useHead({
   }
 })
 
-const { init } = useAccessibility()
-
 usePrimaryFavicon()
 
 const cookieConsent = useCookie('cookieConsent', {
@@ -46,8 +44,6 @@ const cookieConsent = useCookie('cookieConsent', {
 const toast = useToast()
 
 onMounted(() => {
-  init()
-
   if (!cookieConsent.value) {
     toast.add({
       id: 'cookie-consent',
