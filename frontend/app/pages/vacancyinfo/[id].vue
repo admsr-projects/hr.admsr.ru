@@ -42,7 +42,7 @@ const pageDescription = computed(() => {
 })
 
 const publishedLabel = computed(() => {
-  const raw = vacancy.value?.created_at
+  const raw = vacancy.value?.published_at || vacancy.value?.created_at
   if (!raw) return ''
 
   return new Date(raw).toLocaleDateString('ru-RU', {
@@ -97,14 +97,8 @@ const conditionItems = computed<ConditionItem[]>(() => {
           icon: 'i-lucide-award',
         }
       : null,
-    vacancy.value.workSchedule
-      ? { key: 'schedule', title: 'График работы', value: vacancy.value.workSchedule, icon: 'i-lucide-clock' }
-      : null,
     vacancy.value.workingHours
       ? { key: 'hours', title: 'Режим работы', value: vacancy.value.workingHours, icon: 'i-lucide-calendar-clock' }
-      : null,
-    vacancy.value.employmentType
-      ? { key: 'employment', title: 'Тип занятости', value: vacancy.value.employmentType, icon: 'i-lucide-briefcase' }
       : null,
     vacancy.value.jobType
       ? { key: 'job-type', title: 'Тип должности', value: vacancy.value.jobType, icon: 'i-lucide-id-card' }
@@ -118,10 +112,7 @@ const tagItems = computed(() => {
   if (!vacancy.value) return []
 
   return [
-    vacancy.value.isNew ? 'Новая вакансия' : null,
-    vacancy.value.workSchedule,
     vacancy.value.jobType,
-    vacancy.value.employmentType,
   ].filter((item): item is string => Boolean(item))
 })
 

@@ -139,6 +139,7 @@ export interface Vacancy {
   isNew?: boolean
   skills?: string[]
   detailsLink?: string
+  published_at?: string
   created_at?: string
 }
 
