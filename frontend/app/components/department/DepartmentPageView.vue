@@ -175,6 +175,7 @@
       >
         <VacancyCards
           embedded
+          layout="grid"
           title=""
           :vacancies="relatedVacancies"
           :skeleton-count="2"
