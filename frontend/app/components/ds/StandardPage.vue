@@ -105,7 +105,8 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => {
   const section = resolveStandardSection(route.path)
 
   if (section) {
-    items.push({ label: section.label })
+    // У раздела нет своей страницы — крошка ведёт на его первую страницу
+    items.push({ label: section.label, to: section.items[0]?.to })
   }
 
   if (route.path.startsWith('/about/departments/')) {
