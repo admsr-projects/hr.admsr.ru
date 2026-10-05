@@ -23,6 +23,7 @@
       variant="link"
       color="primary"
       content-orientation="vertical"
+      aria-label="Основная навигация"
       arrow
       class="hidden lg:flex"
       :ui="{
@@ -53,7 +54,7 @@
           icon="i-lucide-briefcase"
           color="primary"
           size="lg"
-          class="hidden rounded-full lg:inline-flex"
+          class="js-header-cta hidden rounded-full lg:inline-flex"
         />
       </div>
     </template>

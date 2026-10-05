@@ -82,6 +82,7 @@
           class="flex justify-center pt-2"
         >
           <UPagination
+          aria-label="Страницы списка мероприятий"
             v-model:page="pastPage"
             :total="pastEvents.length"
             :items-per-page="itemsPerPage"

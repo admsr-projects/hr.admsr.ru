@@ -45,6 +45,7 @@ def notify_recipients(kind, subject, fields, files=()):
         return 0
 
     lines = [f'{label}: {value}' for label, value in fields if value not in (None, '')]
+    subject = ' '.join(str(subject).split())[:200]  # без переводов строк: защита от header injection
     message = EmailMessage(
         subject=subject,
         body='\n'.join(lines),

@@ -393,7 +393,7 @@
           >
             <UFileUpload
               v-model="formState.photo"
-              variant="button"
+              variant="area"
               size="lg"
               accept="image/*"
               label="Прикрепить фото"
@@ -408,7 +408,7 @@
             </template>
             <UFileUpload
               v-model="formState.resume"
-              variant="button"
+              variant="area"
               size="lg"
               accept=".pdf,.doc,.docx"
               label="Прикрепить резюме"

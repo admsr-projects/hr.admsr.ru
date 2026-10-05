@@ -237,3 +237,29 @@ html.a11y-enabled.a11y-screenreader :where(p, li) {
 html.a11y-enabled.a11y-screenreader :where(.prose, .ds-prose) {
   max-width: 70ch;
 }
+
+
+/* Крупный шрифт на широком экране: мобильная раскладка (см. plugins/compact-layout.client.ts) */
+html[data-compact] header [data-slot='center'] {
+  display: none !important;
+}
+
+html[data-compact] header [data-slot='right'] > button {
+  display: inline-flex !important;
+}
+
+html[data-compact] header .js-header-cta {
+  display: none !important;
+}
+
+html[data-compact] .js-section-sidebar {
+  display: none !important;
+}
+
+html[data-compact] .js-section-toolbar {
+  display: block !important;
+}
+
+html[data-compact] .js-page-grid {
+  display: block !important;
+}

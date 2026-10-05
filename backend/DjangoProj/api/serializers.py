@@ -85,11 +85,45 @@ class VacancySerializer(serializers.ModelSerializer):
         return f'/vacancyinfo/{obj.id}'
 
 
+def validate_upload(value, *, extensions, max_bytes):
+    """Общая проверка вложений: размер и расширение (по имени файла)."""
+    if not value:
+        return value
+    if value.size > max_bytes:
+        raise serializers.ValidationError(f'Размер файла не должен превышать {max_bytes // (1024 * 1024)} МБ')
+    if not value.name.lower().endswith(extensions):
+        allowed = ', '.join(ext.lstrip('.').upper() for ext in extensions)
+        raise serializers.ValidationError(f'Допустимые форматы: {allowed}')
+    return value
+
+
+DOCUMENT_EXTENSIONS = ('.pdf', '.doc', '.docx', '.rtf', '.odt', '.txt')
+IMAGE_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.gif')
+
+
 class JobApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobApplication
         fields = '__all__'
         read_only_fields = ['created_at']
+
+    def validate_resume(self, value):
+        return validate_upload(value, extensions=('.pdf', '.doc', '.docx'), max_bytes=10 * 1024 * 1024)
+
+    def validate_photo(self, value):
+        return validate_upload(value, extensions=IMAGE_EXTENSIONS, max_bytes=5 * 1024 * 1024)
+
+    def validate(self, data):
+        # Согласия обязательны и на сервере, а не только в форме
+        missing = [
+            name for name in (
+                'consent_false_info', 'consent_verification',
+                'consent_personal_data', 'consent_resume_forwarding',
+            ) if not data.get(name)
+        ]
+        if missing:
+            raise serializers.ValidationError({name: 'Необходимо согласие' for name in missing})
+        return data
 
 
 class AntiCorruptionDocumentSerializer(serializers.ModelSerializer):
@@ -356,6 +390,9 @@ class PracticeApplicationSerializer(serializers.ModelSerializer):
         if not value:
             raise serializers.ValidationError('Необходимо согласие на обработку персональных данных')
         return value
+
+    def validate_application_letter(self, value):
+        return validate_upload(value, extensions=DOCUMENT_EXTENSIONS, max_bytes=10 * 1024 * 1024)
 
 
 class TrainingEventSerializer(serializers.ModelSerializer):

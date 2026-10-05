@@ -5,17 +5,17 @@
     <DsSectionToolbar
       v-if="sectionNavItems.length"
       :items="sectionNavItems"
-      class="lg:hidden"
+      class="js-section-toolbar lg:hidden"
     />
 
     <div class="ds-container pb-12 pt-4 lg:pb-16 lg:pt-0">
       <div
-        class="lg:grid lg:items-start lg:gap-6"
+        class="js-page-grid lg:grid lg:items-start lg:gap-6"
         :class="menu ? 'lg:grid-cols-[282px_minmax(0,1fr)]' : undefined"
       >
         <aside
           v-if="menu"
-          class="hidden lg:block lg:sticky lg:top-[calc(var(--ui-header-height,4rem)+1.5rem)]"
+          class="js-section-sidebar hidden lg:block lg:sticky lg:top-[calc(var(--ui-header-height,4rem)+1.5rem)]"
         >
           <DsSectionSidebar
             :title="menu.title"
@@ -23,7 +23,7 @@
           />
         </aside>
 
-        <main class="flex w-full min-w-0 flex-col gap-4">
+        <div class="flex w-full min-w-0 flex-col gap-4">
           <DsStandardPageHeader
             :title="title"
             :description="description"
@@ -46,7 +46,7 @@
           <div class="flex flex-col gap-4">
             <slot />
           </div>
-        </main>
+        </div>
       </div>
     </div>
   </div>

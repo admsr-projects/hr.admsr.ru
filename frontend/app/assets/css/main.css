@@ -215,3 +215,8 @@ textarea::placeholder {
   color: var(--color-text-muted);
   opacity: 1;
 }
+
+/* Контраст: текст основного цвета в тёмной теме на тонированных (soft/subtle) фонах */
+html.dark {
+  --ui-primary: var(--ui-color-primary-300);
+}

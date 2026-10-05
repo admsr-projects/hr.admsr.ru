@@ -164,7 +164,7 @@ function parseStepParts(step: string): StepPart[] {
                       <NuxtLink
                         v-if="part.type === 'link'"
                         :to="part.to"
-                        class="text-primary underline-offset-2 hover:underline"
+                        class="text-primary underline underline-offset-2 hover:no-underline"
                       >
                         {{ part.label }}
                       </NuxtLink>

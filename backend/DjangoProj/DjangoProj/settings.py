@@ -159,3 +159,34 @@ if EMAIL_HOST:
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'Кадровый портал <no-reply@hr.admsr.ru>')
+
+
+# Безопасность соединения. На боевом сервере (за nginx с HTTPS) задайте DJANGO_HTTPS_ONLY=True:
+# включаются Secure-cookie, HSTS и признак HTTPS от прокси. Редирект http→https лучше делать в nginx;
+# при желании его можно включить здесь через DJANGO_SSL_REDIRECT=True (прокси должен передавать
+# заголовок X-Forwarded-Proto, иначе будет цикл редиректов).
+HTTPS_ONLY = os.environ.get('DJANGO_HTTPS_ONLY', 'False') == 'True'
+if HTTPS_ONLY and not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = os.environ.get('DJANGO_SSL_REDIRECT', 'False') == 'True'
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 60 * 60 * 24 * 180
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+    SECURE_HSTS_PRELOAD = False
+
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = 'same-origin'
+X_FRAME_OPTIONS = 'DENY'
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'Lax'
+
+# Загружаемые файлы: предел размера тела запроса (резюме, вложения) — 25 МБ
+DATA_UPLOAD_MAX_MEMORY_SIZE = 25 * 1024 * 1024
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024
+
+# Секретный ключ по умолчанию годится только для разработки
+if not DEBUG and SECRET_KEY.startswith('django-insecure-'):
+    import warnings
+    warnings.warn('DJANGO_SECRET_KEY не задан: используется небезопасный ключ по умолчанию', RuntimeWarning)

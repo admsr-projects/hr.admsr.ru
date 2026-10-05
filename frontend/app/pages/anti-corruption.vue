@@ -196,7 +196,7 @@ function phoneHref(phone: string) {
               <a
                 v-if="official.phone"
                 :href="phoneHref(official.phone)"
-                class="inline-flex items-center gap-1.5 text-body text-primary underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                class="inline-flex items-center gap-1.5 text-body text-primary underline underline-offset-2 hover:no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               >
                 <UIcon
                   name="i-lucide-phone"

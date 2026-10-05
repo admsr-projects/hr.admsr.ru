@@ -90,7 +90,8 @@
           />
         </div>
 
-        <section
+        <div
+          role="group"
           :aria-labelledby="`winners-${entry.id}`"
           class="rounded-lg border border-default bg-default p-4"
         >
@@ -152,7 +153,7 @@
           >
             Информация о победителях будет опубликована после подведения итогов.
           </p>
-        </section>
+        </div>
       </UCard>
 
       <div
@@ -160,6 +161,7 @@
         class="flex justify-center pt-2"
       >
         <UPagination
+          aria-label="Страницы списка результатов конкурсов"
           v-model:page="currentPage"
           :total="results.length"
           :items-per-page="itemsPerPage"

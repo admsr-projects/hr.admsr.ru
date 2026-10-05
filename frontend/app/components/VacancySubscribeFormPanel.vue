@@ -74,6 +74,7 @@
         <USelectMenu
           v-model="form.branch"
           :items="ofoOptions"
+          aria-label="Отраслевой функциональный орган"
           size="lg"
           value-key="value"
           :search-input="{
@@ -111,7 +112,7 @@
         >
           <UFileUpload
             v-model="form.resumeFile"
-            variant="button"
+            variant="area"
             size="lg"
             accept=".pdf,.doc,.docx,.rtf,.odt,.txt"
             label="Прикрепить резюме"
@@ -207,7 +208,7 @@
               Согласен на
               <NuxtLink
                 to="/privacy"
-                class="text-primary underline-offset-2 hover:underline"
+                class="text-primary underline underline-offset-2 hover:no-underline"
               >
                 обработку персональных данных
               </NuxtLink>
