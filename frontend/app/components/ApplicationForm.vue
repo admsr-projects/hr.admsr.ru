@@ -5,9 +5,8 @@
         v-if="vacancy?.title"
         :label="vacancy.title"
         color="primary"
-        variant="subtle"
-        size="lg"
-        class="max-w-full rounded-full whitespace-normal text-start leading-snug"
+        variant="soft"
+        class="max-w-full whitespace-normal text-start leading-snug"
       />
       <div class="space-y-1">
         <h2 class="text-h2 text-text-primary text-balance">
@@ -31,7 +30,7 @@
 
     <div
       v-if="currentGuide"
-      class="flex items-start gap-3 rounded-xl border border-default bg-elevated/40 px-4 py-4 sm:px-5"
+      class="flex items-start gap-3 rounded-xl bg-elevated px-4 py-4 sm:px-5"
       role="note"
     >
       <UIcon
@@ -98,7 +97,6 @@
                 label="Что означает каждый пункт?"
                 color="neutral"
                 variant="link"
-                size="lg"
                 trailing-icon="i-lucide-chevron-down"
                 class="h-auto px-0"
               />
@@ -161,7 +159,6 @@
             </template>
             <UInput
               v-model="formState.lastName"
-              size="lg"
               placeholder="Иванов"
               autocomplete="family-name"
               class="w-full min-w-0"
@@ -174,7 +171,6 @@
             </template>
             <UInput
               v-model="formState.firstName"
-              size="lg"
               placeholder="Иван"
               autocomplete="given-name"
               class="w-full min-w-0"
@@ -188,7 +184,6 @@
           >
             <UInput
               v-model="formState.middleName"
-              size="lg"
               placeholder="Иванович"
               autocomplete="additional-name"
               class="w-full min-w-0"
@@ -203,7 +198,6 @@
             </template>
             <UInputDate
               v-model="formState.birthDate"
-              size="lg"
               icon="i-lucide-calendar"
               class="w-full min-w-0"
             />
@@ -216,7 +210,6 @@
             <UInput
               v-model="formState.phone"
               type="tel"
-              size="lg"
               placeholder="+7 (XXX) XXX-XX-XX"
               autocomplete="tel"
               class="w-full min-w-0"
@@ -231,7 +224,6 @@
           <UInput
             v-model="formState.email"
             type="email"
-            size="lg"
             placeholder="example@email.com"
             autocomplete="email"
             class="w-full min-w-0"
@@ -257,7 +249,6 @@
           </template>
           <UInput
             v-model="formState.registrationAddress"
-            size="lg"
             placeholder="Город, улица, дом, квартира"
             autocomplete="street-address"
             class="w-full min-w-0"
@@ -270,7 +261,6 @@
           </template>
           <UInput
             v-model="formState.residenceAddress"
-            size="lg"
             placeholder="Город, улица, дом, квартира"
             class="w-full min-w-0"
           />
@@ -282,7 +272,6 @@
           </template>
           <UInput
             v-model="formState.citizenship"
-            size="lg"
             placeholder="Российская Федерация"
             class="w-full min-w-0"
           />
@@ -308,7 +297,6 @@
             </template>
             <UInput
               v-model="formState.education"
-              size="lg"
               placeholder="Уровень и учебное заведение"
               class="w-full min-w-0"
             />
@@ -320,7 +308,6 @@
             </template>
             <UInput
               v-model="formState.specialty"
-              size="lg"
               placeholder="Направление подготовки"
               class="w-full min-w-0"
             />
@@ -332,7 +319,6 @@
           >
             <UInput
               v-model="formState.municipalExperience"
-              size="lg"
               placeholder="Например: 2 года"
               class="w-full min-w-0"
             />
@@ -344,7 +330,6 @@
           >
             <UTextarea
               v-model="formState.workExperience"
-              size="lg"
               placeholder="Сведения из трудовой книжки"
               :rows="4"
               class="w-full min-w-0"
@@ -364,7 +349,6 @@
             <URadioGroup
               v-model="formState.maritalStatus"
               :items="maritalStatusOptions"
-              size="lg"
             />
           </UFormField>
 
@@ -374,7 +358,6 @@
           >
             <UInput
               v-model="formState.children"
-              size="lg"
               placeholder="Количество и возраст детей"
               class="w-full min-w-0"
             />
@@ -394,7 +377,6 @@
             <UFileUpload
               v-model="formState.photo"
               variant="area"
-              size="lg"
               accept="image/*"
               label="Прикрепить фото"
               description="JPG, PNG или GIF (макс. 5 МБ)"
@@ -409,7 +391,6 @@
             <UFileUpload
               v-model="formState.resume"
               variant="area"
-              size="lg"
               accept=".pdf,.doc,.docx"
               label="Прикрепить резюме"
               description="PDF, DOC или DOCX (макс. 10 МБ)"
@@ -424,7 +405,6 @@
         >
           <UTextarea
             v-model="formState.vacancySource"
-            size="lg"
             placeholder="Источник информации о вакансии"
             :rows="3"
             class="w-full min-w-0"
@@ -438,8 +418,7 @@
             v-if="currentStep > 0"
             label="Назад"
             color="neutral"
-            variant="outline"
-            size="lg"
+            variant="soft"
             type="button"
             class="w-full justify-center sm:w-auto"
             @click="prevStep"
@@ -448,7 +427,6 @@
             label="Отмена"
             color="neutral"
             variant="ghost"
-            size="lg"
             type="button"
             class="w-full justify-center sm:w-auto"
             @click="$emit('cancel')"
@@ -459,21 +437,19 @@
           v-if="currentStep < lastStep"
           label="Далее"
           color="primary"
-          size="lg"
           trailing-icon="i-lucide-arrow-right"
           type="button"
-          class="w-full justify-center rounded-full sm:w-auto"
+          class="w-full justify-center sm:w-auto"
           @click="nextStep"
         />
         <UButton
           v-else
           label="Отправить заявку"
           color="primary"
-          size="lg"
           trailing-icon="i-lucide-send"
           type="submit"
           :loading="isSubmitting"
-          class="w-full justify-center rounded-full sm:w-auto"
+          class="w-full justify-center sm:w-auto"
         />
       </div>
     </UForm>

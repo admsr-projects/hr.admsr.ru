@@ -76,7 +76,7 @@ class VacancySerializer(serializers.ModelSerializer):
         model = Vacancy
         fields = ['id', 'title', 'branch', 'company', 'location', 'salary', 'employmentType',
                   'experience', 'workSchedule', 'requiredExperience', 'jobType',
-                  'isNew', 'description', 'skills', 'workingHours', 'detailsLink', 'created_at']
+                  'isNew', 'description', 'skills', 'workingHours', 'detailsLink', 'published_at', 'created_at']
 
     def get_skills(self, obj):
         return [s.strip() for s in obj.skills.split('\n') if s.strip()]

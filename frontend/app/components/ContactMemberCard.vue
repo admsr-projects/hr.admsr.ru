@@ -1,6 +1,6 @@
 <template>
   <UCard
-    variant="subtle"
+    variant="soft"
     :ui="{
       root: 'h-full min-w-0 transition-colors duration-200',
       body: 'flex h-full flex-col gap-4 p-5',

@@ -9,7 +9,7 @@
       <UCard
         v-for="index in 3"
         :key="index"
-        variant="subtle"
+        variant="soft"
         :ui="{ body: 'p-4 flex items-center justify-between gap-3' }"
       >
         <USkeleton class="h-5 w-2/3" />
@@ -31,7 +31,7 @@
       <UCard
         v-for="entry in paginatedRules"
         :key="entry.id"
-        variant="subtle"
+        variant="soft"
         :ui="{
           root: 'rounded-xl transition-colors duration-200',
           body: 'p-4 lg:p-5 flex flex-wrap items-center justify-between gap-3',
@@ -48,7 +48,6 @@
           target="_blank"
           external
           color="primary"
-          size="lg"
           class="cursor-pointer shrink-0"
           :aria-label="`Скачать: ${entry.name}`"
         />
@@ -64,7 +63,6 @@
           :total="rules.length"
           :items-per-page="itemsPerPage"
           color="primary"
-          size="lg"
         />
       </div>
     </div>

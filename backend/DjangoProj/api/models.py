@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 
 class Tender(models.Model):
@@ -165,12 +166,13 @@ class Vacancy(models.Model):
     skills = models.TextField('Навыки', blank=True, help_text='Каждый навык с новой строки') 
     working_hours = models.ForeignKey(WorkingHours, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Режим работы')
     is_active = models.BooleanField('Активна', default=True)
+    published_at = models.DateField('Дата публикации', default=timezone.localdate)
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
 
     class Meta:
         verbose_name = 'Вакансия'
         verbose_name_plural = 'Вакансии'
-        ordering = ['-created_at']
+        ordering = ['-published_at', '-created_at']
 
     def __str__(self):
         return self.title

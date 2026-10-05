@@ -1,6 +1,6 @@
 <template>
   <div class="ds-container py-8">
-    <div class="bg-white dark:bg-gray-900/50 rounded-xl p-6 ring-1 ring-gray-200 dark:ring-gray-800 mb-6">
+    <div class="mb-6 rounded-xl bg-elevated p-6">
       <p class="text-base lg:text-lg text-gray-900 dark:text-white mb-6">
         Здесь представлены ключевые документы и информация о конкурсах, проводимых Администрацией Сургутского района.
       </p>
@@ -8,9 +8,9 @@
         <div
           v-for="doc in mainPageTenders"
           :key="doc.id"
-          class="flex items-center justify-between bg-white/60 dark:bg-gray-900/50 backdrop-blur-sm border border-gray-200 dark:border-gray-800 rounded-lg p-4 hover:border-green-500/20 transition-all duration-300"
+          class="flex items-center justify-between gap-3 rounded-xl bg-elevated p-4 transition-colors duration-200 hover:bg-accented"
         >
-          <span class="text-gray-900 dark:text-white font-medium">{{ doc.name }}</span>
+          <span class="text-base font-medium text-text-primary">{{ doc.name }}</span>
           <UButton
             :to="doc.link"
             target="_blank"
@@ -18,7 +18,6 @@
             label="Скачать"
             icon="i-lucide-download"
             color="primary"
-            size="lg"
             :aria-label="'Скачать: ' + doc.name"
           />
         </div>

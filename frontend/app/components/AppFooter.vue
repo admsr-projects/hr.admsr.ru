@@ -166,8 +166,7 @@ function isExternal(url: string) {
               icon="i-lucide-phone"
               color="neutral"
               variant="soft"
-              size="lg"
-              class="rounded-full"
+              
             />
             <UButton
               to="/feedback"
@@ -175,8 +174,7 @@ function isExternal(url: string) {
               icon="i-lucide-message-square"
               color="primary"
               variant="soft"
-              size="lg"
-              class="rounded-full"
+              
             />
           </div>
         </div>

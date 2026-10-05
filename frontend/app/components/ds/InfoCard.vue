@@ -1,8 +1,8 @@
 <template>
   <UCard
-    variant="outline"
+    variant="soft"
     :ui="{
-      root: 'h-full rounded-lg bg-default transition-colors duration-200',
+      root: 'h-full',
       body: 'flex flex-col gap-2 p-6 sm:p-6',
     }"
   >

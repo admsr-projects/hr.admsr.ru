@@ -75,8 +75,7 @@ function clearOrgFilter() {
             >
               <UBadge
                 color="neutral"
-                variant="subtle"
-                size="lg"
+                variant="soft"
               >
                 Орган: {{ orgFilter }}
               </UBadge>
@@ -84,7 +83,6 @@ function clearOrgFilter() {
                 label="Сбросить орган"
                 color="neutral"
                 variant="link"
-                size="lg"
                 @click="clearOrgFilter"
               />
             </div>
@@ -136,7 +134,7 @@ function clearOrgFilter() {
           description="Действующие конкурсы на замещение вакантных должностей и на включение в кадровый резерв."
           icon="i-lucide-clipboard-list"
           to="/tenders"
-          variant="subtle"
+          variant="soft"
           class="h-full cursor-pointer"
           :ui="{
             root: 'h-full',
@@ -150,7 +148,7 @@ function clearOrgFilter() {
           description="Как вступить в резерв и развивать карьеру в администрации района."
           icon="i-lucide-users"
           to="/staffreserve"
-          variant="subtle"
+          variant="soft"
           class="h-full cursor-pointer"
           :ui="{
             root: 'h-full',

@@ -7,6 +7,6 @@ useHead({ title: 'Структура администрации' })
     title="Структура администрации"
     description="Отраслевые (функциональные) органы администрации Сургутского района по курирующим заместителям главы"
   >
-    <DeputyStructure title="" />
+    <DeputyStructure />
   </DsStandardPage>
 </template>

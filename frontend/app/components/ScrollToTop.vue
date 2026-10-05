@@ -10,8 +10,7 @@
       label="Наверх"
       icon="i-lucide-arrow-up"
       color="primary"
-      size="lg"
-      class="fixed bottom-6 right-6 z-40 cursor-pointer rounded-full shadow-md"
+      class="fixed bottom-6 right-6 z-40 cursor-pointer"
       aria-label="Наверх"
       @click="scrollToTop"
     />

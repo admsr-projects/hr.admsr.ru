@@ -1,7 +1,7 @@
 <template>
   <NuxtLink
     :to="to"
-    class="group flex h-full flex-col overflow-hidden rounded-lg border border-default bg-default transition-colors duration-200 hover:border-primary motion-reduce:transition-none"
+    class="group flex h-full flex-col overflow-hidden rounded-xl bg-elevated transition-colors duration-200 hover:bg-accented motion-reduce:transition-none"
   >
     <DsBlurredImage
       :src="post.imageUrl"

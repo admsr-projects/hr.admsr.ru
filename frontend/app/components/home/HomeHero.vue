@@ -1,5 +1,5 @@
 <template>
-  <section class="relative isolate overflow-hidden border-b border-default bg-default">
+  <section class="relative isolate overflow-hidden bg-default">
     <div
       class="absolute inset-0 -z-10 bg-[radial-gradient(60rem_40rem_at_50%_-10%,--alpha(var(--ui-primary)/14%),transparent_60%)]"
       aria-hidden="true"
@@ -11,12 +11,11 @@
         <UBadge
           label="Кадровый портал администрации Сургутского района"
           color="primary"
-          variant="subtle"
-          size="lg"
-          class="max-w-full rounded-full whitespace-normal text-center leading-snug"
+          variant="soft"
+          class="max-w-full whitespace-normal text-center leading-snug"
         />
 
-        <h1 class="text-balance text-3xl font-bold tracking-tight text-highlighted sm:text-5xl lg:text-6xl lg:leading-[1.05]">
+        <h1 class="text-balance text-4xl font-bold text-highlighted sm:text-5xl">
           Успешная команда 
           <span class="text-primary">успешный район</span>
         </h1>
@@ -32,16 +31,16 @@
               to="/vacancies"
               icon="i-lucide-briefcase"
               size="xl"
-              class="w-full justify-center rounded-full sm:w-auto"
+              class="w-full justify-center sm:w-auto"
             />
             <UButton
               label="Узнать больше"
               to="/about"
               color="neutral"
-              variant="subtle"
+              variant="soft"
               trailing-icon="i-lucide-arrow-up-right"
               size="xl"
-              class="w-full justify-center rounded-full sm:w-auto"
+              class="w-full justify-center sm:w-auto"
             />
           </div>
           <UButton
@@ -49,15 +48,15 @@
             to="/feedback"
             icon="i-lucide-message-square"
             color="neutral"
-            variant="outline"
+            variant="soft"
             size="xl"
-            class="w-full justify-center rounded-full sm:w-auto"
+            class="w-full justify-center sm:w-auto"
           />
         </div>
       </div>
 
       <div class="flex w-full min-w-0 flex-col gap-4">
-        <div class="relative h-52 w-full overflow-hidden rounded-2xl border border-default sm:h-72 lg:h-[420px]">
+        <div class="relative h-52 w-full overflow-hidden rounded-xl sm:h-72 lg:h-[420px]">
           <img
             src="/images/Picture.png"
             alt="Команда администрации Сургутского района"
@@ -66,7 +65,7 @@
             loading="eager"
             class="block size-full object-cover"
           >
-          <div class="absolute left-3 top-3 flex max-w-[calc(100%-1.5rem)] items-center gap-2 rounded-full bg-default/85 px-3 py-1.5 text-xs font-medium text-highlighted backdrop-blur-md sm:left-4 sm:top-4">
+          <div class="absolute left-3 top-3 flex max-w-[calc(100%-1.5rem)] items-center gap-2 rounded-md bg-default/85 px-3 py-1.5 text-xs font-medium text-highlighted backdrop-blur-md sm:left-4 sm:top-4">
             <span class="relative flex size-2 shrink-0">
               <span class="absolute inline-flex size-full animate-ping rounded-full bg-primary opacity-75 motion-reduce:hidden" />
               <span class="relative inline-flex size-2 rounded-full bg-primary" />
@@ -82,7 +81,7 @@
             v-for="item in careerItems"
             :key="item.to"
             :to="item.to"
-            class="group flex flex-col gap-4 rounded-2xl border border-default bg-default p-5 transition hover:border-primary/40 hover:bg-elevated motion-reduce:transition-none"
+            class="group flex flex-col gap-4 rounded-xl bg-elevated p-5 transition hover:bg-accented motion-reduce:transition-none"
           >
             <div class="flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition group-hover:bg-primary group-hover:text-inverted">
               <UIcon

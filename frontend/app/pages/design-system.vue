@@ -83,7 +83,7 @@
         <template #action>
           <UButton
             color="primary"
-            variant="outline"
+            variant="soft"
             to="/vacancies"
             label="Вакансии"
           />
@@ -98,12 +98,12 @@
         />
         <UButton
           color="primary"
-          variant="outline"
+          variant="soft"
           label="Secondary"
         />
         <UButton
           color="neutral"
-          variant="outline"
+          variant="soft"
           label="Neutral"
         />
         <UButton

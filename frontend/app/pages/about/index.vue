@@ -66,32 +66,6 @@ const missionCards = [
     </DsContentSection>
 
     <DsContentSection
-      title="Структура администрации"
-      description="Отраслевые органы по курирующим заместителям главы района"
-      heading-id="admin-structure"
-      spacing="lg"
-    >
-      <DsCalloutPanel
-        title="Кто чем занимается в администрации"
-        description="Заместители главы района, курируемые ими департаменты, управления и отделы — со страницами органов и их вакансиями."
-        icon="i-lucide-building-2"
-        color="primary"
-        variant="soft"
-      >
-        <template #actions>
-          <UButton
-            label="Открыть структуру"
-            to="/about/structure"
-            color="primary"
-            size="lg"
-            trailing-icon="i-lucide-arrow-right"
-            class="cursor-pointer"
-          />
-        </template>
-      </DsCalloutPanel>
-    </DsContentSection>
-
-    <DsContentSection
       title="Будьте в курсе жизни администрации"
       description="Новости, события и проекты района — в официальных социальных сетях"
       overline="Сообщество"
@@ -115,7 +89,7 @@ const missionCards = [
             :icon="link.image ? undefined : link.icon"
             :label="link.label"
             color="neutral"
-            variant="outline"
+            variant="soft"
             class="cursor-pointer transition-colors duration-200"
           >
             <template

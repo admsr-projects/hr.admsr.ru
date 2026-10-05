@@ -105,7 +105,6 @@ function parseStepParts(step: string): StepPart[] {
       v-model="activeTab"
       color="primary"
       variant="link"
-      size="lg"
       :items="tabItems"
       :unmount-on-hide="false"
       class="w-full"
@@ -144,7 +143,7 @@ function parseStepParts(step: string): StepPart[] {
                 :key="index"
               >
                 <UCard
-                  variant="subtle"
+                  variant="soft"
                   :ui="{
                     root: 'rounded-xl',
                     body: 'flex items-start gap-4 p-4 lg:p-5',

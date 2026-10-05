@@ -74,13 +74,14 @@ class HonorBoardStaffMemberAdmin(admin.ModelAdmin):
 
 class VacancyAdmin(admin.ModelAdmin):
     form = VacancyAdminForm
-    list_display = ['title', 'branch', 'location', 'salary', 'work_schedule', 'required_experience', 'job_type', 'is_new', 'is_active', 'created_at']
-    list_filter = ['is_active', 'is_new', 'employment_type', 'work_schedule', 'required_experience', 'job_type']
+    list_display = ['title', 'branch', 'location', 'salary', 'required_experience', 'job_type', 'is_active', 'published_at']
+    list_filter = ['is_active', 'required_experience', 'job_type', 'published_at']
     search_fields = ['title', 'branch']
-    list_editable = ['is_active', 'is_new']
+    list_editable = ['is_active']
+    date_hierarchy = 'published_at'
     fieldsets = [
-        ('Основное', {'fields': ['title', 'branch', 'location', 'salary']}),
-        ('Детали', {'fields': ['employment_type', 'experience', 'work_schedule', 'required_experience', 'job_type', 'working_hours', 'is_new', 'is_active']}),
+        ('Основное', {'fields': ['title', 'branch', 'location', 'salary', 'published_at']}),
+        ('Детали', {'fields': ['experience', 'required_experience', 'job_type', 'working_hours', 'is_active']}),
         ('Описание и навыки', {'fields': ['description', 'skills']}),
     ]
 

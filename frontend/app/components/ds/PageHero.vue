@@ -10,8 +10,7 @@
           <UBadge
             v-if="badge"
             color="primary"
-            variant="subtle"
-            size="lg"
+            variant="soft"
             class="w-fit mb-4"
           >
             {{ badge }}
@@ -36,7 +35,6 @@
             :label="buttonLabel"
             :to="buttonLink"
             color="primary"
-            size="lg"
             class="mt-6 w-fit"
           />
         </div>
@@ -85,8 +83,7 @@
         <UBadge
           v-if="badge"
           color="primary"
-          variant="subtle"
-          size="lg"
+          variant="soft"
           class="w-fit mb-4"
         >
           {{ badge }}
@@ -119,8 +116,7 @@
       <UBadge
         v-if="badge"
         color="primary"
-        variant="subtle"
-        size="lg"
+        variant="soft"
         class="w-fit mb-3"
       >
         {{ badge }}

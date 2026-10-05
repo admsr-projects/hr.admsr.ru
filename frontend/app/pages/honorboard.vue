@@ -62,7 +62,6 @@ const honoreeLabel = computed(() => {
             label="Смотреть вакансии"
             to="/vacancies"
             color="primary"
-            size="lg"
             trailing-icon="i-lucide-arrow-right"
             class="cursor-pointer"
           />
@@ -70,8 +69,7 @@ const honoreeLabel = computed(() => {
             label="О команде"
             to="/about"
             color="neutral"
-            variant="outline"
-            size="lg"
+            variant="soft"
             class="cursor-pointer transition-colors duration-200"
           />
         </div>

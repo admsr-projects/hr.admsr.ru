@@ -25,7 +25,7 @@
             {{ formatDate(post.date) }}
           </time>
 
-          <h1 class="text-3xl font-bold leading-tight text-text-primary text-balance sm:text-4xl">
+          <h1 class="text-h1 text-text-primary text-balance">
             {{ post.title }}
           </h1>
 

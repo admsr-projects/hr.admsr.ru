@@ -1,5 +1,5 @@
 <template>
-  <section class="border-t border-default bg-elevated/40">
+  <section class="bg-elevated/40">
     <UModal
       v-model:open="isApplicationFormOpen"
       :ui="{ content: 'max-w-3xl w-[calc(100vw-2rem)] sm:w-full' }"
@@ -19,12 +19,12 @@
           <UBadge
             label="Вакансии"
             color="primary"
-            variant="subtle"
-            class="w-fit rounded-full"
+            variant="soft"
+            class="w-fit"
           />
           <h2
             id="vacancies"
-            class="text-3xl font-bold tracking-tight text-highlighted text-balance sm:text-4xl"
+            class="text-h2 text-highlighted text-balance"
           >
             {{ title }}
           </h2>
@@ -41,20 +41,18 @@
             <UButton
               icon="i-lucide-chevron-left"
               color="neutral"
-              variant="outline"
-              size="lg"
+              variant="soft"
               aria-label="Предыдущие вакансии"
-              class="rounded-full"
+              
               :disabled="!canScrollBack"
               @click="scroll('back')"
             />
             <UButton
               icon="i-lucide-chevron-right"
               color="neutral"
-              variant="outline"
-              size="lg"
+              variant="soft"
               aria-label="Следующие вакансии"
-              class="rounded-full"
+              
               :disabled="!canScrollForward"
               @click="scroll('forward')"
             />
@@ -75,7 +73,7 @@
 
       <div
         v-else-if="!props.vacancies.length"
-        class="flex flex-col items-center gap-4 rounded-2xl border border-dashed border-default bg-default px-6 py-12 text-center"
+        class="flex flex-col items-center gap-4 rounded-xl border border-dashed border-default bg-default px-6 py-12 text-center"
       >
         <UIcon
           name="i-lucide-briefcase"
@@ -94,7 +92,7 @@
           label="Все вакансии"
           to="/vacancies"
           color="primary"
-          class="rounded-full"
+          
         />
       </div>
 
@@ -124,7 +122,7 @@
 
             <article
               v-else
-              class="flex h-full min-h-80 flex-col items-center justify-center gap-5 rounded-lg border border-dashed border-default bg-default p-8 text-center transition-colors duration-200 hover:border-primary motion-reduce:transition-none"
+              class="flex h-full min-h-80 flex-col items-center justify-center gap-5 rounded-xl bg-elevated p-8 text-center transition-colors duration-200 hover:bg-accented motion-reduce:transition-none"
             >
               <div class="flex size-16 items-center justify-center rounded-full bg-primary/10 text-primary">
                 <UIcon

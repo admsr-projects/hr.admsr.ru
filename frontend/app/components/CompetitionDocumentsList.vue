@@ -16,7 +16,7 @@
       <li
         v-for="entry in documents"
         :key="entry.id"
-        class="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-default bg-default p-4"
+        class="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-elevated p-4"
       >
         <span class="flex min-w-0 items-center gap-2 text-base text-text-primary">
           <UIcon
@@ -34,7 +34,7 @@
           target="_blank"
           external
           color="neutral"
-          variant="outline"
+          variant="soft"
           class="cursor-pointer shrink-0"
           :aria-label="`Скачать: ${entry.name}`"
         />

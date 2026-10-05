@@ -3,25 +3,15 @@
     :title="department.name"
     :description="heroDescription"
   >
-    <template #heroActions>
-      <UButton
-        label="Вакансии органа"
-        :to="vacanciesLink"
-        color="primary"
-        size="lg"
-        icon="i-lucide-briefcase"
-        class="cursor-pointer"
-      />
-      <UButton
-        label="Обратная связь"
-        to="/feedback"
-        color="neutral"
-        variant="outline"
-        size="lg"
-        icon="i-lucide-message-square"
-        class="cursor-pointer"
-      />
-    </template>
+    <!-- Фото органа из админки: если не загружено — блок не показываем -->
+    <DsBlurredImage
+      v-if="department.image"
+      :src="department.image"
+      :alt="`Фото: ${department.name}`"
+      ratio-class="aspect-[21/9]"
+      loading="eager"
+      class="rounded-xl"
+    />
 
     <div class="grid gap-4 md:grid-cols-2">
       <DsPanelCard
@@ -118,38 +108,52 @@
           {{ paragraph }}
         </p>
 
-        <div v-if="department.units?.length">
-          <h3 class="mb-2 text-base font-semibold text-text-primary">
-            {{ unitsHeading }}
-          </h3>
-          <ul class="space-y-1 ps-5 list-disc marker:text-text-muted/60">
-            <li
-              v-for="unit in department.units"
-              :key="unit"
-            >
-              {{ unit }}
-            </li>
-          </ul>
-        </div>
-
-        <div v-if="department.tasks?.length">
-          <h3 class="mb-2 text-base font-semibold text-text-primary">
-            {{ tasksHeading }}
-          </h3>
-          <ul class="space-y-1 ps-5 list-disc marker:text-text-muted/60">
-            <li
-              v-for="task in department.tasks"
-              :key="task"
-            >
-              {{ task }}
-            </li>
-          </ul>
-        </div>
-
-        <p v-if="!aboutParagraphs.length && !department.tasks?.length && !department.units?.length">
+        <p v-if="!aboutParagraphs.length">
           Подробное описание функций и задач органа будет дополнено администрацией.
         </p>
       </div>
+    </DsPanelCard>
+
+    <DsPanelCard
+      v-if="department.units?.length"
+      :title="unitsHeading"
+      heading-id="dept-units"
+    >
+      <ul class="grid gap-3 sm:grid-cols-2">
+        <li
+          v-for="unit in department.units"
+          :key="unit"
+          class="flex items-start gap-3 rounded-lg bg-default p-4 text-sm leading-snug text-text-primary"
+        >
+          <UIcon
+            name="i-lucide-layers"
+            class="mt-0.5 size-5 shrink-0 text-primary"
+            aria-hidden="true"
+          />
+          <span class="text-pretty">{{ unit }}</span>
+        </li>
+      </ul>
+    </DsPanelCard>
+
+    <DsPanelCard
+      v-if="department.tasks?.length"
+      :title="tasksHeading"
+      heading-id="dept-tasks"
+    >
+      <ul class="grid gap-3 sm:grid-cols-2">
+        <li
+          v-for="task in department.tasks"
+          :key="task"
+          class="flex items-start gap-3 rounded-lg bg-default p-4 text-sm leading-snug text-text-primary"
+        >
+          <UIcon
+            name="i-lucide-circle-check"
+            class="mt-0.5 size-5 shrink-0 text-primary"
+            aria-hidden="true"
+          />
+          <span class="text-pretty">{{ task }}</span>
+        </li>
+      </ul>
     </DsPanelCard>
 
     <DsContentSection
@@ -186,7 +190,6 @@
             :label="`Все вакансии органа (${relatedVacancies.length})`"
             :to="vacanciesLink"
             color="primary"
-            size="lg"
             trailing-icon="i-lucide-arrow-right"
             class="cursor-pointer"
           />
@@ -206,7 +209,6 @@
             label="Смотреть все вакансии"
             to="/vacancies"
             color="primary"
-            size="lg"
             trailing-icon="i-lucide-arrow-right"
             class="cursor-pointer"
           />

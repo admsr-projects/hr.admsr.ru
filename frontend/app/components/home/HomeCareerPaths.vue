@@ -14,10 +14,10 @@
         v-for="path in paths"
         :key="path.to"
         :to="path.to"
-        class="group flex flex-col rounded-xl bg-surface-raised p-5 ring-1 ring-border-default transition-[box-shadow,transform,border-color] duration-300 hover:ring-primary-500/30 hover:shadow-md hover:-translate-y-0.5 motion-reduce:hover:translate-y-0 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+        class="group flex flex-col rounded-xl bg-elevated p-5 transition-colors duration-200 hover:bg-accented focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
       >
         <div
-          class="mb-4 inline-flex size-10 items-center justify-center rounded-lg bg-surface-sunken text-primary-600 transition-colors group-hover:bg-primary-500/10 dark:text-primary-400"
+          class="mb-4 inline-flex size-10 items-center justify-center rounded-lg bg-default text-primary transition-colors"
         >
           <UIcon
             :name="path.icon"

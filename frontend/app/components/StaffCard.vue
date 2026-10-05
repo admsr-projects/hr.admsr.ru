@@ -11,7 +11,7 @@
         :key="index"
       >
         <UCard
-          variant="subtle"
+          variant="soft"
           :ui="{ root: 'overflow-hidden rounded-xl', body: 'p-0' }"
         >
           <div class="grid grid-cols-1 lg:grid-cols-12">

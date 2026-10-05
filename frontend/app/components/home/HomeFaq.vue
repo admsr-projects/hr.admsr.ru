@@ -1,16 +1,16 @@
 <template>
-  <section class="border-t border-default bg-elevated/40">
+  <section class="bg-elevated/40">
     <UContainer class="flex flex-col gap-10 py-16 lg:py-20">
       <div class="flex max-w-2xl flex-col gap-3">
         <UBadge
           label="Вопрос - ответ"
           color="primary"
-          variant="subtle"
-          class="w-fit rounded-full"
+          variant="soft"
+          class="w-fit"
         />
         <h2
           id="faq"
-          class="text-3xl font-bold tracking-tight text-highlighted text-balance sm:text-4xl"
+          class="text-h2 text-highlighted text-balance"
         >
           Что важно знать перед откликом
         </h2>
@@ -33,10 +33,10 @@
             role="tab"
             :aria-selected="selectedId === item.id"
             aria-controls="faq-panel"
-            class="flex items-start gap-4 rounded-2xl border p-4 text-left transition motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="flex items-start gap-4 rounded-xl p-4 text-left transition motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             :class="selectedId === item.id
-              ? 'border-primary/50 bg-elevated'
-              : 'border-default bg-default hover:border-primary/30 hover:bg-elevated/60'"
+              ? 'bg-primary/10'
+              : 'bg-elevated hover:bg-accented'"
             @click="selectedId = item.id"
           >
             <span
@@ -67,7 +67,7 @@
           id="faq-panel"
           role="tabpanel"
           :aria-labelledby="`faq-tab-${activeItem.id}`"
-          class="flex flex-col gap-6 rounded-2xl border border-default bg-default p-6 lg:col-span-8 lg:p-8"
+          class="flex flex-col gap-6 rounded-xl bg-elevated p-6 lg:col-span-8 lg:p-8"
         >
           <div class="flex items-start gap-4">
             <span class="inline-flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -81,7 +81,7 @@
               <p class="text-sm font-medium text-primary">
                 Вопрос {{ activeIndex + 1 }} из {{ items.length }}
               </p>
-              <h3 class="text-xl font-semibold text-highlighted sm:text-2xl text-balance">
+              <h3 class="text-h3 text-highlighted text-balance">
                 {{ activeItem.label }}
               </h3>
             </div>
@@ -91,7 +91,7 @@
             {{ activeItem.content }}
           </p>
 
-          <div class="flex flex-col gap-4 rounded-2xl border border-default bg-elevated/40 p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+          <div class="flex flex-col gap-4 rounded-xl bg-elevated p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
             <div class="flex flex-col gap-1">
               <p class="font-semibold text-highlighted">
                 Не нашли нужного ответа?
@@ -105,14 +105,14 @@
                 label="Контакты"
                 to="/contacts"
                 color="primary"
-                class="rounded-full"
+                
               />
               <UButton
                 label="Обратная связь"
                 to="/feedback"
                 color="neutral"
-                variant="outline"
-                class="rounded-full"
+                variant="soft"
+                
               />
             </div>
           </div>

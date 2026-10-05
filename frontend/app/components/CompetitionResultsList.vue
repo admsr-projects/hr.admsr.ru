@@ -9,7 +9,7 @@
       <UCard
         v-for="index in 2"
         :key="index"
-        variant="subtle"
+        variant="soft"
         :ui="{ body: 'p-5 lg:p-6 space-y-4' }"
       >
         <USkeleton class="h-6 w-2/3" />
@@ -35,7 +35,7 @@
       <UCard
         v-for="entry in paginatedResults"
         :key="entry.id"
-        variant="subtle"
+        variant="soft"
         :ui="{
           root: 'rounded-xl',
           body: 'p-5 lg:p-6 space-y-4',
@@ -49,7 +49,7 @@
             <UBadge
               v-if="showTypeBadge && entry.competitionTypeLabel"
               color="primary"
-              variant="subtle"
+              variant="soft"
             >
               {{ entry.competitionTypeLabel }}
             </UBadge>
@@ -73,7 +73,6 @@
             external
             color="primary"
             variant="soft"
-            size="lg"
             class="cursor-pointer"
           />
           <UButton
@@ -84,8 +83,7 @@
             target="_blank"
             external
             color="primary"
-            variant="outline"
-            size="lg"
+            variant="soft"
             class="cursor-pointer transition-colors duration-200"
           />
         </div>
@@ -93,7 +91,7 @@
         <div
           role="group"
           :aria-labelledby="`winners-${entry.id}`"
-          class="rounded-lg border border-default bg-default p-4"
+          class="rounded-lg bg-elevated p-4"
         >
           <h4
             :id="`winners-${entry.id}`"
@@ -166,7 +164,6 @@
           :total="results.length"
           :items-per-page="itemsPerPage"
           color="primary"
-          size="lg"
         />
       </div>
     </div>

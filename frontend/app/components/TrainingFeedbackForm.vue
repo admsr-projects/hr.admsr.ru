@@ -11,7 +11,7 @@
       @submit="onSubmit"
     >
       <div
-        class="flex items-start gap-3 rounded-xl border border-default bg-elevated/40 px-4 py-4 sm:px-5"
+        class="flex items-start gap-3 rounded-xl bg-elevated px-4 py-4 sm:px-5"
         role="note"
       >
         <UIcon
@@ -36,7 +36,6 @@
         >
           <UInput
             v-model="form.name"
-            size="lg"
             placeholder="Как к вам обращаться"
             autocomplete="name"
             class="w-full"
@@ -50,7 +49,6 @@
           <USelectMenu
             v-model="form.department"
             :items="departmentOptions"
-            size="lg"
             value-key="value"
             placeholder="Выберите орган"
             :search-input="{
@@ -69,7 +67,6 @@
         <UTextarea
           v-model="form.message"
           :rows="5"
-          size="lg"
           placeholder="Опишите тему, формат или пожелания по обучению, встречам и мастер-классам"
           class="w-full"
         />
@@ -79,7 +76,6 @@
         type="submit"
         label="Отправить предложение"
         color="primary"
-        size="lg"
         trailing-icon="i-lucide-arrow-right"
         :loading="loading"
         class="w-full justify-center sm:w-auto"

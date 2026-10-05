@@ -78,7 +78,6 @@ const activeSectionDescription = computed(() => {
         v-model="activeType"
         color="primary"
         variant="link"
-        size="lg"
         :content="false"
         :items="typeTabItems"
         :unmount-on-hide="false"
@@ -132,7 +131,7 @@ const activeSectionDescription = computed(() => {
           description="Актуальный перечень вакантных должностей в администрации Сургутского района."
           icon="i-lucide-briefcase"
           to="/vacancies"
-          variant="subtle"
+          variant="soft"
           class="h-full cursor-pointer"
           :ui="{
             root: 'h-full',
@@ -146,7 +145,7 @@ const activeSectionDescription = computed(() => {
           description="Как вступить в резерв и развивать карьеру в администрации района."
           icon="i-lucide-users"
           to="/staffreserve"
-          variant="subtle"
+          variant="soft"
           class="h-full cursor-pointer"
           :ui="{
             root: 'h-full',

@@ -1,11 +1,11 @@
 <template>
   <section
     v-if="pending || partners.length"
-    class="border-t border-default bg-elevated/40"
+    class="bg-elevated/40"
   >
     <UContainer class="flex flex-col items-center gap-10 py-16 text-center lg:py-20">
       <div class="flex max-w-2xl flex-col items-center gap-3">
-        <h2 class="text-3xl font-bold tracking-tight text-highlighted text-balance sm:text-4xl">
+        <h2 class="text-h2 text-highlighted text-balance">
           С нами работают
         </h2>
         <p class="text-pretty text-lg leading-8 text-muted">
@@ -22,7 +22,7 @@
         <USkeleton
           v-for="index in 4"
           :key="index"
-          class="h-28 w-48 shrink-0 rounded-2xl"
+          class="h-28 w-48 shrink-0 rounded-xl"
         />
       </div>
 

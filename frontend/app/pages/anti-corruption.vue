@@ -141,7 +141,7 @@ function phoneHref(phone: string) {
         <UCard
           v-for="index in 3"
           :key="index"
-          variant="subtle"
+          variant="soft"
           :ui="{ body: 'p-5 lg:p-6 space-y-3' }"
         >
           <USkeleton class="h-6 w-1/2" />
@@ -233,7 +233,7 @@ function phoneHref(phone: string) {
         <UCard
           v-for="index in 3"
           :key="index"
-          variant="subtle"
+          variant="soft"
           :ui="{ body: 'p-4 lg:p-5 space-y-3' }"
         >
           <USkeleton class="h-5 w-3/4" />
@@ -253,7 +253,6 @@ function phoneHref(phone: string) {
           v-model="activeDocTab"
           color="primary"
           variant="link"
-          size="lg"
           :items="documentTabs"
           :unmount-on-hide="false"
           class="w-full"

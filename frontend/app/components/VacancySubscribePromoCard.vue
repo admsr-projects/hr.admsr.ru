@@ -8,13 +8,12 @@
         <UBadge
           label="Уведомления о вакансиях"
           color="primary"
-          variant="subtle"
-          size="lg"
-          class="w-fit max-w-full rounded-full"
+          variant="soft"
+          class="w-fit max-w-full"
         />
         <h2
           :id="headingId"
-          class="text-balance text-2xl font-bold tracking-tight text-highlighted sm:text-3xl lg:text-[2.5rem] lg:leading-tight"
+          class="text-h2 text-highlighted text-balance"
         >
           Не пропустите подходящую должность
         </h2>
@@ -32,7 +31,7 @@
           :key="item.title"
           class="flex min-w-0 items-start gap-3 sm:gap-4"
         >
-          <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-default bg-default text-primary sm:size-12">
+          <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-elevated text-primary sm:size-12">
             <UIcon
               :name="item.icon"
               class="size-5"
