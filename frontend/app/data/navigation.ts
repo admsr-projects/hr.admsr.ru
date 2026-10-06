@@ -21,6 +21,8 @@ export const navIcons: Record<string, string> = {
   '/youth': 'i-lucide-graduation-cap',
   '/profdev': 'i-lucide-book-open',
   '/anti-corruption': 'i-lucide-shield-alert',
+  '/anti-corruption/education': 'i-lucide-book-marked',
+  '/anti-corruption/education/positions': 'i-lucide-scale',
   '/feedback': 'i-lucide-message-square',
 }
 
@@ -81,16 +83,43 @@ export const navGroups: NavGroup[] = [
       },
     ],
   },
+  {
+    label: 'Нет коррупции!',
+    items: [
+      {
+        label: 'Основная информация',
+        to: '/anti-corruption',
+        description: 'Контакты, нормативные документы и обращения о коррупции',
+      },
+      {
+        label: 'Антикоррупционное просвещение',
+        to: '/anti-corruption/education',
+        description: 'Материалы по профилактике коррупции',
+      },
+    ],
+  },
 ]
 
 export const teamNavGroup = navGroups[0]!
 export const careerNavGroup = navGroups[1]!
+export const anticorruptionNavGroup = navGroups[2]!
+
+/** Меню раздела «Антикоррупционное просвещение» (боковая панель его страниц) */
+export const educationNavItems: NavItem[] = [
+  {
+    label: '27 правовых позиций по антикоррупционным делам',
+    to: '/anti-corruption/education/positions',
+    description: 'Обзор практики Верховного Суда РФ: позиции, нормы, аналитика',
+  },
+]
 
 /** Плоский список для футера и поиска */
 export const mainNavItems: NavItem[] = [
   { label: 'Главная', to: '/' },
-  ...navGroups.flatMap(group => group.items),
+  ...navGroups.slice(0, 2).flatMap(group => group.items),
   { label: 'Нет коррупции!', to: '/anti-corruption' },
+  { label: 'Антикоррупционное просвещение', to: '/anti-corruption/education' },
+  { label: '27 правовых позиций по антикоррупционным делам', to: '/anti-corruption/education/positions' },
 ]
 
 export const footerNavItems: NavItem[] = mainNavItems
@@ -108,7 +137,7 @@ export const siteContact = {
 export const footerLegalLinks: NavItem[] = [
   { label: 'Обратная связь', to: '/feedback' },
   { label: 'Политика персональных данных', to: '/privacy' },
-  { label: 'Анти-коррупционная политика', to: '/anti-corruption' },
+  { label: 'Нет коррупции!', to: '/anti-corruption' },
 ]
 
 export interface SocialLink {
@@ -186,7 +215,7 @@ function mapGroupChildren(items: NavItem[]): NavigationMenuItem[] {
   }))
 }
 
-/** Desktop: Главная + dropdown-группы + «Нет коррупции!» */
+/** Desktop: Главная + dropdown-группы (в том числе «Нет коррупции!») */
 export function buildDesktopNavItems(currentPath: string): NavigationMenuItem[] {
   return applyNavActiveState([
     { label: 'Главная', to: '/' },
@@ -194,7 +223,6 @@ export function buildDesktopNavItems(currentPath: string): NavigationMenuItem[] 
       label: group.label,
       children: mapGroupChildren(group.items),
     })),
-    { label: 'Нет коррупции!', to: '/anti-corruption' },
   ], currentPath)
 }
 
@@ -206,6 +234,5 @@ export function buildMobileNavItems(currentPath: string): NavigationMenuItem[] {
       label: group.label,
       children: mapGroupChildren(group.items),
     })),
-    { label: 'Нет коррупции!', to: '/anti-corruption' },
   ], currentPath)
 }

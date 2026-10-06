@@ -5,6 +5,8 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
+    "dev:kiosk": "nuxt dev --dotenv .env.kiosk",
+    "generate:kiosk": "nuxt generate --dotenv .env.kiosk",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
@@ -18,6 +20,7 @@
     "@nuxt/image": "^2.0.0",
     "@nuxt/ui": "^4.8.1",
     "better-sqlite3": "^12.8.0",
+    "chart.js": "^4.5.1",
     "marked": "^17.0.6",
     "nuxt": "^4.4.6",
     "tailwindcss": "^4.2.1"

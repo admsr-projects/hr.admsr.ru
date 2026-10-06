@@ -25,7 +25,9 @@ interface ParsedOfficial {
   phone?: string
 }
 
-useHead({ title: 'Противодействие коррупции' })
+const kiosk = useKiosk()
+
+useHead({ title: 'Нет коррупции! — основная информация' })
 
 const route = useRoute()
 const router = useRouter()
@@ -116,7 +118,7 @@ function phoneHref(phone: string) {
 
 <template>
   <DsStandardPage
-    title="Противодействие коррупции"
+    title="Основная информация"
     description="Информация управления муниципальной службы, кадров и наград администрации Сургутского района: контакты, нормативные документы и порядок подачи обращений о коррупционных правонарушениях."
     :intro="info?.intro"
   >
@@ -212,6 +214,7 @@ function phoneHref(phone: string) {
     </DsContentSection>
 
     <DsContentSection
+      v-if="!kiosk"
       title="Нормативные документы"
       description="Нормативные правовые и муниципальные правовые акты в сфере противодействия коррупции, методические материалы и формы документов"
       overline="Документы"
@@ -263,6 +266,7 @@ function phoneHref(phone: string) {
     </DsContentSection>
 
     <DsContentSection
+      v-if="!kiosk"
       title="Сообщить о коррупционном правонарушении"
       description="Подача онлайн-обращения о коррупционных правонарушениях, совершённых муниципальными служащими"
       overline="Обращение"

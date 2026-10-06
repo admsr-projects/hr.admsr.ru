@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (
     hello, portal_search, tenders, competitions, competition_results, competition_documents, staff_members, vacancies, vacancy_detail,
-    vacancy_filters, apply, anti_corruption_info, anti_corruption_documents, submit_corruption_report, branches_global, work_partners,
+    vacancy_filters, apply, anti_corruption_info, anti_corruption_education, anti_corruption_documents, submit_corruption_report, branches_global, work_partners,
     submit_feedback, vacancy_subscribe, vacancy_unsubscribe, staff_reserve_info, staff_reserve_documents, vacancy_documents, youth_info, submit_practice_application,
     training_events, training_event_detail, submit_training_feedback, news_posts, news_post_detail, departments, department_detail, deputies,
 )
@@ -32,6 +32,7 @@ urlpatterns = [
     path('vacancy-unsubscribe/<str:token>/', vacancy_unsubscribe),
     path('anti-corruption-info/', anti_corruption_info),
     path('anti-corruption-documents/', anti_corruption_documents),
+    path('anti-corruption-education/', anti_corruption_education),
     path('submit-corruption-report/', submit_corruption_report),
     path('branches-global/', branches_global),
     path('work-partners/', work_partners),

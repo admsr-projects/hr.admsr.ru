@@ -55,9 +55,13 @@ class CustomAdminSite(AdminSite):
                 'app_label': 'profdev_group',
                 'models': ['TrainingEvent', 'TrainingFeedback'],
             },
-            'Нет коррупции!': {
+            'Нет коррупции!: основная информация': {
                 'app_label': 'anticorruption_group',
                 'models': ['AntiCorruptionInfo', 'AntiCorruptionDocumentCategory', 'AntiCorruptionDocument', 'CorruptionReport'],
+            },
+            'Нет коррупции!: просвещение': {
+                'app_label': 'anticorruption_education_group',
+                'models': ['EducationReviewPage', 'EducationPosition', 'EducationCategory', 'EducationLegalAct'],
             },
             'Информация: обратная связь': {
                 'app_label': 'feedback_group',

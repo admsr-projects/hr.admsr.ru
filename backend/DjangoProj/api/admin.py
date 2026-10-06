@@ -9,6 +9,7 @@ from .models import (
     Competition, CompetitionResult, StaffReserveInfo, StaffReservePosition, StaffReserveDocument, VacancyDocument, WorkPartner, YouthInfo,
     PracticeApplication, TrainingEvent, TrainingFeedback, NewsPost, Department, Deputy,
     DeputyDepartment, ApplicationRecipient, CompetitionDocument, CompetitionWinner,
+    EducationReviewPage, EducationCategory, EducationLegalAct, EducationPosition,
 )
 from .adminsite import custom_admin_site
 from .admin_auth import register_auth_models
@@ -124,9 +125,54 @@ class AntiCorruptionDocumentAdmin(admin.ModelAdmin):
     autocomplete_fields = ['category']
 
 
-class AntiCorruptionInfoAdmin(admin.ModelAdmin):
+class AntiCorruptionInfoAdmin(MarkdownFieldsMixin, admin.ModelAdmin):
+    markdown_fields = ('intro',)
     list_display = ['__str__', 'updated_at']
     fields = ['intro', 'work_schedule', 'address', 'officials', 'esia_feedback_url']
+
+
+class EducationReviewPageAdmin(MarkdownFieldsMixin, admin.ModelAdmin):
+    markdown_fields = ('intro',)
+    list_display = ['__str__', 'updated_at']
+    fields = ['eyebrow', 'title', 'lead', 'approved_note', 'period', 'intro', 'source_note']
+
+    def has_add_permission(self, request):
+        return not EducationReviewPage.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+class EducationCategoryAdmin(admin.ModelAdmin):
+    list_display = ['name', 'short_name', 'color', 'order']
+    list_editable = ['order']
+    search_fields = ['name', 'short_name']
+
+
+class EducationLegalActAdmin(admin.ModelAdmin):
+    list_display = ['abbr', 'full_name', 'has_changed_note']
+    search_fields = ['abbr', 'full_name']
+
+    @admin.display(boolean=True, description='Помечен как изменённый')
+    def has_changed_note(self, obj):
+        return bool(obj.changed_note)
+
+
+class EducationPositionAdmin(admin.ModelAdmin):
+    list_display = ['number', 'title', 'category', 'outcome', 'municipal', 'is_published']
+    list_display_links = ['number', 'title']
+    list_filter = ['category', 'outcome', 'municipal', 'norm_changed', 'in_favor_of_official', 'is_published']
+    list_editable = ['is_published']
+    search_fields = ['title', 'key_quote', 'facts_summary', 'legal_basis', 'subjects']
+    ordering = ['number']
+    fieldsets = [
+        (None, {'fields': ['number', 'is_published', 'title', 'category']}),
+        ('Правовая позиция', {'fields': ['key_quote', 'facts_summary', 'lesson']}),
+        ('Участники и нормы', {'fields': ['subjects', 'legal_basis', 'municipal', 'norm_changed']}),
+        ('Исход', {'fields': ['outcome', 'outcome_note', 'in_favor_of_official', 'amount']}),
+        ('Хронология', {'fields': ['year', 'years', 'page']}),
+        ('Полный текст', {'fields': ['full_text', 'notes']}),
+    ]
 
 
 class CorruptionReportAdmin(admin.ModelAdmin):
@@ -241,7 +287,8 @@ class VacancyDocumentAdmin(admin.ModelAdmin):
     fields = ['name', 'file', 'order', 'is_active']
 
 
-class YouthInfoAdmin(admin.ModelAdmin):
+class YouthInfoAdmin(MarkdownFieldsMixin, admin.ModelAdmin):
+    markdown_fields = ('intro',)
     list_display = ['__str__', 'updated_at']
     fields = [
         'intro', 'practice_institutions', 'practice_steps',
@@ -329,6 +376,10 @@ custom_admin_site.register(JobApplication, JobApplicationAdmin)
 custom_admin_site.register(AntiCorruptionDocumentCategory, AntiCorruptionDocumentCategoryAdmin)
 custom_admin_site.register(AntiCorruptionDocument, AntiCorruptionDocumentAdmin)
 custom_admin_site.register(AntiCorruptionInfo, AntiCorruptionInfoAdmin)
+custom_admin_site.register(EducationReviewPage, EducationReviewPageAdmin)
+custom_admin_site.register(EducationPosition, EducationPositionAdmin)
+custom_admin_site.register(EducationCategory, EducationCategoryAdmin)
+custom_admin_site.register(EducationLegalAct, EducationLegalActAdmin)
 custom_admin_site.register(CorruptionReport, CorruptionReportAdmin)
 custom_admin_site.register(BranchesGlobal, BranchesGlobalAdmin)
 custom_admin_site.register(WorkPartner, WorkPartnerAdmin)

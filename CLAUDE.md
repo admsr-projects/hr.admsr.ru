@@ -15,8 +15,16 @@
 - Бэкенд: `cd backend/DjangoProj && DJANGO_DEBUG=True python manage.py runserver 8000`
 - Фронт: `cd frontend && npm run dev` (порт 3000; CORS бэка разрешает только его)
 - После добавления новых файлов страниц и плагинов dev-сервер Nuxt нужно перезапустить.
+- Киоск (kiosk.hr.admsr.ru, экран 1080×1920, без форм) — отдельная сборка того же фронта, правила в
+  [`docs/DESIGN-RULES.md`](docs/DESIGN-RULES.md) §10. Разработка: `cd frontend && npm run dev:kiosk`;
+  сборка: `npm run generate:kiosk` (результат в `frontend/.output-kiosk/public`), архив: `python deploy/pack_deploy.py --kiosk`.
+  Любая новая форма или поле ввода на сайте должна скрываться в киоске (`useKiosk()`).
 
 ## Прочее
+
+- Страница «Антикоррупционное просвещение» (`/anti-corruption/education`) — обзор практики ВС РФ: страница, категории, нормативные акты
+  и позиции редактируются в админке (группа «Нет коррупции!: просвещение»), API `/api/anti-corruption-education/`
+  (`backend/DjangoProj/api/education.py`). Начальные данные лежат в `api/seed/education_review.json` и загружаются миграцией 0056.
 
 - Локальные `backend/DjangoProj/db.sqlite3` и `frontend/.data/content/contents.sqlite` меняются при разработке —
   в коммиты их не добавлять.

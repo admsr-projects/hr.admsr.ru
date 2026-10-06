@@ -1,7 +1,7 @@
 """Поиск по всему порталу: вакансии, новости, мероприятия, конкурсы, документы, структура, контакты."""
 from .models import (
     AntiCorruptionDocument, Competition, CompetitionDocument, CompetitionResult, Department, Deputy,
-    NewsPost, StaffMember, StaffReserveDocument, StaffReservePosition, Tender, TrainingEvent, Vacancy,
+    EducationPosition, NewsPost, StaffMember, StaffReserveDocument, StaffReservePosition, Tender, TrainingEvent, Vacancy,
     VacancyDocument,
 )
 
@@ -73,6 +73,16 @@ def _documents(request, tokens, limit):
                     'page': '/tenders#competition-results',
                     'file': True,
                 })
+
+    for position in EducationPosition.objects.filter(is_published=True):
+        if _matches([position.title, position.key_quote, position.facts_summary, position.legal_basis], tokens):
+            docs.append({
+                'title': f'№ {position.number}. {position.title}',
+                'section': 'Антикоррупционное просвещение',
+                'to': f'/anti-corruption/education/positions#pos-{position.number}',
+                'page': '/anti-corruption/education/positions',
+                'file': False,
+            })
 
     return docs[:limit * 2]
 

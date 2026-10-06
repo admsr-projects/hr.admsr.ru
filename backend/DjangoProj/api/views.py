@@ -15,6 +15,7 @@ from .models import (
     Competition, CompetitionResult, StaffReserveInfo, StaffReserveDocument, VacancyDocument, WorkPartner, YouthInfo, PracticeApplication,
     TrainingEvent, TrainingFeedback, NewsPost, Department, Deputy, CompetitionDocument,
 )
+from .education import build_education_payload
 from .search import search_portal
 from .notifications import (
     email_from_unsubscribe_token, notify_recipients, KIND_VACANCIES, KIND_RESERVE, KIND_PRACTICE, KIND_TRAINING, KIND_FEEDBACK,
@@ -384,6 +385,11 @@ def anti_corruption_info(request):
     info = AntiCorruptionInfo.get_solo()
     serializer = AntiCorruptionInfoSerializer(info)
     return Response(serializer.data)
+
+
+@api_view(['GET'])
+def anti_corruption_education(request):
+    return Response(build_education_payload())
 
 
 @api_view(['GET'])

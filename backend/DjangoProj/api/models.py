@@ -295,16 +295,189 @@ class AntiCorruptionInfo(models.Model):
     updated_at = models.DateTimeField('Обновлено', auto_now=True)
 
     class Meta:
-        verbose_name = 'Страница «Противодействие коррупции»'
-        verbose_name_plural = 'Страница «Противодействие коррупции»'
+        verbose_name = 'Страница «Нет коррупции!»'
+        verbose_name_plural = 'Страница «Нет коррупции!»'
 
     def __str__(self):
-        return 'Противодействие коррупции'
+        return 'Нет коррупции!'
 
     @classmethod
     def get_solo(cls):
         obj, _ = cls.objects.get_or_create(pk=1)
         return obj
+
+
+class EducationReviewPage(models.Model):
+    """Страница «Антикоррупционное просвещение»: заголовок и вводные тексты обзора."""
+
+    eyebrow = models.CharField(
+        'Надзаголовок',
+        max_length=255,
+        default='Тематический обзор Верховного Суда РФ N 14/2026',
+    )
+    title = models.CharField(
+        'Заголовок обзора',
+        max_length=255,
+        default='27 правовых позиций по антикоррупционным делам',
+    )
+    lead = models.TextField(
+        'Краткое описание',
+        blank=True,
+        help_text='Абзац под заголовком обзора.',
+    )
+    approved_note = models.TextField(
+        'Реквизиты утверждения',
+        blank=True,
+        help_text='Например: «Утверждён постановлением Президиума ВС РФ от 01.07.2026 N 17А/2026».',
+    )
+    period = models.CharField(
+        'Период изученной практики',
+        max_length=50,
+        blank=True,
+        default='2020–2026',
+        help_text='Показывается в блоке цифр.',
+    )
+    intro = models.TextField(
+        'Вводная часть обзора',
+        blank=True,
+    )
+    source_note = models.TextField(
+        'Источник',
+        blank=True,
+        help_text='Пояснение внизу страницы: откуда взят материал и какую силу имеет.',
+    )
+    updated_at = models.DateTimeField('Обновлено', auto_now=True)
+
+    class Meta:
+        verbose_name = 'Страница «Антикоррупционное просвещение»'
+        verbose_name_plural = 'Страница «Антикоррупционное просвещение»'
+
+    def __str__(self):
+        return 'Антикоррупционное просвещение'
+
+    @classmethod
+    def get_solo(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+
+class EducationCategory(models.Model):
+    COLOR_CHOICES = [
+        ('indigo', 'Индиго'),
+        ('violet', 'Фиолетовый'),
+        ('teal', 'Бирюзовый'),
+        ('emerald', 'Зелёный'),
+        ('amber', 'Янтарный'),
+        ('slate', 'Серый'),
+    ]
+
+    name = models.CharField('Название', max_length=255)
+    short_name = models.CharField('Короткое название', max_length=120, help_text='Для меток и диаграмм.')
+    color = models.CharField('Цвет', max_length=20, choices=COLOR_CHOICES, default='indigo')
+    order = models.PositiveSmallIntegerField('Порядок', default=0)
+
+    class Meta:
+        verbose_name = 'Категория правовых позиций'
+        verbose_name_plural = 'Категории правовых позиций'
+        ordering = ['order', 'name']
+
+    def __str__(self):
+        return self.name
+
+
+class EducationLegalAct(models.Model):
+    abbr = models.CharField(
+        'Сокращение',
+        max_length=50,
+        unique=True,
+        help_text='Как в нормах позиций, например «ФЗ-273» или «ГК РФ». '
+                  'Норма «ст. 12 ФЗ-273» автоматически относится к акту «ФЗ-273».',
+    )
+    full_name = models.TextField('Полное название')
+    changed_note = models.TextField(
+        'Примечание об изменении',
+        blank=True,
+        help_text='Если акт утратил силу или изменён — на странице появится пометка «Норма изменена».',
+    )
+
+    class Meta:
+        verbose_name = 'Нормативный акт'
+        verbose_name_plural = 'Нормативные акты'
+        ordering = ['abbr']
+
+    def __str__(self):
+        return self.abbr
+
+
+class EducationPosition(models.Model):
+    OUTCOME_CHOICES = [
+        ('granted', 'Удовлетворено'),
+        ('granted_partly', 'Удовлетворено частично'),
+        ('lawful', 'Признано правомерным'),
+        ('denied', 'Отказано'),
+        ('remanded', 'Направлено на новое рассмотрение'),
+        ('motion_rejected', 'Ходатайство отклонено'),
+    ]
+
+    number = models.PositiveSmallIntegerField(
+        'Номер позиции',
+        unique=True,
+        help_text='Номер используется в ссылках и на карточках; по нему же сортируются позиции.',
+    )
+    is_published = models.BooleanField('Показывать на сайте', default=True)
+    title = models.CharField('Заголовок', max_length=255)
+    category = models.ForeignKey(
+        EducationCategory,
+        on_delete=models.PROTECT,
+        related_name='positions',
+        verbose_name='Категория',
+    )
+    subjects = models.TextField('Кто фигурирует', blank=True, help_text='Каждый субъект с новой строки.')
+    legal_basis = models.TextField(
+        'Применённые нормы',
+        blank=True,
+        help_text='Каждая норма с новой строки, например «ст. 15 ФЗ-25». Нормативный акт определяется по сокращению в конце.',
+    )
+    outcome = models.CharField('Исход', max_length=20, choices=OUTCOME_CHOICES, blank=True)
+    outcome_note = models.CharField('Пояснение к исходу', max_length=255, blank=True)
+    in_favor_of_official = models.BooleanField('Решено в пользу служащего / ответчика', default=False)
+    municipal = models.BooleanField('Касается муниципального уровня', default=False)
+    norm_changed = models.BooleanField('Норма изменена', default=False)
+    key_quote = models.TextField('Правовая позиция (дословно)')
+    facts_summary = models.TextField('Фабула дела', blank=True)
+    lesson = models.TextField('Что важно служащему', blank=True)
+    page = models.PositiveSmallIntegerField('Страница в PDF', null=True, blank=True)
+    year = models.PositiveSmallIntegerField(
+        'Год на таймлайне',
+        null=True,
+        blank=True,
+        help_text='Последний год событий из фабулы. Без года позиция попадёт в колонку «Без дат в фабуле».',
+    )
+    years = models.CharField('Период в фабуле', max_length=50, blank=True, help_text='Например «2020–2023».')
+    amount = models.PositiveBigIntegerField(
+        'Сумма, обращённая в доход РФ, ₽',
+        null=True,
+        blank=True,
+        help_text='Только если обзор называет сумму.',
+    )
+    full_text = models.TextField(
+        'Полный текст позиции',
+        blank=True,
+        help_text='Абзацы разделяются пустой строкой. Знак сноски в тексте — «<1>».',
+    )
+    notes = models.TextField(
+        'Сноски',
+        blank=True,
+        help_text='Каждая сноска с новой строки в виде «1. Текст сноски».',
+    )
+
+    class Meta:
+        verbose_name = 'Правовая позиция'
+        verbose_name_plural = 'Правовые позиции'
+        ordering = ['number']
+
+    def __str__(self):
+        return f'№ {self.number}. {self.title}'
 
 
 class CorruptionReport(models.Model):

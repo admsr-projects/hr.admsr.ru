@@ -57,7 +57,7 @@ export const heroImages: Record<HeroImageKey, HeroImageMeta> = {
   },
   antiCorruption: {
     file: 'line-5',
-    alt: 'Противодействие коррупции',
+    alt: 'Нет коррупции!',
   },
   privacy: {
     file: 'connect',

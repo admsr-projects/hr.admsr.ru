@@ -1,12 +1,15 @@
 import type { NavigationMenuItem } from '@nuxt/ui'
+import { IS_KIOSK } from '~/composables/useKiosk'
 import {
+  anticorruptionNavGroup,
   careerNavGroup,
+  educationNavItems,
   navIcons,
   teamNavGroup,
   type NavItem
 } from '~/data/navigation'
 
-export type StandardSectionId = 'team' | 'career' | 'info'
+export type StandardSectionId = 'team' | 'career' | 'anticorruption' | 'education' | 'info'
 
 export interface StandardSection {
   id: StandardSectionId
@@ -30,11 +33,21 @@ export const standardSections: StandardSection[] = [
     items: careerNavGroup.items
   },
   {
+    id: 'anticorruption',
+    label: anticorruptionNavGroup.label,
+    items: anticorruptionNavGroup.items
+  },
+  {
+    id: 'education',
+    label: 'Антикоррупционное просвещение',
+    items: educationNavItems
+  },
+  {
     id: 'info',
     label: 'Информация',
     items: [
-      { label: 'Нет коррупции!', to: '/anti-corruption' },
-      { label: 'Обратная связь', to: '/feedback' },
+      // На киоске форм нет, раздел обратной связи скрыт
+      ...(IS_KIOSK ? [] : [{ label: 'Обратная связь', to: '/feedback' }]),
       { label: 'Политика персональных данных', to: '/privacy' }
     ]
   }
@@ -50,7 +63,12 @@ function resolveMenuPath(path: string): string {
   return nestedPaths.find(entry => path.startsWith(entry.prefix))?.parent ?? path
 }
 
+export const EDUCATION_PATH = '/anti-corruption/education'
+
 export function resolveStandardSection(path: string): StandardSection | undefined {
+  // Вложенные страницы «Антикоррупционного просвещения» показывают меню своего раздела,
+  // а сама страница раздела — меню «Нет коррупции!»
+  if (path.startsWith(`${EDUCATION_PATH}/`)) return standardSections.find(section => section.id === 'education')
   const menuPath = resolveMenuPath(path)
   return standardSections.find(section =>
     section.items.some(item => item.to === menuPath)

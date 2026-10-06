@@ -26,6 +26,7 @@
         <div class="flex w-full min-w-0 flex-col gap-4">
           <DsStandardPageHeader
             :title="title"
+            :overline="overline"
             :description="description"
           >
             <template
@@ -36,12 +37,11 @@
             </template>
           </DsStandardPageHeader>
 
-          <p
+          <DsMarkdown
             v-if="intro"
-            class="text-body-lg text-text-secondary leading-relaxed whitespace-pre-line text-pretty"
-          >
-            {{ intro }}
-          </p>
+            :source="intro"
+            class="text-body-lg text-text-secondary leading-relaxed"
+          />
 
           <div class="flex flex-col gap-4">
             <slot />
@@ -55,6 +55,7 @@
 <script setup lang="ts">
 import type { BreadcrumbItem } from '~/data/breadcrumbs'
 import {
+  EDUCATION_PATH,
   type SidebarItem,
   resolveSectionMenu,
   resolveStandardSection,
@@ -63,11 +64,14 @@ import {
 
 const props = withDefaults(defineProps<{
   title: string
+  overline?: string
   description?: string
+  /** Вводный текст в формате Markdown */
   intro?: string
   /** @deprecated Не отображается — контекст раздела даёт меню слева и хлебные крошки */
   badge?: string
 }>(), {
+  overline: undefined,
   description: undefined,
   intro: undefined,
   badge: undefined
@@ -103,6 +107,14 @@ const sectionNavItems = computed(() =>
 const breadcrumbs = computed<BreadcrumbItem[]>(() => {
   const items: BreadcrumbItem[] = [{ label: 'Главная', to: '/', icon: 'i-lucide-home' }]
   const section = resolveStandardSection(route.path)
+
+  // Раздел «Антикоррупционное просвещение» вложен в «Нет коррупции!»
+  if (route.path.startsWith(EDUCATION_PATH)) {
+    items.push({ label: 'Нет коррупции!', to: '/anti-corruption' })
+    if (route.path !== EDUCATION_PATH) items.push({ label: 'Антикоррупционное просвещение', to: EDUCATION_PATH })
+    items.push({ label: props.title })
+    return items
+  }
 
   if (section) {
     // У раздела нет своей страницы — крошка ведёт на его первую страницу
