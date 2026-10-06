@@ -89,11 +89,6 @@ export default defineAppConfig({
         variant: 'soft',
       },
     },
-    checkbox: {
-      slots: {
-        base: 'rounded-md',
-      },
-    },
     pagination: {
       slots: {
         root: 'pagination-controls',

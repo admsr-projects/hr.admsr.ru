@@ -120,6 +120,21 @@ body {
   outline: none;
 }
 
+/* WCAG 2.4.7: фокус с клавиатуры всегда виден и всегда основного цвета.
+   У soft/ghost/link-вариантов и полей без обводки Nuxt UI своего фокуса не рисует — добавляем контур.
+   Элементы, у которых фокус уже нарисован классами Nuxt UI (кольцо или контур 2px:
+   поля форм, вкладки, пункты меню), пропускаем, чтобы он не задваивался. */
+:where(a, button, summary, [role='button'], [role='tab'], [role='combobox'], [role='switch'], [tabindex]:not([tabindex='-1'])):not(.skip-link, [class*='focus-visible:ring'], [class*='focus-visible:before:ring'], [class*='focus-visible:outline-2'], [data-reka-popper-content-wrapper] [role='combobox']):focus-visible {
+  outline: 2px solid var(--ui-primary) !important;
+  outline-offset: 2px;
+}
+
+:where(input:not([type='checkbox'], [type='radio']), textarea, select):not([class*='focus-visible:ring'], [data-reka-popper-content-wrapper] *):focus-visible {
+  outline: 2px solid var(--ui-primary) !important;
+  /* внутрь поля: снаружи контур обрезается контейнерами с overflow. Поиск внутри выпадающего списка пропускаем: он в фокусе всегда и сидит в строке с нижней линией */
+  outline-offset: -2px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -13,7 +13,3 @@ button[data-slot='base'][aria-haspopup='listbox'] {
 .group.relative.inline-flex.items-center.rounded-md {
   border-radius: 0.375rem;
 }
-
-button[data-slot='base'][role='checkbox'] {
-  border-radius: 0.375rem;
-}
