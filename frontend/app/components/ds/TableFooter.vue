@@ -1,12 +1,13 @@
 <template>
   <div
-    v-if="visible"
     class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
   >
     <div class="flex items-center gap-2 text-caption text-text-muted">
       <span :id="labelId">Показывать по</span>
       <USelect
         v-model="pageSize"
+        variant="soft"
+        :ui="{ base: 'bg-elevated' }"
         :items="sizeItems"
         :aria-labelledby="labelId"
         class="w-20"
@@ -20,18 +21,16 @@
       :total="total"
       :items-per-page="pageSize"
       color="neutral"
-      variant="subtle"
+      variant="soft"
       :ui="{ first: 'hidden', last: 'hidden' }"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   /** Строк после поиска. */
   total: number
-  /** Строк до поиска: если их не больше минимального размера страницы, футер не нужен. */
-  totalAll: number
   paginationLabel: string
 }>()
 
@@ -40,5 +39,4 @@ const pageSize = defineModel<number>('pageSize', { required: true })
 
 const labelId = useId()
 const sizeItems = TABLE_PAGE_SIZES.map(size => ({ label: String(size), value: size }))
-const visible = computed(() => props.totalAll > TABLE_PAGE_SIZES[0])
 </script>

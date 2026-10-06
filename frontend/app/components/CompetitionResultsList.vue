@@ -25,6 +25,7 @@
       class="flex flex-col gap-4"
     >
       <DsTableSearch
+        v-if="showControls"
         v-model="search"
         placeholder="Поиск по названию или победителю"
       />
@@ -157,10 +158,10 @@
       </div>
 
       <DsTableFooter
+        v-if="showControls"
         v-model:page="currentPage"
         v-model:page-size="pageSize"
         :total="total"
-        :total-all="results.length"
         pagination-label="Страницы списка результатов конкурсов"
       />
     </div>
@@ -228,6 +229,7 @@ const {
   pageSize,
   currentPage,
   total,
+  showControls,
   pageItems: paginatedResults,
   toggleSort,
   ariaSort,

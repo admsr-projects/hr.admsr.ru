@@ -1,6 +1,9 @@
 <template>
   <div class="flex flex-col gap-4">
-    <DsTableSearch v-model="search" />
+    <DsTableSearch
+      v-if="showControls"
+      v-model="search"
+    />
 
     <div class="rounded-xl bg-elevated p-2 sm:p-4">
       <table class="block w-full text-left sm:table">
@@ -73,10 +76,10 @@
     </div>
 
     <DsTableFooter
+      v-if="showControls"
       v-model:page="currentPage"
       v-model:page-size="pageSize"
       :total="total"
-      :total-all="documents.length"
       :pagination-label="paginationLabel"
     />
   </div>
@@ -98,7 +101,7 @@ const props = defineProps<{
 
 const documentsRef = toRef(props, 'documents')
 
-const { search, pageSize, currentPage, total, pageItems, toggleSort, ariaSort } = useTableView(documentsRef, {
+const { search, pageSize, currentPage, total, showControls, pageItems, toggleSort, ariaSort } = useTableView(documentsRef, {
   sort: {
     date: entry => (entry.created_at ? new Date(entry.created_at).getTime() : null),
     name: entry => entry.name,

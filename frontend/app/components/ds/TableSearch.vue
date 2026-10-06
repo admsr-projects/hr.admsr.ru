@@ -2,6 +2,8 @@
   <UInput
     v-model="model"
     type="search"
+    variant="soft"
+    :ui="{ base: 'bg-elevated' }"
     icon="i-lucide-search"
     :placeholder="placeholder"
     :aria-label="placeholder"

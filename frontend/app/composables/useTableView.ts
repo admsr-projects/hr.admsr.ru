@@ -1,5 +1,8 @@
 export const TABLE_PAGE_SIZES = [5, 10, 20, 50] as const
 
+/** Если строк меньше, поиск и пагинация не нужны: таблица показывается целиком. */
+export const TABLE_CONTROLS_MIN_ROWS = 10
+
 /**
  * Поиск, сортировка и постраничный вывод строк таблицы.
  * Порядок: поиск → сортировка → страница. Любое изменение условий возвращает на первую страницу.
@@ -23,7 +26,10 @@ export function useTableView<T, K extends string>(
 
   const { sorted, sortKey, sortDirection, toggleSort, ariaSort } = useTableSort(filtered, options.sort)
 
+  const showControls = computed(() => items.value.length >= TABLE_CONTROLS_MIN_ROWS)
+
   const pageItems = computed(() => {
+    if (!showControls.value) return sorted.value
     const start = (currentPage.value - 1) * pageSize.value
     return sorted.value.slice(start, start + pageSize.value)
   })
@@ -41,6 +47,7 @@ export function useTableView<T, K extends string>(
     pageSize,
     currentPage,
     total: computed(() => filtered.value.length),
+    showControls,
     pageItems,
     toggleSort,
     ariaSort,

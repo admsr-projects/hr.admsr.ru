@@ -87,7 +87,7 @@
             :total="pastEvents.length"
             :items-per-page="itemsPerPage"
             color="neutral"
-            variant="subtle"
+            variant="soft"
             :ui="{ first: 'hidden', last: 'hidden' }"
           />
         </div>
