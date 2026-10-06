@@ -1,0 +1,37 @@
+/*
+ * Режим информационного киоска (kiosk.hr.admsr.ru, экран 1080×1920, вертикально).
+ * Подключается вместо main.css только в сборке с KIOSK_MODE=true (см. nuxt.config.ts, docs/DESIGN-RULES.md §10).
+ *
+ * Идея: всё в проекте считается в rem, поэтому увеличиваем корневой шрифт в 1,5 раза, а брейкпоинты Tailwind
+ * увеличиваем во столько же раз — экран 1080 px ведёт себя как планшет шириной 720 px, но в полтора раза крупнее.
+ * Брейкпоинты в media-запросах считаются от 16 px независимо от размера шрифта страницы, поэтому пересчитываем их вручную.
+ */
+@import "./main.css";
+
+@theme {
+  --breakpoint-sm: 60rem;   /* 640 px × 1,5 = 960 px  → активен на киоске (1080) */
+  --breakpoint-md: 72rem;   /* 768 px × 1,5 = 1152 px */
+  --breakpoint-lg: 96rem;   /* 1024 px × 1,5 = 1536 px */
+  --breakpoint-xl: 120rem;
+  --breakpoint-2xl: 144rem;
+}
+
+:root {
+  --font-scale-base: 150%;
+  --kiosk-nav-height: 5.5rem;
+}
+
+html {
+  /* Сенсорный экран: без выделения текста, задержки двойного касания и «резинки» прокрутки */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  overscroll-behavior: none;
+}
+
+/* Место под нижнюю панель киоска, чтобы она не перекрывала подвал */
+body {
+  padding-bottom: var(--kiosk-nav-height);
+}

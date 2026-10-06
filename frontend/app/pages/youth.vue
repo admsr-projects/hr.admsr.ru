@@ -11,6 +11,8 @@ interface YouthInfo {
 
 useHead({ title: 'Муниципальная служба для молодёжи' })
 
+const kiosk = useKiosk()
+
 const route = useRoute()
 const router = useRouter()
 const config = useRuntimeConfig()
@@ -183,6 +185,7 @@ function parseStepParts(step: string): StepPart[] {
           </DsContentSection>
 
           <DsContentSection
+            v-if="!kiosk"
             title="Заявка на практику"
             description="Заполните форму — специалист управления муниципальной службы, кадров и наград свяжется с вами для согласования прохождения практики"
             overline="Подать заявку"

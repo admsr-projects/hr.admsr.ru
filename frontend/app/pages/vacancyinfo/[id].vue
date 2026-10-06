@@ -19,6 +19,7 @@ const { data: vacancy, pending, error } = await useAsyncData(
 
 const { data: departments } = await useDepartmentsList()
 
+const kiosk = useKiosk()
 const isApplicationFormOpen = ref(false)
 
 useHead(() => ({
@@ -202,6 +203,7 @@ async function handleFormSubmit(formData: Record<string, unknown>) {
 <template>
   <div>
     <UModal
+      v-if="!kiosk"
       v-model:open="isApplicationFormOpen"
       :ui="{ content: 'max-w-3xl w-[calc(100vw-2rem)] sm:w-full' }"
     >
@@ -220,7 +222,7 @@ async function handleFormSubmit(formData: Record<string, unknown>) {
       badge="Карьера"
     >
       <template
-        v-if="vacancy && !error"
+        v-if="vacancy && !error && !kiosk"
         #heroActions
       >
         <UButton
@@ -354,6 +356,33 @@ async function handleFormSubmit(formData: Record<string, unknown>) {
         </DsContentSection>
 
         <DsContentSection
+          v-if="kiosk"
+          title="Как откликнуться"
+          description="Заявки на киоске не принимаются"
+          overline="Отклик"
+          heading-id="vacancy-apply"
+          spacing="lg"
+        >
+          <DsCalloutPanel
+            title="Подайте отклик на портале или в кадровой службе"
+            description="Откликнуться на вакансию можно на сайте hr.admsr.ru или лично — контакты кадровых подразделений собраны в разделе «Контакты»."
+            icon="i-lucide-info"
+            color="primary"
+            variant="soft"
+          >
+            <template #actions>
+              <UButton
+                label="Контакты"
+                to="/contacts"
+                color="primary"
+                trailing-icon="i-lucide-arrow-right"
+              />
+            </template>
+          </DsCalloutPanel>
+        </DsContentSection>
+
+        <DsContentSection
+          v-else
           title="Отклик на вакансию"
           description="Заполните анкету онлайн — заявка поступит в кадровую службу администрации района"
           overline="Отклик"

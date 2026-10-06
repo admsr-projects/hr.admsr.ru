@@ -33,6 +33,7 @@
               trailing-icon="i-lucide-arrow-up-right"
             />
             <UButton
+              v-if="!kiosk"
               label="Обратная связь"
               to="/feedback"
               icon="i-lucide-message-square"
@@ -99,10 +100,12 @@
 <script setup lang="ts">
 import { navIcons } from '~/data/navigation'
 
+const kiosk = useKiosk()
+
 const careerItems = [
   {
     label: 'Вакансии',
-    description: 'Актуальные должности и форма отклика на сайте.',
+    description: kiosk ? 'Актуальные должности администрации района.' : 'Актуальные должности и форма отклика на сайте.',
     to: '/vacancies',
     icon: navIcons['/vacancies'],
   },

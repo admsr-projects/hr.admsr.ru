@@ -8,7 +8,7 @@
   padding-block: var(--space-section-lg);
 }
 
-@media (min-width: 1024px) {
+@media (width >= theme(--breakpoint-lg)) {
   .ds-section-spacing-md {
     padding-block: var(--space-section-md);
   }

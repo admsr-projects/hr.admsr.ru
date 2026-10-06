@@ -17,7 +17,10 @@
 
     <HomeValuesBento />
 
-    <VacancySubscribeForm promo />
+    <VacancySubscribeForm
+      v-if="!kiosk"
+      promo
+    />
 
     <HomeFaq />
 
@@ -28,6 +31,7 @@
 useHead({ title: 'Главная' })
 
 const config = useRuntimeConfig()
+const kiosk = useKiosk()
 
 const { data: vacanciesData, pending: vacanciesPending } = await useAsyncData('vacancies', () =>
   $fetch(`${config.public.apiBaseUrl}/api/vacancies/`), { server: false })

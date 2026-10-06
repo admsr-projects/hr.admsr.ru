@@ -55,6 +55,7 @@
         variant="soft"
       />
       <UButton
+        v-if="!kiosk"
         label="Откликнуться"
         :aria-label="`Откликнуться на вакансию: ${vacancy.title}`"
         color="primary"
@@ -117,6 +118,7 @@
         {{ salary }}
       </p>
       <UButton
+        v-if="!kiosk"
         label="Откликнуться"
         :aria-label="`Откликнуться на вакансию: ${vacancy.title}`"
         color="primary"
@@ -162,6 +164,8 @@ const props = withDefaults(defineProps<{
 defineEmits<{
   apply: [vacancy: Vacancy]
 }>()
+
+const kiosk = useKiosk()
 
 /** Структурное подразделение показываем, только если он указан: «Администрация Сургутского района» по умолчанию не подставляем */
 const organization = computed(() => {

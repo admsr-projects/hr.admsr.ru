@@ -1,5 +1,6 @@
 <template>
   <UInput
+    v-if="!kiosk"
     v-model="model"
     type="search"
     variant="soft"
@@ -34,4 +35,7 @@ withDefaults(defineProps<{
 })
 
 const model = defineModel<string>({ default: '' })
+
+// На киоске нет клавиатуры — поиск по таблицам скрыт
+const kiosk = useKiosk()
 </script>

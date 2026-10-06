@@ -4,6 +4,8 @@ import { socialLinks } from '~/data/navigation'
 
 useHead({ title: 'О нас' })
 
+const kiosk = useKiosk()
+
 const headFullName = `${headOfDistrict.surname} ${headOfDistrict.name} ${headOfDistrict.patronymic}`
 
 const missionCards = [
@@ -66,6 +68,7 @@ const missionCards = [
     </DsContentSection>
 
     <DsContentSection
+      v-if="!kiosk"
       title="Будьте в курсе жизни администрации"
       description="Новости, события и проекты района — в официальных социальных сетях"
       overline="Сообщество"

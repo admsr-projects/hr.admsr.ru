@@ -19,8 +19,13 @@
         <NuxtPage />
       </UMain>
       <AppFooter />
-      <ScrollToTop />
-      <CookieConsent />
+      <template v-if="kiosk">
+        <KioskNav />
+      </template>
+      <template v-else>
+        <ScrollToTop />
+        <CookieConsent />
+      </template>
     </div>
   </UApp>
 </template>
@@ -28,10 +33,13 @@
 <script setup lang="ts">
 import { ru } from '@nuxt/ui/locale'
 
+const kiosk = useKiosk()
+
 useHead({
   titleTemplate: '%s — Кадровый портал Сургутского района',
   htmlAttrs: {
-    lang: 'ru'
+    lang: 'ru',
+    class: kiosk ? 'kiosk' : undefined
   }
 })
 

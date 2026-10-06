@@ -4,6 +4,8 @@ import type { TrainingEvent } from '~/components/TrainingEventsList.vue'
 
 useHead({ title: 'Профессиональное развитие' })
 
+const kiosk = useKiosk()
+
 const route = useRoute()
 const router = useRouter()
 const config = useRuntimeConfig()
@@ -130,7 +132,7 @@ function sectionMetaForTab(tab: ProfdevTab) {
           </DsContentSection>
 
           <DsContentSection
-            v-if="activeTab === item.value"
+            v-if="!kiosk && activeTab === item.value"
             title="Предложения по организации обучения"
             description="Поделитесь идеями по темам, форматам и расписанию мероприятий. Форма не предназначена для подачи официальных обращений."
             overline="Обратная связь"

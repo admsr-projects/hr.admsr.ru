@@ -55,6 +55,7 @@
                 Победители
               </th>
               <th
+                v-if="!kiosk"
                 scope="col"
                 class="px-4 py-3 font-medium"
               >
@@ -116,7 +117,10 @@
                   Будут опубликованы после подведения итогов
                 </span>
               </td>
-              <td class="block px-4 py-1 sm:table-cell sm:py-4 sm:align-top">
+              <td
+                v-if="!kiosk"
+                class="block px-4 py-1 sm:table-cell sm:py-4 sm:align-top"
+              >
                 <div class="flex flex-wrap gap-2 sm:flex-col sm:items-start">
                   <UButton
                     v-if="entry.decreeConductLink"
@@ -147,7 +151,7 @@
             </tr>
             <tr v-if="!paginatedResults.length">
               <td
-                colspan="4"
+                :colspan="kiosk ? 3 : 4"
                 class="block px-4 py-6 text-center text-base text-text-muted sm:table-cell"
               >
                 Ничего не найдено
@@ -195,6 +199,7 @@ const props = withDefaults(defineProps<{
 })
 
 const config = useRuntimeConfig()
+const kiosk = useKiosk()
 
 const showTypeBadge = computed(() => !props.typeFilter)
 

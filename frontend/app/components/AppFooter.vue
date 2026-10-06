@@ -8,7 +8,9 @@ import {
   teamNavGroup,
 } from '~/data/navigation'
 
+const kiosk = useKiosk()
 const currentYear = new Date().getFullYear()
+const legalLinks = computed(() => footerLegalLinks.filter(item => !kiosk || item.to !== '/feedback'))
 const teamLinks = teamNavGroup.items
 </script>
 
@@ -37,7 +39,10 @@ const teamLinks = teamNavGroup.items
             Официальный портал о карьере, вакансиях и развитии сотрудников администрации Сургутского района.
           </p>
 
-          <div class="flex flex-wrap gap-2.5">
+          <div
+            v-if="!kiosk"
+            class="flex flex-wrap gap-2.5"
+          >
             <NuxtLink
               v-for="social in socialLinks"
               :key="social.label"
@@ -125,7 +130,7 @@ const teamLinks = teamNavGroup.items
                 aria-hidden="true"
               />
               <a
-                :href="siteContact.phoneHref"
+                :href="kiosk ? undefined : siteContact.phoneHref"
                 class="transition hover:text-primary motion-reduce:transition-none"
               >
                 {{ siteContact.phone }}
@@ -138,7 +143,7 @@ const teamLinks = teamNavGroup.items
                 aria-hidden="true"
               />
               <a
-                :href="`mailto:${siteContact.email}`"
+                :href="kiosk ? undefined : `mailto:${siteContact.email}`"
                 class="transition hover:text-primary motion-reduce:transition-none"
               >
                 {{ siteContact.email }}
@@ -164,6 +169,7 @@ const teamLinks = teamNavGroup.items
               
             />
             <UButton
+              v-if="!kiosk"
               to="/feedback"
               label="Обратная связь"
               icon="i-lucide-message-square"
@@ -184,7 +190,7 @@ const teamLinks = teamNavGroup.items
 
         <ul class="flex flex-wrap gap-x-5 gap-y-2">
           <li
-            v-for="item in footerLegalLinks"
+            v-for="item in legalLinks"
             :key="item.to"
           >
             <NuxtLink

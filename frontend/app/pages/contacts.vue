@@ -3,6 +3,8 @@ import type { StaffContact } from '~/components/ContactMemberCard.vue'
 
 useHead({ title: 'Контакты' })
 
+const kiosk = useKiosk()
+
 const config = useRuntimeConfig()
 
 const { data: managementHeadData, pending: managementHeadPending } = await useAsyncData(
@@ -53,6 +55,7 @@ const managementUnitTitle = computed(
     </DsContentSection>
 
     <DsContentSection
+      v-if="!kiosk"
       title="Нужна помощь?"
       description="Если вы не нашли нужный контакт, оставьте обращение — мы ответим в рабочее время"
       overline="Обратная связь"

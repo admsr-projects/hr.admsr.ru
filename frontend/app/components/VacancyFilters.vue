@@ -4,6 +4,7 @@
     class="flex flex-col gap-4 rounded-xl bg-elevated p-6"
   >
     <UInput
+      v-if="!kiosk"
       :model-value="model.q"
       type="search"
       icon="i-lucide-search"
@@ -19,7 +20,7 @@
           :model-value="model.branch"
           :items="branchItems"
           value-key="value"
-          :search-input="{
+          :search-input="kiosk ? false : {
             placeholder: 'Поиск подразделения…',
             icon: 'i-lucide-search',
           }"
@@ -82,6 +83,8 @@ defineProps<{
 }>()
 
 const model = defineModel<VacancyFilterState>({ required: true })
+
+const kiosk = useKiosk()
 
 const config = useRuntimeConfig()
 const ALL = VACANCY_FILTER_ALL

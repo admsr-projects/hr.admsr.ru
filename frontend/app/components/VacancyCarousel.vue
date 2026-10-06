@@ -1,6 +1,7 @@
 <template>
   <section class="bg-default">
     <UModal
+      v-if="!kiosk"
       v-model:open="isApplicationFormOpen"
       :ui="{ content: 'max-w-3xl w-[calc(100vw-2rem)] sm:w-full' }"
     >
@@ -181,6 +182,7 @@ const props = withDefaults(defineProps<{
 })
 
 const config = useRuntimeConfig()
+const kiosk = useKiosk()
 const isApplicationFormOpen = ref(false)
 const selectedVacancy = ref<Vacancy | null>(null)
 const trackRef = ref<HTMLElement | null>(null)

@@ -14,6 +14,7 @@ interface VacancyListItem {
 const route = useRoute()
 const router = useRouter()
 const config = useRuntimeConfig()
+const kiosk = useKiosk()
 
 // Подразделение из ссылки (?org=…), например со страницы отдела
 const orgFromRoute = computed(() => {
@@ -69,7 +70,7 @@ const visibleVacancies = computed(() => {
   >
     <DsContentSection
       title="Актуальные вакансии"
-      description="Выберите подходящую должность, уточните условия и откликнитесь онлайн"
+      :description="kiosk ? 'Выберите подходящую должность и узнайте условия' : 'Выберите подходящую должность, уточните условия и откликнитесь онлайн'"
       overline="Вакансии"
       heading-id="vacancies-list"
       spacing="lg"
@@ -91,6 +92,7 @@ const visibleVacancies = computed(() => {
     </DsContentSection>
 
     <DsContentSection
+      v-if="!kiosk"
       heading-id="vacancies-subscribe"
       toc-label="Подписка на вакансии"
       spacing="lg"
@@ -103,6 +105,7 @@ const visibleVacancies = computed(() => {
     </DsContentSection>
 
     <DsContentSection
+      v-if="!kiosk"
       title="Документы"
       description="Нормативные и информационные материалы о поступлении на муниципальную службу и работе с вакансиями администрации Сургутского района."
       overline="Материалы"

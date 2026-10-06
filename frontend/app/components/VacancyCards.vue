@@ -1,6 +1,7 @@
 <template>
   <div :class="embedded ? undefined : 'flex-1 pb-6'">
     <UModal
+      v-if="!kiosk"
       v-model:open="isApplicationFormOpen"
       :ui="{ content: 'max-w-3xl w-[calc(100vw-2rem)] sm:w-full' }"
     >
@@ -71,6 +72,7 @@ import ApplicationForm from './ApplicationForm.vue'
 import VacancyCard from './VacancyCard.vue'
 
 const config = useRuntimeConfig()
+const kiosk = useKiosk()
 const isApplicationFormOpen = ref(false)
 const selectedVacancy = ref(null)
 const isSubmitting = ref(false)

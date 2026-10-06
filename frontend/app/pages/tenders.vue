@@ -3,6 +3,8 @@ import type { TabsItem } from '@nuxt/ui'
 
 useHead({ title: 'Конкурсы' })
 
+const kiosk = useKiosk()
+
 const route = useRoute()
 const router = useRouter()
 
@@ -91,7 +93,7 @@ const activeSectionDescription = computed(() => {
       />
 
       <CompetitionDocumentsList
-        v-if="activeType !== 'vacancy'"
+        v-if="!kiosk && activeType !== 'vacancy'"
         class="mt-4"
         type="reserve"
         title="Нормативные документы, регламентирующие формирование кадрового резерва"
@@ -100,7 +102,7 @@ const activeSectionDescription = computed(() => {
 
     <DsContentSection
       title="Результаты конкурсов"
-      description="Архив завершённых конкурсов: постановление о проведении и постановление о результатах. Форматы и размеры файлов соответствуют пункту 4.9 Распоряжения № 497-р, если иное не установлено Положением."
+:description="kiosk ? 'Архив завершённых конкурсов и их победители' : 'Архив завершённых конкурсов: постановление о проведении и постановление о результатах. Форматы и размеры файлов соответствуют пункту 4.9 Распоряжения № 497-р, если иное не установлено Положением.'"
       overline="Архив"
       heading-id="competition-results"
       spacing="lg"
@@ -109,6 +111,7 @@ const activeSectionDescription = computed(() => {
     </DsContentSection>
 
     <DsContentSection
+      v-if="!kiosk"
       title="Документы"
       description="Нормативные и информационные материалы о проведении конкурсов в администрации района."
       overline="Материалы"

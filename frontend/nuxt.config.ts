@@ -1,6 +1,8 @@
 // Счётчик Яндекс.Метрики подключаем только в продакшене, чтобы разработка не попадала в статистику
 const YANDEX_METRIKA_ID = 113462586
 const isProduction = process.env.NODE_ENV === 'production'
+// Режим информационного киоска (kiosk.hr.admsr.ru, экран 1080×1920): отдельная сборка, см. docs/DESIGN-RULES.md §10
+const isKiosk = process.env.KIOSK_MODE === 'true'
 
 const yandexMetrikaScript = `(function(m,e,t,r,i,k,a){
   m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
@@ -12,8 +14,12 @@ const yandexMetrikaScript = `(function(m,e,t,r,i,k,a){
 ym(${YANDEX_METRIKA_ID}, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});`
 
 export default defineNuxtConfig({
+  // Сборка киоска живёт в своих каталогах и не затирает обычную
+  buildDir: isKiosk ? '.nuxt-kiosk' : '.nuxt',
+
   nitro: {
-    preset: 'node-server'
+    preset: 'node-server',
+    ...(isKiosk ? { output: { dir: '.output-kiosk', publicDir: '.output-kiosk/public' } } : {})
   },
 
   runtimeConfig: {
@@ -41,6 +47,10 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    // Режим киоска для модулей данных вне контекста Nuxt (см. composables/useKiosk.ts)
+    define: {
+      __KIOSK__: JSON.stringify(isKiosk)
+    },
     optimizeDeps: {
       include: [
         '@vue/devtools-core',
@@ -59,7 +69,11 @@ export default defineNuxtConfig({
     enabled: true
   },
 
-  css: ['~/assets/css/main.css'],
+  // В киоске — тот же стиль, но с крупным масштабом и пересчитанными брейкпоинтами
+  css: [isKiosk ? '~/assets/css/kiosk.css' : '~/assets/css/main.css'],
+
+  // Киоск всегда светлый: переключатель темы там скрыт
+  colorMode: isKiosk ? { preference: 'light', fallback: 'light', storageKey: 'nuxt-color-mode-kiosk' } : undefined,
 
   icon: {
     clientBundle: { sizeLimitKb: 1024 },
@@ -93,7 +107,7 @@ export default defineNuxtConfig({
   app: {
     head: {
       meta: [
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'viewport', content: isKiosk ? 'width=device-width, initial-scale=1, user-scalable=no' : 'width=device-width, initial-scale=1' },
       ],
       link: [
         { rel: 'icon', type: 'image/svg+xml', href: '/logos/logoASR.svg' },

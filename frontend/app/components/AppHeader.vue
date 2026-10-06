@@ -6,7 +6,7 @@
         class="flex min-w-0 items-center gap-2.5 rounded-md"
         aria-label="На главную — Кадровый портал Администрации Сургутского района"
       >
-        <AppLogo :size="28" />
+        <AppLogo :size="kiosk ? 32 : 28" />
         <div class="hidden min-w-0 flex-col sm:flex">
           <span class="truncate font-semibold text-highlighted">
             {{ siteContact.portalName }}
@@ -42,8 +42,10 @@
 
     <template #right>
       <div class="flex items-center gap-1.5">
-        <AppSearch />
-        <UColorModeButton />
+        <template v-if="!kiosk">
+          <AppSearch />
+          <UColorModeButton />
+        </template>
         <UButton
           label="Вакансии"
           to="/vacancies"
@@ -56,6 +58,7 @@
 
     <template #body>
       <UButton
+        v-if="!kiosk"
         block
         variant="soft"
         color="neutral"
@@ -99,6 +102,7 @@
 import { buildDesktopNavItems, buildMobileNavItems, siteContact } from '~/data/navigation'
 
 const route = useRoute()
+const kiosk = useKiosk()
 const desktopNavItems = computed(() => buildDesktopNavItems(route.path))
 const mobileNavItems = computed(() => buildMobileNavItems(route.path))
 const { openSearch } = usePortalSearch()

@@ -6,6 +6,8 @@ Scenario B: also pack deploy_db_sqlite.zip and deploy_media.zip.
 Usage:
   python deploy/pack_deploy.py          # scenario A
   python deploy/pack_deploy.py --with-data   # scenario B
+  python deploy/pack_deploy.py --kiosk  # also deploy_kiosk_static.zip for kiosk.hr.admsr.ru
+                                        # (needs `npm run generate:kiosk` in frontend/ first)
 """
 import argparse
 import os
@@ -77,6 +79,11 @@ def main() -> None:
         action="store_true",
         help="Include deploy_db_sqlite.zip and deploy_media.zip (scenario B)",
     )
+    parser.add_argument(
+        "--kiosk",
+        action="store_true",
+        help="Also pack deploy_kiosk_static.zip (frontend/.output-kiosk/public) for kiosk.hr.admsr.ru",
+    )
     args = parser.parse_args()
 
     DEPLOY.mkdir(exist_ok=True)
@@ -114,6 +121,16 @@ def main() -> None:
     fcount = zip_dir(public_dir, frontend_zip, set())
     assert_no_backslashes(frontend_zip)
     print(f"OK {frontend_zip.name}: {fcount} files, {frontend_zip.stat().st_size / 1024 / 1024:.1f} MB")
+
+    # 4. Kiosk frontend (separate build, served on kiosk.hr.admsr.ru)
+    if args.kiosk:
+        kiosk_zip = DEPLOY / "deploy_kiosk_static.zip"
+        kiosk_dir = ROOT / "frontend" / ".output-kiosk" / "public"
+        if not (kiosk_dir / "200.html").exists():
+            raise FileNotFoundError(f"Missing 200.html in {kiosk_dir} (run `npm run generate:kiosk` in frontend/)")
+        kcount = zip_dir(kiosk_dir, kiosk_zip, set())
+        assert_no_backslashes(kiosk_zip)
+        print(f"OK {kiosk_zip.name}: {kcount} files, {kiosk_zip.stat().st_size / 1024 / 1024:.1f} MB")
 
     if args.with_data:
         pack_db_sqlite(DEPLOY / "deploy_db_sqlite.zip")

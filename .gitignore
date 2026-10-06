@@ -48,3 +48,7 @@ openclaudefordesktop.bat
 .docs for ai
 # Архивы для деплоя на сервер
 deploy_out/
+
+# Сборка киоска (kiosk.hr.admsr.ru)
+frontend/.nuxt-kiosk/
+frontend/.output-kiosk/

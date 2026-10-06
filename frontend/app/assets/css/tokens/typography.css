@@ -37,7 +37,7 @@
 }
 
 /* Заголовок страницы: 28px на телефоне, 36px от 640px */
-@media (min-width: 640px) {
+@media (width >= theme(--breakpoint-sm)) {
   :root {
     --text-display: 2.25rem;
     --text-h1: 2.25rem;

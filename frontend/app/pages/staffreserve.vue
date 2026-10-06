@@ -15,6 +15,8 @@ interface StaffReserveInfo {
 
 useHead({ title: 'Кадровый резерв' })
 
+const kiosk = useKiosk()
+
 const config = useRuntimeConfig()
 
 const { data: info, pending } = await useAsyncData('staff-reserve-info', () =>
@@ -127,6 +129,7 @@ const positions = computed(() => info.value?.positions ?? [])
     </DsContentSection>
 
     <DsContentSection
+      v-if="!kiosk"
       title="Документы"
       description="Нормативные и информационные материалы о формировании и работе кадрового резерва администрации Сургутского района."
       overline="Материалы"
@@ -138,7 +141,7 @@ const positions = computed(() => info.value?.positions ?? [])
 
     <DsContentSection
       title="Результаты конкурсов"
-      description="Архив завершённых конкурсов на формирование кадрового резерва: постановление о проведении и постановление о результатах в виде прикреплённых файлов."
+:description="kiosk ? 'Архив завершённых конкурсов на формирование кадрового резерва' : 'Архив завершённых конкурсов на формирование кадрового резерва: постановление о проведении и постановление о результатах в виде прикреплённых файлов.'"
       overline="Архив"
       heading-id="competition-results"
       spacing="lg"
