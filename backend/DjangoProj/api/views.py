@@ -232,6 +232,17 @@ def training_events(request):
     return Response(serializer.data)
 
 
+@api_view(['GET'])
+def training_event_detail(request, pk: int):
+    try:
+        item = TrainingEvent.objects.get(pk=pk, is_published=True)
+    except TrainingEvent.DoesNotExist:
+        return Response({'error': 'Training event not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = TrainingEventSerializer(item)
+    return Response(serializer.data)
+
+
 @api_view(['POST'])
 def submit_training_feedback(request):
     cooldown_seconds = 60
