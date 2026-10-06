@@ -55,6 +55,11 @@ export const navGroups: NavGroup[] = [
     label: 'Карьера',
     items: [
       {
+        label: 'Вакансии',
+        to: '/vacancies',
+        description: 'Открытые вакансии в администрации района',
+      },
+      {
         label: 'Конкурсы',
         to: '/tenders',
         description: 'Открытые конкурсы на замещение должностей',
@@ -85,7 +90,6 @@ export const careerNavGroup = navGroups[1]!
 export const mainNavItems: NavItem[] = [
   { label: 'Главная', to: '/' },
   ...navGroups.flatMap(group => group.items),
-  { label: 'Вакансии', to: '/vacancies' },
   { label: 'Нет коррупции!', to: '/anti-corruption' },
 ]
 
@@ -128,7 +132,6 @@ export const socialLinks: SocialLink[] = [
 
 export const footerCareerLinks: NavItem[] = [
   ...careerNavGroup.items,
-  { label: 'Вакансии', to: '/vacancies' },
   { label: 'Нет коррупции!', to: '/anti-corruption' },
 ]
 
