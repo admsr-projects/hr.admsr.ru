@@ -25,6 +25,12 @@ useHead(() => ({
   title: vacancy.value?.title ?? 'Вакансия',
 }))
 
+/** Оплату указывают не всегда: пустое значение и прочерк считаем «не указана» */
+const salary = computed(() => {
+  const value = (vacancy.value?.salary ?? '').trim()
+  return /^[-–—\s]*$/.test(value) ? '' : value
+})
+
 const pageDescription = computed(() => {
   if (!vacancy.value) {
     return 'Подробная информация о вакантной должности в администрации Сургутского района'
@@ -33,7 +39,7 @@ const pageDescription = computed(() => {
   const parts = [
     vacancy.value.branch,
     vacancy.value.location,
-    vacancy.value.salary,
+    salary.value,
   ].filter(Boolean)
 
   return parts.length
@@ -86,8 +92,8 @@ const conditionItems = computed<ConditionItem[]>(() => {
     vacancy.value.location
       ? { key: 'location', title: 'Локация', value: vacancy.value.location, icon: 'i-lucide-map-pin' }
       : null,
-    vacancy.value.salary
-      ? { key: 'salary', title: 'Оплата труда', value: vacancy.value.salary, icon: 'i-lucide-wallet' }
+    salary.value
+      ? { key: 'salary', title: 'Оплата труда', value: salary.value, icon: 'i-lucide-wallet' }
       : null,
     (vacancy.value.requiredExperience || vacancy.value.experience)
       ? {

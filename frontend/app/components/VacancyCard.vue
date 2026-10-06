@@ -2,7 +2,7 @@
   <!-- В1 — карточка (сетка, главная, блок вакансий органа) -->
   <article
     v-if="layout === 'card'"
-    class="flex h-full flex-col gap-4 rounded-xl bg-elevated p-6"
+    class="relative flex h-full flex-col gap-4 rounded-xl bg-elevated p-6 transition-colors duration-200 hover:bg-accented motion-reduce:transition-none"
   >
     <p
       v-if="organization"
@@ -12,7 +12,13 @@
     </p>
 
     <h3 class="text-lg font-semibold leading-snug text-text-primary text-balance">
-      {{ vacancy.title }}
+      <!-- Ссылка растянута на всю карточку: кликабельна вся карточка, кнопки лежат поверх -->
+      <NuxtLink
+        :to="detailsLink"
+        class="after:absolute after:inset-0 after:rounded-xl focus-visible:ring-0 focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-primary"
+      >
+        {{ vacancy.title }}
+      </NuxtLink>
     </h3>
 
     <p
@@ -40,7 +46,7 @@
       </li>
     </ul>
 
-    <div class="mt-auto flex flex-wrap gap-2 pt-2">
+    <div class="relative z-10 mt-auto flex flex-wrap gap-2 pt-2">
       <UButton
         label="Подробнее"
         :aria-label="`Подробнее о вакансии: ${vacancy.title}`"
@@ -60,14 +66,14 @@
   <!-- В2 — строка списка (страница «Вакансии») -->
   <article
     v-else
-    class="flex flex-col gap-4 rounded-xl bg-elevated p-6 transition-colors duration-200 hover:bg-accented motion-reduce:transition-none lg:flex-row lg:items-center lg:gap-8"
+    class="relative flex flex-col gap-4 rounded-xl bg-elevated p-6 transition-colors duration-200 hover:bg-accented motion-reduce:transition-none lg:flex-row lg:items-center lg:gap-8"
   >
     <div class="min-w-0 lg:w-2/5">
       <div class="flex flex-wrap items-center gap-2">
         <h3 class="text-lg font-semibold leading-snug text-text-primary">
           <NuxtLink
             :to="detailsLink"
-            class="hover:text-primary focus-visible:outline-2 focus-visible:outline-primary"
+            class="after:absolute after:inset-0 after:rounded-xl focus-visible:ring-0 focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-primary"
           >
             {{ vacancy.title }}
           </NuxtLink>
@@ -103,7 +109,7 @@
       class="flex-1"
     />
 
-    <div class="flex items-center justify-between gap-4 lg:justify-end">
+    <div class="relative z-10 flex items-center justify-between gap-4 lg:justify-end">
       <p
         v-if="salary"
         class="text-lg font-bold text-text-primary"
@@ -131,7 +137,6 @@ export interface Vacancy {
   salary?: string
   employmentType?: string
   experience?: string
-  workSchedule?: string
   requiredExperience?: string
   workingHours?: string
   jobType?: string

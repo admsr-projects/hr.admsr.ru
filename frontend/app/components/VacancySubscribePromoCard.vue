@@ -23,7 +23,7 @@
       </div>
 
       <ul
-        v-if="!compact && highlights.length"
+        v-if="highlights.length"
         class="flex min-w-0 flex-col gap-4 sm:gap-5"
       >
         <li

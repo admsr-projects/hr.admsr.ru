@@ -28,9 +28,8 @@
       class="min-w-0 w-full overflow-hidden rounded-xl bg-elevated p-6 lg:p-8"
     >
       <PromoCardContent
-        compact
         :heading-id="headingId"
-        :highlights="[]"
+        :highlights="blockHighlights"
         :form="form"
         :loading="loading"
         :submitted="submitted"
@@ -123,6 +122,9 @@ const highlights = [
     to: '/vacancies',
   },
 ]
+
+// На странице вакансий вторая подсказка ведёт к списку вакансий на этой же странице
+const blockHighlights = highlights.map(item => (item.to ? { ...item, to: '#vacancies-list' } : item))
 
 const form = reactive({
   name: '',

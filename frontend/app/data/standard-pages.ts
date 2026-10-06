@@ -27,7 +27,7 @@ export const standardSections: StandardSection[] = [
   {
     id: 'career',
     label: careerNavGroup.label,
-    items: [...careerNavGroup.items, { label: 'Вакансии', to: '/vacancies' }]
+    items: careerNavGroup.items
   },
   {
     id: 'info',
