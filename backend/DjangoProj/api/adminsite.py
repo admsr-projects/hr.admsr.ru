@@ -3,6 +3,10 @@ from django.contrib.admin.apps import AdminConfig
 
 
 class CustomAdminSite(AdminSite):
+    site_header = 'Кадровый портал — администрирование'
+    site_title = 'Кадровый портал'
+    index_title = 'Разделы сайта'
+
     def get_app_list(self, request):
         app_list = super().get_app_list(request)
 
