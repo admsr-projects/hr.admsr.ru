@@ -20,9 +20,9 @@ type YouthTab = 'practice' | 'internship' | 'school'
 const activeTab = ref<YouthTab>('practice')
 
 const tabItems: TabsItem[] = [
-  { label: 'Практика', value: 'practice', icon: 'i-lucide-clipboard-list' },
-  { label: 'Стажировка', value: 'internship', icon: 'i-lucide-briefcase' },
-  { label: 'Школьникам', value: 'school', icon: 'i-lucide-school' },
+  { label: 'Практика', value: 'practice' },
+  { label: 'Стажировка', value: 'internship' },
+  { label: 'Школьникам', value: 'school' },
 ]
 
 function resolveTab(value: unknown): YouthTab {
@@ -104,8 +104,7 @@ function parseStepParts(step: string): StepPart[] {
     <UTabs
       v-model="activeTab"
       color="primary"
-      variant="pill"
-      size="lg"
+      variant="link"
       :items="tabItems"
       :unmount-on-hide="false"
       class="w-full"
@@ -144,7 +143,7 @@ function parseStepParts(step: string): StepPart[] {
                 :key="index"
               >
                 <UCard
-                  variant="subtle"
+                  variant="soft"
                   :ui="{
                     root: 'rounded-xl',
                     body: 'flex items-start gap-4 p-4 lg:p-5',
@@ -164,7 +163,7 @@ function parseStepParts(step: string): StepPart[] {
                       <NuxtLink
                         v-if="part.type === 'link'"
                         :to="part.to"
-                        class="text-primary underline-offset-2 hover:underline"
+                        class="text-primary underline underline-offset-2 hover:no-underline"
                       >
                         {{ part.label }}
                       </NuxtLink>

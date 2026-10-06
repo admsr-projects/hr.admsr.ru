@@ -1,48 +1,65 @@
 <script setup lang="ts">
+import { VACANCY_FILTER_ALL, emptyVacancyFilters } from '~/data/vacancy-filters'
+
 useHead({ title: 'Вакансии' })
+
+interface VacancyListItem {
+  id: number
+  title: string
+  branch?: string | null
+  company?: string | null
+  [key: string]: unknown
+}
 
 const route = useRoute()
 const router = useRouter()
 const config = useRuntimeConfig()
 
-const filters = reactive<Record<string, string | number | null>>({})
-
-const vacancyFilterDefs = [
-  { field: 'work_schedule', label: 'График работы' },
-  { field: 'required_experience', label: 'Опыт работы' },
-  { field: 'job_type', label: 'Тип должности' },
-]
-
-const orgFilter = computed(() => {
+// Подразделение из ссылки (?org=…), например со страницы отдела
+const orgFromRoute = computed(() => {
   const org = route.query.org
   return typeof org === 'string' ? decodeURIComponent(org) : ''
 })
 
-const { data: vacanciesData, refresh, pending } = await useAsyncData('vacancies-page', () => {
+const filters = ref({ ...emptyVacancyFilters(), branch: orgFromRoute.value || VACANCY_FILTER_ALL })
+
+// Адрес и фильтр подразделения связаны в обе стороны
+watch(orgFromRoute, (org) => {
+  const branch = org || VACANCY_FILTER_ALL
+  if (filters.value.branch !== branch) filters.value = { ...filters.value, branch }
+})
+
+watch(() => filters.value.branch, (branch) => {
+  const org = branch === VACANCY_FILTER_ALL ? undefined : branch
+  if ((org ?? '') !== orgFromRoute.value) {
+    router.replace({ path: '/vacancies', query: { ...route.query, org } })
+  }
+})
+
+const { data: vacanciesData, pending } = await useAsyncData('vacancies-page', () => {
+  const { branch, required_experience, job_type } = filters.value
   const params = new URLSearchParams()
-  Object.entries(filters).forEach(([key, val]) => {
-    if (val != null) params.append(key, String(val))
-  })
-  if (orgFilter.value) params.append('org', orgFilter.value)
+  if (branch !== VACANCY_FILTER_ALL) params.append('branch', branch)
+  if (required_experience !== VACANCY_FILTER_ALL) params.append('required_experience', required_experience)
+  if (job_type !== VACANCY_FILTER_ALL) params.append('job_type', job_type)
   const queryString = params.toString()
-  const url = `${config.public.apiBaseUrl}/api/vacancies/${queryString ? `?${queryString}` : ''}`
-  return $fetch(url)
-}, { server: false, watch: [orgFilter] })
+  return $fetch<VacancyListItem[]>(`${config.public.apiBaseUrl}/api/vacancies/${queryString ? `?${queryString}` : ''}`)
+}, {
+  server: false,
+  watch: [
+    () => filters.value.branch,
+    () => filters.value.required_experience,
+    () => filters.value.job_type,
+  ],
+})
 
-function onFiltersChange(newFilters: Record<string, number | string | null>) {
-  Object.keys(filters).forEach(k => delete filters[k])
-  Object.assign(filters, newFilters)
-  refresh()
-}
-
-function onFiltersReset() {
-  Object.keys(filters).forEach(k => delete filters[k])
-  refresh()
-}
-
-function clearOrgFilter() {
-  router.push({ path: '/vacancies', query: { ...route.query, org: undefined } })
-}
+// Поиск по названию — на клиенте, без запроса к серверу
+const visibleVacancies = computed(() => {
+  const items = vacanciesData.value ?? []
+  const query = filters.value.q.trim().toLowerCase()
+  if (!query) return items
+  return items.filter(item => item.title.toLowerCase().includes(query))
+})
 </script>
 
 <template>
@@ -58,44 +75,15 @@ function clearOrgFilter() {
       spacing="lg"
     >
       <div class="space-y-6">
-        <DsSurface
-          elevation="none"
-          padding="lg"
-          class="w-full"
-        >
-          <DsFilterBar
-            embedded
-            :filter-defs="vacancyFilterDefs"
-            :total="vacanciesData?.length ?? 0"
-            @change="onFiltersChange"
-            @reset="onFiltersReset"
-          >
-            <div
-              v-if="orgFilter"
-              class="mt-4 flex flex-wrap items-center gap-2"
-            >
-              <UBadge
-                color="neutral"
-                variant="subtle"
-                size="lg"
-              >
-                Орган: {{ orgFilter }}
-              </UBadge>
-              <UButton
-                label="Сбросить орган"
-                color="neutral"
-                variant="link"
-                size="lg"
-                @click="clearOrgFilter"
-              />
-            </div>
-          </DsFilterBar>
-        </DsSurface>
+        <VacancyFilters
+          v-model="filters"
+          :total="visibleVacancies.length"
+        />
 
         <VacancyCards
           embedded
           title=""
-          :vacancies="vacanciesData ?? []"
+          :vacancies="visibleVacancies"
           :pending="pending"
           :skeleton-count="6"
         />
@@ -110,7 +98,7 @@ function clearOrgFilter() {
       <VacancySubscribeForm
         block
         heading-id="vacancies-subscribe"
-        :initial-branch="orgFilter"
+        :initial-branch="orgFromRoute"
       />
     </DsContentSection>
 
@@ -132,32 +120,18 @@ function clearOrgFilter() {
       spacing="lg"
     >
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <UPageCard
+        <DsLinkCard
           title="Конкурсы"
           description="Действующие конкурсы на замещение вакантных должностей и на включение в кадровый резерв."
           icon="i-lucide-clipboard-list"
           to="/tenders"
-          variant="subtle"
-          class="h-full cursor-pointer"
-          :ui="{
-            root: 'h-full',
-            container: 'h-full',
-            wrapper: 'h-full',
-          }"
         />
 
-        <UPageCard
+        <DsLinkCard
           title="Кадровый резерв"
           description="Как вступить в резерв и развивать карьеру в администрации района."
           icon="i-lucide-users"
           to="/staffreserve"
-          variant="subtle"
-          class="h-full cursor-pointer"
-          :ui="{
-            root: 'h-full',
-            container: 'h-full',
-            wrapper: 'h-full',
-          }"
         />
       </div>
     </DsContentSection>

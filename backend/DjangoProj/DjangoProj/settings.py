@@ -96,7 +96,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'UTC'
 
@@ -144,3 +144,51 @@ CSRF_TRUSTED_ORIGINS = [
     "http://172.17.30.36",
     "https://hr.admsr.ru",
 ]
+
+
+# Почта: копии заявок уходят уполномоченным лицам (модель ApplicationRecipient).
+# Без EMAIL_HOST письма выводятся в консоль сервера, ничего реально не отправляется.
+EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
+if EMAIL_HOST:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+    EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
+    EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'False') == 'True'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'Кадровый портал <no-reply@hr.admsr.ru>')
+# Адрес сайта для ссылок в письмах (вакансия, отписка, админ-панель)
+SITE_URL = os.environ.get('SITE_URL', 'https://hr.admsr.ru')
+
+
+# Безопасность соединения. На боевом сервере (за nginx с HTTPS) задайте DJANGO_HTTPS_ONLY=True:
+# включаются Secure-cookie, HSTS и признак HTTPS от прокси. Редирект http→https лучше делать в nginx;
+# при желании его можно включить здесь через DJANGO_SSL_REDIRECT=True (прокси должен передавать
+# заголовок X-Forwarded-Proto, иначе будет цикл редиректов).
+HTTPS_ONLY = os.environ.get('DJANGO_HTTPS_ONLY', 'False') == 'True'
+if HTTPS_ONLY and not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = os.environ.get('DJANGO_SSL_REDIRECT', 'False') == 'True'
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 60 * 60 * 24 * 180
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+    SECURE_HSTS_PRELOAD = False
+
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = 'same-origin'
+X_FRAME_OPTIONS = 'DENY'
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'Lax'
+
+# Загружаемые файлы: предел размера тела запроса (резюме, вложения) — 25 МБ
+DATA_UPLOAD_MAX_MEMORY_SIZE = 25 * 1024 * 1024
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024
+
+# Секретный ключ по умолчанию годится только для разработки
+if not DEBUG and SECRET_KEY.startswith('django-insecure-'):
+    import warnings
+    warnings.warn('DJANGO_SECRET_KEY не задан: используется небезопасный ключ по умолчанию', RuntimeWarning)

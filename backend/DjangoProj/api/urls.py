@@ -1,9 +1,9 @@
 from django.urls import path
 from .views import (
-    hello, portal_search, tenders, competitions, competition_results, staff_members, vacancies, vacancy_detail,
+    hello, portal_search, tenders, competitions, competition_results, competition_documents, staff_members, vacancies, vacancy_detail,
     vacancy_filters, apply, anti_corruption_info, anti_corruption_documents, submit_corruption_report, branches_global, work_partners,
-    submit_feedback, vacancy_subscribe, staff_reserve_info, staff_reserve_documents, vacancy_documents, youth_info, submit_practice_application,
-    training_events, submit_training_feedback, news_posts, news_post_detail, departments, department_detail, deputies,
+    submit_feedback, vacancy_subscribe, vacancy_unsubscribe, staff_reserve_info, staff_reserve_documents, vacancy_documents, youth_info, submit_practice_application,
+    training_events, training_event_detail, submit_training_feedback, news_posts, news_post_detail, departments, department_detail, deputies,
 )
 
 urlpatterns = [
@@ -12,12 +12,14 @@ urlpatterns = [
     path('tenders/', tenders),
     path('competitions/', competitions),
     path('competition-results/', competition_results),
+    path('competition-documents/', competition_documents),
     path('vacancy-documents/', vacancy_documents),
     path('staff-reserve/', staff_reserve_info),
     path('staff-reserve/documents/', staff_reserve_documents),
     path('youth/', youth_info),
     path('youth/practice-apply/', submit_practice_application),
     path('training-events/', training_events),
+    path('training-events/<int:pk>/', training_event_detail),
     path('training-feedback/', submit_training_feedback),
     path('news/', news_posts),
     path('news/<int:pk>/', news_post_detail),
@@ -27,6 +29,7 @@ urlpatterns = [
     path('vacancy-filters/<str:field_name>/', vacancy_filters),
     path('apply/', apply),
     path('vacancy-subscribe/', vacancy_subscribe),
+    path('vacancy-unsubscribe/<str:token>/', vacancy_unsubscribe),
     path('anti-corruption-info/', anti_corruption_info),
     path('anti-corruption-documents/', anti_corruption_documents),
     path('submit-corruption-report/', submit_corruption_report),

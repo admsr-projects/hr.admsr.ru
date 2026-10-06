@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Отписка от рассылки вакансий</title>
+</head>
+<body style="margin:0;background-color:#f4f4f5;font-family:Inter,'Segoe UI',Arial,sans-serif;color:#18181b;">
+<main style="max-width:480px;margin:48px auto;padding:0 16px;">
+<div style="font-size:16px;line-height:24px;font-weight:700;color:#047857;">Кадровый портал</div>
+<div style="font-size:12px;line-height:16px;color:#52525b;margin-bottom:16px;">Администрация Сургутского района</div>
+<div style="background-color:#ffffff;border-radius:12px;padding:24px;">
+{% if state == "invalid" %}
+<h1 style="margin:0 0 8px 0;font-size:20px;line-height:28px;">Ссылка недействительна</h1>
+<p style="margin:0;font-size:16px;line-height:24px;color:#52525b;">Не удалось определить подписку. Если вы хотите отписаться, воспользуйтесь ссылкой из последнего письма с вакансиями.</p>
+{% elif state == "done" %}
+<h1 style="margin:0 0 8px 0;font-size:20px;line-height:28px;">Вы отписались</h1>
+<p style="margin:0;font-size:16px;line-height:24px;color:#52525b;">Адрес {{ email }} больше не будет получать уведомления о новых вакансиях. Подписаться снова можно на странице вакансий.</p>
+{% else %}
+<h1 style="margin:0 0 8px 0;font-size:20px;line-height:28px;">Отписаться от рассылки?</h1>
+<p style="margin:0 0 20px 0;font-size:16px;line-height:24px;color:#52525b;">Адрес {{ email }} перестанет получать письма о новых вакансиях.</p>
+<form method="post">
+<button type="submit" style="background-color:#047857;color:#ffffff;border:0;border-radius:999px;padding:10px 24px;font-size:14px;line-height:20px;font-weight:600;cursor:pointer;">Отписаться</button>
+</form>
+{% endif %}
+</div>
+<p style="margin:16px 8px 0 8px;font-size:12px;line-height:16px;"><a href="{{ site_url }}" style="color:#047857;">Вернуться на сайт</a></p>
+</main>
+</body>
+</html>

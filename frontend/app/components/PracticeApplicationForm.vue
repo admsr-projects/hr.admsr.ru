@@ -30,7 +30,6 @@
                 </template>
                 <UInput
                   v-model="form.lastName"
-                  size="lg"
                   placeholder="Иванов"
                   autocomplete="family-name"
                   class="w-full"
@@ -43,7 +42,6 @@
                 </template>
                 <UInput
                   v-model="form.firstName"
-                  size="lg"
                   placeholder="Иван"
                   autocomplete="given-name"
                   class="w-full"
@@ -57,7 +55,6 @@
             >
               <UInput
                 v-model="form.middleName"
-                size="lg"
                 placeholder="Иванович"
                 autocomplete="additional-name"
                 class="w-full"
@@ -71,7 +68,6 @@
                 </template>
                 <UInputDate
                   v-model="form.birthDate"
-                  size="lg"
                   icon="i-lucide-calendar"
                   class="w-full min-w-0"
                 />
@@ -84,7 +80,6 @@
                 <UInput
                   v-model="form.phone"
                   type="tel"
-                  size="lg"
                   placeholder="+7 (XXX) XXX-XX-XX"
                   autocomplete="tel"
                   class="w-full"
@@ -99,7 +94,6 @@
               <UInput
                 v-model="form.email"
                 type="email"
-                size="lg"
                 placeholder="example@email.com"
                 autocomplete="email"
                 class="w-full"
@@ -124,7 +118,6 @@
               </template>
               <UInput
                 v-model="form.educationalInstitution"
-                size="lg"
                 placeholder="Полное название вуза или колледжа"
                 class="w-full"
               />
@@ -137,7 +130,6 @@
                 </template>
                 <UInput
                   v-model="form.course"
-                  size="lg"
                   placeholder="Например: 3"
                   class="w-full"
                 />
@@ -149,7 +141,6 @@
                 </template>
                 <UInput
                   v-model="form.specialty"
-                  size="lg"
                   placeholder="Направление подготовки"
                   class="w-full"
                 />
@@ -174,7 +165,6 @@
               </template>
               <UInput
                 v-model="form.practicePeriod"
-                size="lg"
                 placeholder="Например: июнь–июль 2026"
                 class="w-full"
               />
@@ -188,8 +178,8 @@
                 <span class="text-pretty text-caption text-text-muted leading-relaxed">
                   С органами администрации можно ознакомиться в разделе
                   <NuxtLink
-                    to="/about#admin-structure"
-                    class="text-primary underline-offset-2 hover:underline"
+                    to="/about/structure"
+                    class="text-primary underline underline-offset-2 hover:no-underline"
                   >
                     «О нас»
                   </NuxtLink>.
@@ -198,7 +188,6 @@
               <USelectMenu
                 v-model="form.preferredDepartment"
                 :items="departmentOptions"
-                size="lg"
                 value-key="value"
                 placeholder="Выберите отраслевой орган"
                 :search-input="{
@@ -216,7 +205,6 @@
               <UTextarea
                 v-model="form.comment"
                 :rows="4"
-                size="lg"
                 placeholder="Дополнительная информация"
                 class="w-full"
               />
@@ -240,8 +228,7 @@
             >
               <UFileUpload
                 v-model="form.applicationLetter"
-                variant="button"
-                size="lg"
+                variant="area"
                 accept=".pdf,.doc,.docx"
                 label="Прикрепить файл"
                 description="PDF, DOC или DOCX (макс. 10 МБ)"
@@ -250,7 +237,7 @@
             </UFormField>
           </section>
 
-          <div class="rounded-xl border border-default bg-elevated/50 p-4 sm:p-5">
+          <div class="rounded-xl bg-elevated p-4 sm:p-5">
             <UFormField name="consentPersonalData">
               <UCheckbox
                 v-model="form.consentPersonalData"
@@ -261,7 +248,7 @@
                     Даю согласие на
                     <NuxtLink
                       to="/privacy"
-                      class="text-primary underline-offset-2 hover:underline"
+                      class="text-primary underline underline-offset-2 hover:no-underline"
                     >
                       обработку персональных данных
                     </NuxtLink>
@@ -280,7 +267,6 @@
             type="submit"
             label="Отправить заявку"
             color="primary"
-            size="lg"
             trailing-icon="i-lucide-arrow-right"
             :loading="loading"
             class="w-full justify-center sm:w-auto"
@@ -296,7 +282,7 @@
           <UCard
             v-for="guide in formGuides"
             :key="guide.id"
-            variant="subtle"
+            variant="soft"
             :ui="{ body: 'space-y-2 p-5' }"
           >
             <div class="flex items-start gap-3">

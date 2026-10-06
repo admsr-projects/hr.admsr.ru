@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 
 class Tender(models.Model):
@@ -17,8 +18,8 @@ class Tender(models.Model):
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
 
     class Meta:
-        verbose_name = 'Документ'
-        verbose_name_plural = 'Документы'
+        verbose_name = 'Документ раздела «Конкурсы»'
+        verbose_name_plural = 'Документы раздела «Конкурсы»'
         ordering = ['-created_at']
 
     def __str__(self):
@@ -30,8 +31,8 @@ class Branch(models.Model):
     address = models.CharField('Адрес', max_length=255)
 
     class Meta:
-        verbose_name = 'Отдел'
-        verbose_name_plural = 'Отделы'
+        verbose_name = 'Отдел (для контактов)'
+        verbose_name_plural = 'Отделы (для контактов)'
 
     def __str__(self):
         return self.name
@@ -88,8 +89,8 @@ class ContactStaffMember(StaffMember):
 
     class Meta:
         proxy = True
-        verbose_name = 'Сотрудник'
-        verbose_name_plural = 'Сотрудники'
+        verbose_name = 'Сотрудник (контакты)'
+        verbose_name_plural = 'Сотрудники (контакты)'
 
 
 class HonorBoardStaffMember(StaffMember):
@@ -154,7 +155,7 @@ class Vacancy(models.Model):
         help_text='Отраслевой (функциональный) орган из утверждённого списка',
     ) 
     location = models.CharField('Локация', max_length=255) 
-    salary = models.CharField('Зарплата', max_length=255) 
+    salary = models.CharField('Оплата труда', max_length=255, blank=True, help_text='Необязательно: если поле пустое, оплата в карточке и на странице вакансии не показывается')
     employment_type = models.CharField('Тип занятости', max_length=100, blank=True) 
     experience = models.CharField('Опыт', max_length=100, blank=True) 
     work_schedule = models.ForeignKey(WorkSchedule, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='График работы')
@@ -165,12 +166,20 @@ class Vacancy(models.Model):
     skills = models.TextField('Навыки', blank=True, help_text='Каждый навык с новой строки') 
     working_hours = models.ForeignKey(WorkingHours, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Режим работы')
     is_active = models.BooleanField('Активна', default=True)
+    published_at = models.DateField('Дата публикации', default=timezone.localdate)
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
+    subscribers_notified_at = models.DateTimeField(
+        'Подписчики уведомлены',
+        null=True,
+        blank=True,
+        editable=False,
+        help_text='Когда подписчикам ушло письмо о вакансии. Пока пусто, письмо уйдёт при первой публикации (активной вакансии).',
+    )
 
     class Meta:
         verbose_name = 'Вакансия'
         verbose_name_plural = 'Вакансии'
-        ordering = ['-created_at']
+        ordering = ['-published_at', '-created_at']
 
     def __str__(self):
         return self.title
@@ -307,8 +316,8 @@ class CorruptionReport(models.Model):
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
 
     class Meta:
-        verbose_name = 'Репорт о коррупции'
-        verbose_name_plural = 'Репорты о коррупции'
+        verbose_name = 'Сообщение о коррупции'
+        verbose_name_plural = 'Сообщения о коррупции'
         ordering = ['-created_at']
 
     def __str__(self):
@@ -392,6 +401,14 @@ class VacancySubscription(models.Model):
     is_active = models.BooleanField('Активна', default=True)
     created_at = models.DateTimeField('Дата подписки', auto_now_add=True)
 
+    # Резюме (необязательно): файлом или заполненное в электронной форме
+    resume = models.FileField('Файл резюме', upload_to='subscription_resumes/', blank=True, null=True)
+    phone = models.CharField('Телефон', max_length=30, blank=True)
+    desired_position = models.CharField('Желаемая должность', max_length=255, blank=True)
+    education = models.CharField('Образование', max_length=255, blank=True)
+    work_experience = models.TextField('Опыт работы', blank=True)
+    about = models.TextField('О себе, навыки', blank=True)
+
     class Meta:
         verbose_name = 'Подписка на вакансии'
         verbose_name_plural = 'Подписки на вакансии'
@@ -431,6 +448,29 @@ class Competition(models.Model):
         return self.title
 
 
+class CompetitionDocument(models.Model):
+    """Нормативные документы, регламентирующие порядок проведения конкурсов."""
+    name = models.CharField('Название', max_length=255)
+    competition_type = models.CharField(
+        'Для конкурсов',
+        max_length=20,
+        choices=Competition.TYPE_CHOICES,
+        default=Competition.TYPE_RESERVE,
+    )
+    file = models.FileField('Файл', upload_to='competitions/documents/')
+    order = models.PositiveIntegerField('Порядок', default=0)
+    is_active = models.BooleanField('Опубликован', default=True)
+    created_at = models.DateTimeField('Дата публикации', auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Нормативный документ конкурсов'
+        verbose_name_plural = 'Нормативные документы конкурсов'
+        ordering = ['order', '-created_at']
+
+    def __str__(self):
+        return self.name
+
+
 class CompetitionResult(models.Model):
     title = models.CharField('Название', max_length=255)
     competition_type = models.CharField(
@@ -451,6 +491,29 @@ class CompetitionResult(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class CompetitionWinner(models.Model):
+    """Победитель конкурса — отдельное информационное окно в результатах."""
+    result = models.ForeignKey(
+        CompetitionResult,
+        on_delete=models.CASCADE,
+        related_name='winners',
+        verbose_name='Результат конкурса',
+    )
+    full_name = models.CharField('ФИО', max_length=255)
+    position = models.CharField('Должность / орган', max_length=500, blank=True)
+    description = models.TextField('Информация', blank=True)
+    photo = models.ImageField('Фото', upload_to='competitions/winners/', blank=True, null=True)
+    order = models.PositiveIntegerField('Порядок', default=0)
+
+    class Meta:
+        verbose_name = 'Победитель конкурса'
+        verbose_name_plural = 'Победители конкурса'
+        ordering = ['order', 'id']
+
+    def __str__(self):
+        return self.full_name
 
 
 class StaffReserveInfo(models.Model):
@@ -640,8 +703,8 @@ class TrainingEvent(models.Model):
     created_at = models.DateTimeField('Создано', auto_now_add=True)
 
     class Meta:
-        verbose_name = 'Обучающее мероприятие'
-        verbose_name_plural = 'Обучающие мероприятия'
+        verbose_name = 'Мероприятие'
+        verbose_name_plural = 'Мероприятия'
         ordering = ['event_date']
 
     def __str__(self):
@@ -662,6 +725,26 @@ class TrainingFeedback(models.Model):
     def __str__(self):
         label = self.name or 'Анонимно'
         return f'{label} ({self.created_at.strftime("%d.%m.%Y %H:%M")})'
+
+
+class ApplicationRecipient(models.Model):
+    """Уполномоченные лица, на почту которых дублируются заявки с портала."""
+    full_name = models.CharField('ФИО', max_length=255)
+    email = models.EmailField('Email для рассылки заявок')
+    is_active = models.BooleanField('Получает письма', default=True)
+    receives_vacancies = models.BooleanField('Вакансии и подписка с резюме', default=True)
+    receives_reserve = models.BooleanField('Кадровый резерв', default=True)
+    receives_practice = models.BooleanField('Практика', default=True)
+    receives_training = models.BooleanField('Обучение', default=True)
+    receives_feedback = models.BooleanField('Обратная связь', default=False)
+
+    class Meta:
+        verbose_name = 'Получатель заявок'
+        verbose_name_plural = 'Получатели заявок'
+        ordering = ['full_name']
+
+    def __str__(self):
+        return f'{self.full_name} <{self.email}>'
 
 
 class Department(models.Model):

@@ -1,5 +1,5 @@
 <template>
-  <UHeader>
+  <UHeader :ui="{ root: 'bg-default backdrop-blur-none' }">
     <template #left>
       <NuxtLink
         to="/"
@@ -23,6 +23,8 @@
       variant="link"
       color="primary"
       content-orientation="vertical"
+      aria-label="Основная навигация"
+      disable-hover-trigger
       arrow
       class="hidden lg:flex"
       :ui="{
@@ -34,25 +36,20 @@
         childLinkLabel: 'font-medium',
         childLinkDescription: 'text-xs text-muted leading-snug whitespace-normal',
         viewport: 'p-1',
+        content: 'w-80 overflow-x-hidden',
       }"
     />
 
     <template #right>
       <div class="flex items-center gap-1.5">
         <AppSearch />
-        <AccessibilityPanel
-          compact
-          class="hidden sm:inline-flex"
-          
-        />
         <UColorModeButton />
         <UButton
           label="Вакансии"
           to="/vacancies"
           icon="i-lucide-briefcase"
           color="primary"
-          size="lg"
-          class="hidden rounded-full lg:inline-flex"
+          class="hidden lg:inline-flex"
         />
       </div>
     </template>
@@ -64,8 +61,7 @@
         color="neutral"
         icon="i-lucide-search"
         label="Поиск по порталу"
-        class="mb-4"
-        size="lg"        
+        class="mb-4"        
         @click="openSearch"
       />
 
@@ -86,8 +82,6 @@
         }"
       />
 
-      <AccessibilityPanel class="mt-4" />
-
       <UButton
         label="Вакансии"
         to="/vacancies"
@@ -95,7 +89,7 @@
         color="primary"
         variant="solid"
         block
-        class="mt-4 rounded-full"
+        class="mt-4"
       />
     </template>
   </UHeader>

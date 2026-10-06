@@ -1,4 +1,4 @@
-/* Custom scrollbar — Nuxt UI tokens, light/dark + a11y */
+/* Custom scrollbar — Nuxt UI tokens, light/dark */
 
 :root {
   --scrollbar-size: 10px;
@@ -60,19 +60,6 @@ html {
 
 .scrollbar-none::-webkit-scrollbar {
   display: none;
-}
-
-/* A11y — thicker, higher contrast, system-friendly */
-html.a11y-enabled {
-  --scrollbar-track: var(--color-border-default);
-  --scrollbar-thumb: var(--color-text-primary);
-  --scrollbar-thumb-hover: var(--color-text-primary);
-}
-
-html.a11y-enabled.a11y-contrast-inverted {
-  --scrollbar-track: #ffff00;
-  --scrollbar-thumb: #000000;
-  --scrollbar-thumb-hover: #000000;
 }
 
 @media (prefers-reduced-motion: reduce) {

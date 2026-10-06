@@ -2,36 +2,27 @@
   <div>
     <ul
       v-if="pending"
-      class="flex flex-col gap-6 lg:gap-8"
+      class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
       aria-busy="true"
       aria-label="Загрузка лауреатов"
     >
       <li
-        v-for="index in 3"
+        v-for="index in 4"
         :key="index"
+        class="overflow-hidden rounded-xl bg-elevated"
       >
-        <UCard
-          variant="subtle"
-          :ui="{ root: 'overflow-hidden rounded-xl', body: 'p-0' }"
-        >
-          <div class="grid grid-cols-1 lg:grid-cols-12">
-            <USkeleton class="min-h-52 lg:col-span-4 lg:min-h-60" />
-            <div class="space-y-4 p-5 sm:p-6 lg:col-span-8 lg:p-8">
-              <USkeleton class="h-4 w-40" />
-              <USkeleton class="h-20 w-full" />
-              <div class="space-y-2 border-t border-default pt-4">
-                <USkeleton class="h-6 w-2/3" />
-                <USkeleton class="h-4 w-1/2" />
-              </div>
-            </div>
-          </div>
-        </UCard>
+        <USkeleton class="aspect-[3/4] w-full rounded-none" />
+        <div class="space-y-3 p-6">
+          <USkeleton class="h-6 w-40" />
+          <USkeleton class="h-6 w-2/3" />
+          <USkeleton class="h-4 w-1/2" />
+        </div>
       </li>
     </ul>
 
     <ul
       v-else-if="items.length"
-      class="flex flex-col gap-6 lg:gap-8"
+      class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
     >
       <li
         v-for="(item, index) in items"

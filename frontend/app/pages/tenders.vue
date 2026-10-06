@@ -11,9 +11,9 @@ type CompetitionTypeTab = 'all' | 'vacancy' | 'reserve'
 const activeType = ref<CompetitionTypeTab>('all')
 
 const typeTabItems: TabsItem[] = [
-  { label: 'Все конкурсы', value: 'all', icon: 'i-lucide-layout-grid' },
-  { label: 'На замещение должности', value: 'vacancy', icon: 'i-lucide-briefcase' },
-  { label: 'На кадровый резерв', value: 'reserve', icon: 'i-lucide-users' },
+  { label: 'Все конкурсы', value: 'all' },
+  { label: 'На замещение должности', value: 'vacancy' },
+  { label: 'На кадровый резерв', value: 'reserve' },
 ]
 
 const typeFilter = computed(() => (activeType.value === 'all' ? null : activeType.value))
@@ -77,8 +77,7 @@ const activeSectionDescription = computed(() => {
       <UTabs
         v-model="activeType"
         color="primary"
-        variant="pill"
-        size="lg"
+        variant="link"
         :content="false"
         :items="typeTabItems"
         :unmount-on-hide="false"
@@ -89,6 +88,13 @@ const activeSectionDescription = computed(() => {
       <ActiveCompetitions
         class="mt-6"
         :type-filter="typeFilter"
+      />
+
+      <CompetitionDocumentsList
+        v-if="activeType !== 'vacancy'"
+        class="mt-4"
+        type="reserve"
+        title="Нормативные документы, регламентирующие формирование кадрового резерва"
       />
     </DsContentSection>
 
@@ -120,32 +126,18 @@ const activeSectionDescription = computed(() => {
       spacing="lg"
     >
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <UPageCard
+        <DsLinkCard
           title="Вакансии"
           description="Актуальный перечень вакантных должностей в администрации Сургутского района."
           icon="i-lucide-briefcase"
           to="/vacancies"
-          variant="subtle"
-          class="h-full cursor-pointer"
-          :ui="{
-            root: 'h-full',
-            container: 'h-full',
-            wrapper: 'h-full',
-          }"
         />
 
-        <UPageCard
+        <DsLinkCard
           title="Кадровый резерв"
           description="Как вступить в резерв и развивать карьеру в администрации района."
           icon="i-lucide-users"
           to="/staffreserve"
-          variant="subtle"
-          class="h-full cursor-pointer"
-          :ui="{
-            root: 'h-full',
-            container: 'h-full',
-            wrapper: 'h-full',
-          }"
         />
       </div>
     </DsContentSection>

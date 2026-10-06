@@ -1,8 +1,7 @@
 /* Surface primitives — opaque cards, no default glass */
 
 .ds-surface {
-  background: var(--color-surface-raised);
-  border: 1px solid var(--color-border-default);
+  background: var(--color-surface-sunken);
   border-radius: 0.75rem;
 }
 
@@ -11,11 +10,11 @@
 }
 
 .ds-surface[data-elevation='xs'] {
-  box-shadow: var(--shadow-xs);
+  box-shadow: none;
 }
 
 .ds-surface[data-elevation='sm'] {
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
 }
 
 .ds-surface[data-elevation='md'] {
@@ -31,7 +30,7 @@
 }
 
 .ds-surface[data-padding='md'] {
-  padding: 1.25rem;
+  padding: 1.5rem;
 }
 
 .ds-surface[data-padding='lg'] {

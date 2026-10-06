@@ -3,6 +3,10 @@ from django.contrib.admin.apps import AdminConfig
 
 
 class CustomAdminSite(AdminSite):
+    site_header = 'Кадровый портал — администрирование'
+    site_title = 'Кадровый портал'
+    index_title = 'Разделы сайта'
+
     def get_app_list(self, request):
         app_list = super().get_app_list(request)
 
@@ -12,60 +16,61 @@ class CustomAdminSite(AdminSite):
 
         all_models = api_app['models']
 
+        # Группы повторяют структуру сайта: «Главная», «Наша команда», «Карьера», «Нет коррупции!», «Информация»
         groups = {
+            'Главная страница': {
+                'app_label': 'main_page_group',
+                'models': ['NewsPost', 'WorkPartner'],
+            },
+            'Наша команда: структура администрации': {
+                'app_label': 'admin_structure_group',
+                'models': ['Department', 'Deputy'],
+            },
+            'Наша команда: доска почёта': {
+                'app_label': 'honorboard_group',
+                'models': ['HonorBoardStaffMember'],
+            },
+            'Наша команда: контакты': {
+                'app_label': 'staff_group',
+                'models': ['ContactStaffMember', 'Branch'],
+            },
+            'Карьера: вакансии': {
+                'app_label': 'vacancies_group',
+                'models': ['Vacancy', 'VacancyDocument', 'JobApplication', 'VacancySubscription',
+                           'RequiredExperience', 'JobType', 'WorkingHours'],
+            },
+            'Карьера: конкурсы': {
+                'app_label': 'tenders_group',
+                'models': ['Competition', 'CompetitionResult', 'CompetitionDocument', 'Tender'],
+            },
+            'Карьера: кадровый резерв': {
+                'app_label': 'staff_reserve_group',
+                'models': ['StaffReserveInfo', 'StaffReservePosition', 'StaffReserveDocument'],
+            },
+            'Карьера: молодёжь': {
+                'app_label': 'youth_group',
+                'models': ['YouthInfo', 'PracticeApplication'],
+            },
+            'Карьера: профразвитие': {
+                'app_label': 'profdev_group',
+                'models': ['TrainingEvent', 'TrainingFeedback'],
+            },
+            'Нет коррупции!': {
+                'app_label': 'anticorruption_group',
+                'models': ['AntiCorruptionInfo', 'AntiCorruptionDocumentCategory', 'AntiCorruptionDocument', 'CorruptionReport'],
+            },
+            'Информация: обратная связь': {
+                'app_label': 'feedback_group',
+                'models': ['Feedback'],
+            },
+            'Настройки': {
+                'app_label': 'settings_group',
+                'models': ['ApplicationRecipient', 'BranchesGlobal'],
+            },
             'Пользователи': {
                 'app_label': 'users_group',
                 'models': ['User', 'Group'],
                 'superuser_only': True,
-            },
-            'Главная': {
-                'app_label': 'main_page_group',
-                'models': ['NewsPost', 'WorkPartner'],
-            },
-            'Вакансии': {
-                'app_label': 'vacancies_group',
-                'models': ['Vacancy', 'VacancyDocument', 'JobApplication', 'VacancySubscription', 'WorkSchedule',
-                           'RequiredExperience', 'JobType', 'WorkingHours'],
-            },
-            'Сотрудники': {
-                'app_label': 'staff_group',
-                'models': ['ContactStaffMember', 'Branch'],
-            },
-            'Доска почёта': {
-                'app_label': 'honorboard_group',
-                'models': ['HonorBoardStaffMember'],
-            },
-            'Структура администрации': {
-                'app_label': 'admin_structure_group',
-                'models': ['Department', 'Deputy'],
-            },
-            'Кадровый резерв': {
-                'app_label': 'staff_reserve_group',
-                'models': ['StaffReserveInfo', 'StaffReservePosition', 'StaffReserveDocument'],
-            },
-            'Молодёжь': {
-                'app_label': 'youth_group',
-                'models': ['YouthInfo', 'PracticeApplication'],
-            },
-            'Профразвитие': {
-                'app_label': 'profdev_group',
-                'models': ['TrainingEvent', 'TrainingFeedback'],
-            },
-            'Конкурсы': {
-                'app_label': 'tenders_group',
-                'models': ['Tender', 'Competition', 'CompetitionResult'],
-            },
-            'Антикоррупция': {
-                'app_label': 'anticorruption_group',
-                'models': ['AntiCorruptionInfo', 'AntiCorruptionDocumentCategory', 'AntiCorruptionDocument', 'CorruptionReport'],
-            },
-            'Отделы': {
-                'app_label': 'branches_group',
-                'models': ['BranchesGlobal'],
-            },
-            'Обратная связь': {
-                'app_label': 'feedback_group',
-                'models': ['Feedback'],
             },
         }
 
@@ -87,6 +92,9 @@ class CustomAdminSite(AdminSite):
                     m for m in all_models
                     if m['object_name'] in config['models']
                 ]
+
+            # Порядок внутри группы — как в списке models (главное сверху), а не по алфавиту
+            group_models.sort(key=lambda m: config['models'].index(m['object_name']))
 
             if group_models:
                 new_app_list.append({

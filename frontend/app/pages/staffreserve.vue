@@ -38,7 +38,7 @@ const positions = computed(() => info.value?.positions ?? [])
     >
       <div
         v-if="pending"
-        class="space-y-3"
+        class="flex flex-col gap-3 rounded-xl bg-elevated p-6"
         aria-busy="true"
         aria-label="Загрузка информации о кадровом резерве"
       >
@@ -47,12 +47,23 @@ const positions = computed(() => info.value?.positions ?? [])
         <USkeleton class="h-4 w-3/4" />
       </div>
 
-      <p
+      <div
         v-else
-        class="text-body-lg text-text-secondary leading-relaxed whitespace-pre-line text-pretty"
+        class="flex items-start gap-4 rounded-xl bg-elevated p-6"
       >
-        {{ info?.purpose }}
-      </p>
+        <span
+          class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary"
+          aria-hidden="true"
+        >
+          <UIcon
+            name="i-lucide-flag"
+            class="size-5"
+          />
+        </span>
+        <p class="min-w-0 pt-2 text-base text-text-primary whitespace-pre-line text-pretty">
+          {{ info?.purpose }}
+        </p>
+      </div>
     </DsContentSection>
 
     <DsContentSection
@@ -63,47 +74,32 @@ const positions = computed(() => info.value?.positions ?? [])
       heading-id="reserve-positions"
       spacing="lg"
     >
-      <ul
+      <div
         v-if="pending"
-        class="flex flex-col gap-4"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
         aria-busy="true"
       >
-        <li
+        <USkeleton
           v-for="index in 3"
           :key="index"
-        >
-          <UCard
-            variant="subtle"
-            :ui="{ body: 'p-5 lg:p-6 space-y-3' }"
-          >
-            <USkeleton class="h-6 w-2/3" />
-            <USkeleton class="h-16 w-full" />
-          </UCard>
-        </li>
-      </ul>
+          class="h-40 w-full rounded-xl"
+        />
+      </div>
 
       <ul
         v-else
-        class="flex flex-col gap-4"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
       >
         <li
           v-for="position in positions"
           :key="position.id"
         >
-          <UCard
-            variant="subtle"
-            :ui="{
-              root: 'rounded-xl',
-              body: 'p-5 lg:p-6 space-y-3',
-            }"
+          <DsInfoCard
+            :title="position.title"
+            icon="i-lucide-briefcase"
           >
-            <h3 class="text-h3 text-text-primary text-balance">
-              {{ position.title }}
-            </h3>
-            <p class="text-body text-text-secondary leading-relaxed text-pretty">
-              {{ position.description }}
-            </p>
-          </UCard>
+            {{ position.description }}
+          </DsInfoCard>
         </li>
       </ul>
     </DsContentSection>
@@ -114,9 +110,20 @@ const positions = computed(() => info.value?.positions ?? [])
       heading-id="reserve-extra"
       spacing="lg"
     >
-      <p class="text-body text-text-secondary leading-relaxed whitespace-pre-line text-pretty">
-        {{ info.additional_content }}
-      </p>
+      <div class="flex items-start gap-4 rounded-xl bg-elevated p-6">
+        <span
+          class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary"
+          aria-hidden="true"
+        >
+          <UIcon
+            name="i-lucide-info"
+            class="size-5"
+          />
+        </span>
+        <p class="min-w-0 pt-2 text-base text-text-primary whitespace-pre-line text-pretty">
+          {{ info.additional_content }}
+        </p>
+      </div>
     </DsContentSection>
 
     <DsContentSection
@@ -147,32 +154,18 @@ const positions = computed(() => info.value?.positions ?? [])
       spacing="lg"
     >
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <UPageCard
+        <DsLinkCard
           title="Вакансии"
           description="Актуальный перечень вакантных должностей в администрации Сургутского района."
           icon="i-lucide-briefcase"
           to="/vacancies"
-          variant="subtle"
-          class="h-full cursor-pointer"
-          :ui="{
-            root: 'h-full',
-            container: 'h-full',
-            wrapper: 'h-full',
-          }"
         />
 
-        <UPageCard
+        <DsLinkCard
           title="Конкурсы"
           description="Действующие конкурсы на замещение должностей и формирование кадрового резерва."
           icon="i-lucide-file-badge"
           to="/tenders?type=reserve"
-          variant="subtle"
-          class="h-full cursor-pointer"
-          :ui="{
-            root: 'h-full',
-            container: 'h-full',
-            wrapper: 'h-full',
-          }"
         />
       </div>
     </DsContentSection>

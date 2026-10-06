@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>{{ title }}</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f4f4f5;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">{{ preheader }}</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f4f4f5;">
+<tr><td align="center" style="padding:24px 12px;">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;font-family:Inter,'Segoe UI',Arial,sans-serif;color:#18181b;">
+
+<tr><td style="padding:0 8px 16px 8px;">
+<div style="font-size:16px;line-height:24px;font-weight:700;color:#047857;">Кадровый портал</div>
+<div style="font-size:12px;line-height:16px;color:#52525b;">Администрация Сургутского района</div>
+</td></tr>
+
+<tr><td style="background-color:#ffffff;border-radius:12px;padding:24px;">
+{% block content %}{% endblock %}
+</td></tr>
+
+<tr><td style="padding:16px 8px 0 8px;font-size:12px;line-height:16px;color:#52525b;">
+{% block footer %}{% endblock %}
+</td></tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { TabsItem } from '@nuxt/ui'
 import type { AntiCorruptionDocument } from '~/components/AntiCorruptionDocumentsList.vue'
-import { antiCorruptionCategoryIcon } from '~/data/anti-corruption-categories'
 
 interface AntiCorruptionInfo {
   intro?: string
@@ -48,7 +47,6 @@ const documentTabs = computed<TabsItem[]>(() =>
   (categories.value ?? []).map(category => ({
     label: category.tab_label,
     value: category.slug,
-    icon: antiCorruptionCategoryIcon(category.slug),
   })),
 )
 
@@ -85,12 +83,6 @@ watch(activeDocTab, (value) => {
     router.replace({ query: nextQuery })
   }
 })
-
-const esiaUrl = computed(() =>
-  info.value?.esia_feedback_url
-  || config.public.esiaFeedbackUrl
-  || 'https://pos.gosuslugi.ru/landing/',
-)
 
 const officials = computed(() =>
   (info.value?.officialsList ?? []).map(parseOfficial),
@@ -143,7 +135,7 @@ function phoneHref(phone: string) {
         <UCard
           v-for="index in 3"
           :key="index"
-          variant="subtle"
+          variant="soft"
           :ui="{ body: 'p-5 lg:p-6 space-y-3' }"
         >
           <USkeleton class="h-6 w-1/2" />
@@ -198,7 +190,7 @@ function phoneHref(phone: string) {
               <a
                 v-if="official.phone"
                 :href="phoneHref(official.phone)"
-                class="inline-flex items-center gap-1.5 text-body text-primary underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                class="inline-flex items-center gap-1.5 text-body text-primary underline underline-offset-2 hover:no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               >
                 <UIcon
                   name="i-lucide-phone"
@@ -235,7 +227,7 @@ function phoneHref(phone: string) {
         <UCard
           v-for="index in 3"
           :key="index"
-          variant="subtle"
+          variant="soft"
           :ui="{ body: 'p-4 lg:p-5 space-y-3' }"
         >
           <USkeleton class="h-5 w-3/4" />
@@ -244,18 +236,10 @@ function phoneHref(phone: string) {
       </div>
 
       <template v-else-if="documentTabs.length">
-        <p
-          class="mb-4 text-caption leading-relaxed text-text-muted text-pretty"
-          role="note"
-        >
-          Документы в формате PDF подготовлены в соответствии с ГОСТ&nbsp;Р&nbsp;70176-2022. При затруднениях с чтением файла обратитесь в управление муниципальной службы, кадров и наград.
-        </p>
-
         <UTabs
           v-model="activeDocTab"
           color="primary"
-          variant="pill"
-          size="lg"
+          variant="link"
           :items="documentTabs"
           :unmount-on-hide="false"
           class="w-full"
@@ -285,10 +269,9 @@ function phoneHref(phone: string) {
       heading-id="anticorruption-report"
       spacing="lg"
     >
-      <EsiaGosuslugiCard
-        title="Перейти к подаче обращения через ЕСИА"
-        description="Официальная подача обращения о коррупционных правонарушениях на платформе Госуслуг"
-        :to="esiaUrl"
+      <GosuslugiPosBanner
+        title="Знаете о фактах коррупции?"
+        text="Сообщите о правонарушении через портал Госуслуг"
       />
     </DsContentSection>
   </DsStandardPage>

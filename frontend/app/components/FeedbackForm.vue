@@ -11,7 +11,7 @@
       @submit="onSubmit"
     >
       <div
-        class="flex items-start gap-3 rounded-xl border border-default bg-elevated/40 px-4 py-4 sm:px-5"
+        class="flex items-start gap-3 rounded-xl bg-elevated px-4 py-4 sm:px-5"
         role="note"
       >
         <UIcon
@@ -36,7 +36,6 @@
         <UTextarea
           v-model="form.message"
           :rows="6"
-          size="lg"
           placeholder="Опишите вопрос, предложение или замечание"
           class="w-full"
         />
@@ -49,8 +48,7 @@
       >
         <UFileUpload
           v-model="form.photo"
-          variant="button"
-          size="lg"
+          variant="area"
           accept="image/*"
           label="Прикрепить изображение"
           description="JPG, PNG или GIF"
@@ -62,7 +60,6 @@
         type="submit"
         label="Отправить сообщение"
         color="primary"
-        size="lg"
         trailing-icon="i-lucide-arrow-right"
         :loading="loading"
         class="w-full justify-center sm:w-auto"

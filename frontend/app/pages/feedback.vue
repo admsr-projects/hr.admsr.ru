@@ -5,20 +5,16 @@ useHead({ title: 'Обратная связь' })
 
 const route = useRoute()
 const router = useRouter()
-const config = useRuntimeConfig()
 
 type FeedbackTab = 'message' | 'esia'
 
 const activeTab = ref<FeedbackTab>('message')
 
 const tabItems: TabsItem[] = [
-  { label: 'Сообщение на портале', value: 'message', icon: 'i-lucide-message-square' },
-  { label: 'Госуслуги', value: 'esia', icon: 'i-lucide-landmark' },
+  { label: 'Сообщение на портале', value: 'message' },
+  { label: 'Госуслуги', value: 'esia' },
 ]
 
-const esiaUrl = computed(() =>
-  config.public.esiaFeedbackUrl || 'https://pos.gosuslugi.ru/landing/',
-)
 
 function resolveTab(value: unknown): FeedbackTab {
   return value === 'esia' ? 'esia' : 'message'
@@ -55,8 +51,7 @@ watch(activeTab, (value) => {
     <UTabs
       v-model="activeTab"
       color="primary"
-      variant="pill"
-      size="lg"
+      variant="link"
       :items="tabItems"
       :unmount-on-hide="false"
       class="w-full"
@@ -85,7 +80,7 @@ watch(activeTab, (value) => {
           >
             <div class="space-y-4">
               <div
-                class="flex items-start gap-3 rounded-xl border border-default bg-elevated/40 px-4 py-4 sm:px-5"
+                class="flex items-start gap-3 rounded-xl bg-elevated px-4 py-4 sm:px-5"
                 role="note"
               >
                 <UIcon
@@ -103,10 +98,9 @@ watch(activeTab, (value) => {
                 </div>
               </div>
 
-              <EsiaGosuslugiCard
-                title="Перейти на платформу обратной связи"
-                description="Подать обращение через ЕСИА на портале Госуслуг"
-                :to="esiaUrl"
+              <GosuslugiPosBanner
+                title="Хотите обратиться в администрацию?"
+                text="Направьте обращение через портал Госуслуг"
               />
             </div>
           </DsContentSection>
@@ -122,32 +116,18 @@ watch(activeTab, (value) => {
       spacing="lg"
     >
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <UPageCard
+        <DsLinkCard
           title="Контакты"
           description="Телефоны, адреса и справочник сотрудников отделов кадровой политики."
           icon="i-lucide-phone"
           to="/contacts"
-          variant="subtle"
-          class="h-full cursor-pointer"
-          :ui="{
-            root: 'h-full',
-            container: 'h-full',
-            wrapper: 'h-full',
-          }"
         />
 
-        <UPageCard
+        <DsLinkCard
           title="Политика персональных данных"
           description="Порядок обработки персональных данных в соответствии с 152-ФЗ."
           icon="i-lucide-shield-check"
           to="/privacy"
-          variant="subtle"
-          class="h-full cursor-pointer"
-          :ui="{
-            root: 'h-full',
-            container: 'h-full',
-            wrapper: 'h-full',
-          }"
         />
       </div>
     </DsContentSection>

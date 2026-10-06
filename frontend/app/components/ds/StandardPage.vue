@@ -1,75 +1,122 @@
 <template>
-  <div>
+  <div class="ds-inner">
     <DsSectionToolbar
       v-if="sectionNavItems.length"
       :items="sectionNavItems"
+      class="lg:hidden"
     />
 
-    <DsStandardPageHeader
-      :title="title"
-      :description="description"
-      :headline="badge"
-    >
-      <template
-        v-if="$slots.heroActions"
-        #actions
-      >
-        <slot name="heroActions" />
-      </template>
-    </DsStandardPageHeader>
+    <DsBreadcrumbs :items="breadcrumbs" />
 
-    <div class="ds-container py-6 lg:py-10">
+    <div class="ds-container pb-12 pt-4 lg:pb-16 lg:pt-0">
       <div
-        class="lg:grid lg:items-start lg:gap-10 xl:gap-12"
-        :class="tocLinks.length ? 'lg:grid-cols-[minmax(0,1fr)_17rem] xl:grid-cols-[minmax(0,1fr)_20rem]' : undefined"
+        class="lg:grid lg:items-start lg:gap-6"
+        :class="sidebar ? 'lg:grid-cols-[282px_minmax(0,1fr)]' : undefined"
       >
-        <main class="w-full min-w-0">
+        <aside
+          v-if="sidebar"
+          class="hidden lg:block lg:sticky lg:top-[calc(var(--ui-header-height,4rem)+1.5rem)]"
+        >
+          <DsSectionSidebar
+            :title="sidebar.title"
+            :items="sidebar.items"
+          />
+        </aside>
+
+        <div class="flex w-full min-w-0 flex-col gap-4">
+          <DsStandardPageHeader
+            :title="title"
+            :description="description"
+          >
+            <template
+              v-if="$slots.heroActions"
+              #actions
+            >
+              <slot name="heroActions" />
+            </template>
+          </DsStandardPageHeader>
+
           <p
             v-if="intro"
-            class="text-body-lg text-text-secondary leading-relaxed whitespace-pre-line text-pretty mb-8 lg:mb-10"
+            class="text-body-lg text-text-secondary leading-relaxed whitespace-pre-line text-pretty"
           >
             {{ intro }}
           </p>
 
-          <div class="space-y-10 lg:space-y-12">
+          <div class="flex flex-col gap-4">
             <slot />
           </div>
-        </main>
-
-        <DsPageTocAside
-          v-if="tocLinks.length"
-          :links="tocLinks"
-          :has-section-toolbar="sectionNavItems.length > 0"
-        />
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { provideStandardPageToc } from '~/composables/useStandardPageToc'
-import { resolveSidebarLinks, toNavigationMenuItems } from '~/data/standard-pages'
+import type { BreadcrumbItem } from '~/data/breadcrumbs'
+import {
+  type SidebarItem,
+  resolveSectionMenu,
+  resolveStandardSection,
+  toNavigationMenuItems
+} from '~/data/standard-pages'
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   title: string
   description?: string
   intro?: string
+  /** @deprecated Не отображается — контекст раздела даёт меню слева и хлебные крошки */
   badge?: string
 }>(), {
   description: undefined,
   intro: undefined,
-  badge: undefined,
+  badge: undefined
 })
 
 const route = useRoute()
-const { tocLinks } = provideStandardPageToc()
 
-const sectionNav = computed(() => resolveSidebarLinks(route.path))
+const menu = computed(() => resolveSectionMenu(route.path))
 
-const sectionNavItems = computed(() => {
-  if (!sectionNav.value || sectionNav.value.links.length <= 1) {
-    return []
+// Страницы структуры администрации и её органов: меню не раздела «Наша команда», а самой страницы —
+// все органы и заместители главы, которые их курируют
+const inStructure = route.path.startsWith('/about/structure') || route.path.startsWith('/about/departments/')
+const structureGroups = inStructure ? useAdminStructureMenu() : undefined
+
+const sidebar = computed<{ title: string, items: SidebarItem[] } | null>(() => {
+  if (structureGroups) {
+    return {
+      title: 'Структура администрации',
+      items: [
+        { label: 'Все органы', to: '/about/structure', active: route.path === '/about/structure' },
+        ...structureGroups.value
+      ]
+    }
   }
-  return toNavigationMenuItems(sectionNav.value.links)
+  return menu.value ? { title: menu.value.title, items: menu.value.items } : null
+})
+
+// Горизонтальное меню на телефоне — только для страниц разделов (у структуры свой выбор заместителя на странице)
+const sectionNavItems = computed(() =>
+  menu.value && !inStructure ? toNavigationMenuItems(menu.value) : []
+)
+
+const breadcrumbs = computed<BreadcrumbItem[]>(() => {
+  const items: BreadcrumbItem[] = [{ label: 'Главная', to: '/', icon: 'i-lucide-home' }]
+  const section = resolveStandardSection(route.path)
+
+  if (section) {
+    // У раздела нет своей страницы — крошка ведёт на его первую страницу
+    items.push({ label: section.label, to: section.items[0]?.to })
+  }
+
+  if (route.path.startsWith('/about/departments/')) {
+    items.push({ label: 'Структура администрации', to: '/about/structure' })
+  }
+  else if (route.path.startsWith('/vacancyinfo/')) {
+    items.push({ label: 'Вакансии', to: '/vacancies' })
+  }
+
+  items.push({ label: props.title })
+  return items
 })
 </script>

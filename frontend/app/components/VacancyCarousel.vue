@@ -1,5 +1,5 @@
 <template>
-  <section class="border-t border-default bg-elevated/40">
+  <section class="bg-default">
     <UModal
       v-model:open="isApplicationFormOpen"
       :ui="{ content: 'max-w-3xl w-[calc(100vw-2rem)] sm:w-full' }"
@@ -13,22 +13,22 @@
       </template>
     </UModal>
 
-    <UContainer class="flex flex-col gap-8 py-16 lg:gap-10 lg:py-20">
+    <UContainer class="flex flex-col gap-8 py-12 lg:gap-10 lg:py-16">
       <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div class="flex max-w-2xl flex-col gap-3">
           <UBadge
             label="Вакансии"
             color="primary"
-            variant="subtle"
-            class="w-fit rounded-full"
+            variant="soft"
+            class="w-fit"
           />
           <h2
             id="vacancies"
-            class="text-3xl font-bold tracking-tight text-highlighted text-balance sm:text-4xl"
+            class="text-h2 text-text-primary text-balance"
           >
             {{ title }}
           </h2>
-          <p class="text-pretty text-lg leading-8 text-muted">
+          <p class="text-pretty text-base text-text-muted">
             {{ subtitle }}
           </p>
         </div>
@@ -41,20 +41,18 @@
             <UButton
               icon="i-lucide-chevron-left"
               color="neutral"
-              variant="outline"
-              size="lg"
+              variant="soft"
               aria-label="Предыдущие вакансии"
-              class="rounded-full"
+              
               :disabled="!canScrollBack"
               @click="scroll('back')"
             />
             <UButton
               icon="i-lucide-chevron-right"
               color="neutral"
-              variant="outline"
-              size="lg"
+              variant="soft"
               aria-label="Следующие вакансии"
-              class="rounded-full"
+              
               :disabled="!canScrollForward"
               @click="scroll('forward')"
             />
@@ -75,7 +73,7 @@
 
       <div
         v-else-if="!props.vacancies.length"
-        class="flex flex-col items-center gap-4 rounded-2xl border border-dashed border-default bg-default px-6 py-12 text-center"
+        class="flex flex-col items-center gap-4 rounded-xl border border-dashed border-default bg-default px-6 py-12 text-center"
       >
         <UIcon
           name="i-lucide-briefcase"
@@ -83,7 +81,7 @@
           aria-hidden="true"
         />
         <div class="flex max-w-md flex-col gap-2">
-          <p class="text-lg font-semibold text-highlighted">
+          <p class="text-lg font-semibold text-text-primary">
             Сейчас нет открытых позиций
           </p>
           <p class="text-pretty text-sm leading-6 text-muted">
@@ -94,7 +92,7 @@
           label="Все вакансии"
           to="/vacancies"
           color="primary"
-          class="rounded-full"
+          
         />
       </div>
 
@@ -114,18 +112,17 @@
             v-for="(item, index) in carouselItems"
             :key="itemKey(item, index)"
             data-vacancy-slide
-            class="w-[min(92vw,24rem)] shrink-0 snap-start sm:w-104 lg:w-120"
+            class="w-[min(92vw,22rem)] shrink-0 snap-start sm:w-88"
           >
             <VacancyCard
               v-if="!isPlaceholderItem(item)"
               :vacancy="item"
-              size="lg"
               @apply="openApplicationForm"
             />
 
             <article
               v-else
-              class="flex h-full min-h-96 flex-col items-center justify-center gap-5 rounded-2xl border border-dashed border-default bg-default p-8 text-center transition hover:border-primary/40 hover:bg-elevated motion-reduce:transition-none"
+              class="flex h-full min-h-80 flex-col items-center justify-center gap-5 rounded-xl bg-elevated p-8 text-center transition-colors duration-200 hover:bg-accented motion-reduce:transition-none"
             >
               <div class="flex size-16 items-center justify-center rounded-full bg-primary/10 text-primary">
                 <UIcon
@@ -135,7 +132,7 @@
                 />
               </div>
               <div class="flex flex-col gap-2">
-                <h3 class="text-xl font-semibold text-highlighted">
+                <h3 class="text-xl font-semibold text-text-primary">
                   Ознакомиться со всеми вакансиями
                 </h3>
                 <p class="text-pretty text-base leading-7 text-muted">
@@ -147,7 +144,6 @@
                 to="/vacancies"
                 color="primary"
                 trailing-icon="i-lucide-arrow-right"
-                class="rounded-full"
               />
             </article>
           </div>

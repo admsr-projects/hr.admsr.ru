@@ -1,13 +1,14 @@
 from django.db.models import Q
 from django.contrib import admin
 from .forms import DepartmentAdminForm, VacancyAdminForm
+from .widgets import MarkdownFieldsMixin
 from .models import (
     Tender, ContactStaffMember, HonorBoardStaffMember, Vacancy, JobApplication, Branch,
-    WorkSchedule, RequiredExperience, JobType, WorkingHours, AntiCorruptionDocument,
+    RequiredExperience, JobType, WorkingHours, AntiCorruptionDocument,
     AntiCorruptionDocumentCategory, AntiCorruptionInfo, CorruptionReport, BranchesGlobal, Feedback, VacancySubscription,
     Competition, CompetitionResult, StaffReserveInfo, StaffReservePosition, StaffReserveDocument, VacancyDocument, WorkPartner, YouthInfo,
     PracticeApplication, TrainingEvent, TrainingFeedback, NewsPost, Department, Deputy,
-    DeputyDepartment,
+    DeputyDepartment, ApplicationRecipient, CompetitionDocument, CompetitionWinner,
 )
 from .adminsite import custom_admin_site
 from .admin_auth import register_auth_models
@@ -74,20 +75,16 @@ class HonorBoardStaffMemberAdmin(admin.ModelAdmin):
 
 class VacancyAdmin(admin.ModelAdmin):
     form = VacancyAdminForm
-    list_display = ['title', 'branch', 'location', 'salary', 'work_schedule', 'required_experience', 'job_type', 'is_new', 'is_active', 'created_at']
-    list_filter = ['is_active', 'is_new', 'employment_type', 'work_schedule', 'required_experience', 'job_type']
+    list_display = ['title', 'branch', 'location', 'salary', 'required_experience', 'job_type', 'is_active', 'published_at']
+    list_filter = ['is_active', 'required_experience', 'job_type', 'published_at']
     search_fields = ['title', 'branch']
-    list_editable = ['is_active', 'is_new']
+    list_editable = ['is_active']
+    date_hierarchy = 'published_at'
     fieldsets = [
-        ('Основное', {'fields': ['title', 'branch', 'location', 'salary']}),
-        ('Детали', {'fields': ['employment_type', 'experience', 'work_schedule', 'required_experience', 'job_type', 'working_hours', 'is_new', 'is_active']}),
+        ('Основное', {'fields': ['title', 'branch', 'location', 'salary', 'published_at']}),
+        ('Детали', {'fields': ['experience', 'required_experience', 'job_type', 'working_hours', 'is_active']}),
         ('Описание и навыки', {'fields': ['description', 'skills']}),
     ]
-
-
-class WorkScheduleAdmin(admin.ModelAdmin):
-    list_display = ['name']
-    search_fields = ['name']
 
 
 class RequiredExperienceAdmin(admin.ModelAdmin):
@@ -152,23 +149,58 @@ class WorkPartnerAdmin(admin.ModelAdmin):
 
 
 class VacancySubscriptionAdmin(admin.ModelAdmin):
-    list_display = ['name', 'email', 'branch_display', 'is_active', 'created_at']
+    list_display = ['name', 'email', 'branch_display', 'has_resume', 'is_active', 'created_at']
     list_filter = ['is_active', 'created_at']
-    search_fields = ['name', 'email', 'branch']
+    search_fields = ['name', 'email', 'branch', 'desired_position']
     list_editable = ['is_active']
     readonly_fields = ['created_at']
-    fields = ['name', 'email', 'branch', 'is_active', 'created_at']
+    fields = [
+        'name', 'email', 'branch', 'is_active', 'created_at',
+        'resume', 'phone', 'desired_position', 'education', 'work_experience', 'about',
+    ]
+
+    @admin.display(description='Резюме', boolean=True)
+    def has_resume(self, obj):
+        return bool(obj.resume or obj.desired_position or obj.education or obj.work_experience or obj.about)
 
     @admin.display(description='Отраслевой функциональный орган')
     def branch_display(self, obj):
         return obj.branch.strip() if obj.branch else 'Любой ОФО / не имеет значения'
 
 
-class CompetitionAdmin(admin.ModelAdmin):
+class CompetitionAdmin(MarkdownFieldsMixin, admin.ModelAdmin):
+    markdown_fields = ('content', 'requirements', 'acceptance_info')
     list_display = ['title', 'competition_type', 'date_start', 'date_end', 'is_active', 'created_at']
     list_filter = ['is_active', 'competition_type', 'created_at']
     search_fields = ['title', 'content']
     list_editable = ['is_active']
+
+
+class CompetitionDocumentAdmin(admin.ModelAdmin):
+    list_display = ['name', 'competition_type', 'order', 'is_active', 'created_at']
+    list_editable = ['order', 'is_active']
+    list_filter = ['competition_type', 'is_active']
+    search_fields = ['name']
+    fields = ['name', 'competition_type', 'file', 'order', 'is_active']
+
+
+class CompetitionWinnerInline(admin.StackedInline):
+    model = CompetitionWinner
+    extra = 1
+    fields = ['full_name', 'position', 'description', 'photo', 'order']
+
+
+class ApplicationRecipientAdmin(admin.ModelAdmin):
+    list_display = [
+        'full_name', 'email', 'is_active', 'receives_vacancies',
+        'receives_reserve', 'receives_practice', 'receives_training', 'receives_feedback',
+    ]
+    list_editable = [
+        'is_active', 'receives_vacancies', 'receives_reserve',
+        'receives_practice', 'receives_training', 'receives_feedback',
+    ]
+    list_filter = ['is_active']
+    search_fields = ['full_name', 'email']
 
 
 class CompetitionResultAdmin(admin.ModelAdmin):
@@ -177,6 +209,7 @@ class CompetitionResultAdmin(admin.ModelAdmin):
     list_filter = ['competition_type', 'completed_at', 'created_at']
     search_fields = ['title']
     fields = ['title', 'competition_type', 'decree_conduct', 'decree_results', 'completed_at']
+    inlines = [CompetitionWinnerInline]
 
 
 class StaffReserveInfoAdmin(admin.ModelAdmin):
@@ -226,7 +259,8 @@ class PracticeApplicationAdmin(admin.ModelAdmin):
     readonly_fields = ['consent_personal_data', 'created_at']
 
 
-class TrainingEventAdmin(admin.ModelAdmin):
+class TrainingEventAdmin(MarkdownFieldsMixin, admin.ModelAdmin):
+    markdown_fields = ('description',)
     list_display = ['title', 'event_type', 'event_date', 'location', 'is_published', 'created_at']
     list_filter = ['event_type', 'is_published', 'event_date']
     search_fields = ['title', 'description', 'location']
@@ -241,7 +275,8 @@ class TrainingFeedbackAdmin(admin.ModelAdmin):
     readonly_fields = ['created_at']
 
 
-class NewsPostAdmin(admin.ModelAdmin):
+class NewsPostAdmin(MarkdownFieldsMixin, admin.ModelAdmin):
+    markdown_fields = ('content',)
     list_display = ['title', 'published_at', 'is_published', 'show_on_main', 'order', 'created_at']
     list_filter = ['is_published', 'show_on_main', 'published_at']
     search_fields = ['title', 'description']
@@ -287,7 +322,6 @@ custom_admin_site.register(Tender, TenderAdmin)
 custom_admin_site.register(ContactStaffMember, ContactStaffMemberAdmin)
 custom_admin_site.register(HonorBoardStaffMember, HonorBoardStaffMemberAdmin)
 custom_admin_site.register(Vacancy, VacancyAdmin)
-custom_admin_site.register(WorkSchedule, WorkScheduleAdmin)
 custom_admin_site.register(RequiredExperience, RequiredExperienceAdmin)
 custom_admin_site.register(JobType, JobTypeAdmin)
 custom_admin_site.register(WorkingHours, WorkingHoursAdmin)
@@ -309,6 +343,8 @@ custom_admin_site.register(Feedback, FeedbackAdmin)
 custom_admin_site.register(VacancySubscription, VacancySubscriptionAdmin)
 custom_admin_site.register(Competition, CompetitionAdmin)
 custom_admin_site.register(CompetitionResult, CompetitionResultAdmin)
+custom_admin_site.register(CompetitionDocument, CompetitionDocumentAdmin)
+custom_admin_site.register(ApplicationRecipient, ApplicationRecipientAdmin)
 custom_admin_site.register(StaffReserveInfo, StaffReserveInfoAdmin)
 custom_admin_site.register(StaffReservePosition, StaffReservePositionAdmin)
 custom_admin_site.register(StaffReserveDocument, StaffReserveDocumentAdmin)

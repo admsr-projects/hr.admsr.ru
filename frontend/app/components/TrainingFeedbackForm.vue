@@ -1,34 +1,32 @@
 <template>
-  <DsSurface
-    elevation="none"
-    padding="lg"
-    class="w-full"
-  >
+  <div class="grid w-full grid-cols-1 gap-6 rounded-xl bg-elevated p-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-8">
+    <div
+      class="flex flex-col gap-3 lg:pt-1"
+      role="note"
+    >
+      <span
+        class="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary"
+        aria-hidden="true"
+      >
+        <UIcon
+          name="i-lucide-message-square-text"
+          class="size-5"
+        />
+      </span>
+      <p class="text-h3 text-text-primary">
+        Не для официальных обращений
+      </p>
+      <p class="text-caption text-text-muted text-pretty">
+        Форма предназначена для предложений по организации обучения. Идентификация не требуется — имя и подразделение можно не указывать.
+      </p>
+    </div>
+
     <UForm
       :state="form"
       :validate="validate"
-      class="flex flex-col gap-6"
+      class="flex flex-col gap-4"
       @submit="onSubmit"
     >
-      <div
-        class="flex items-start gap-3 rounded-xl border border-default bg-elevated/40 px-4 py-4 sm:px-5"
-        role="note"
-      >
-        <UIcon
-          name="i-lucide-info"
-          class="size-5 shrink-0 text-primary mt-0.5"
-          aria-hidden="true"
-        />
-        <div class="min-w-0 space-y-1">
-          <p class="text-body font-medium text-text-primary">
-            Не для официальных обращений
-          </p>
-          <p class="text-caption text-text-secondary leading-relaxed text-pretty">
-            Форма предназначена для предложений по организации обучения. Идентификация не требуется — имя и подразделение можно не указывать.
-          </p>
-        </div>
-      </div>
-
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <UFormField
           label="Имя"
@@ -36,7 +34,6 @@
         >
           <UInput
             v-model="form.name"
-            size="lg"
             placeholder="Как к вам обращаться"
             autocomplete="name"
             class="w-full"
@@ -50,7 +47,6 @@
           <USelectMenu
             v-model="form.department"
             :items="departmentOptions"
-            size="lg"
             value-key="value"
             placeholder="Выберите орган"
             :search-input="{
@@ -69,7 +65,6 @@
         <UTextarea
           v-model="form.message"
           :rows="5"
-          size="lg"
           placeholder="Опишите тему, формат или пожелания по обучению, встречам и мастер-классам"
           class="w-full"
         />
@@ -79,13 +74,12 @@
         type="submit"
         label="Отправить предложение"
         color="primary"
-        size="lg"
         trailing-icon="i-lucide-arrow-right"
         :loading="loading"
-        class="w-full justify-center sm:w-auto"
+        class="w-full justify-center sm:w-auto sm:self-start"
       />
     </UForm>
-  </DsSurface>
+  </div>
 </template>
 
 <script setup lang="ts">

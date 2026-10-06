@@ -3,25 +3,32 @@ from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status
-from django.shortcuts import get_object_or_404
+from django.conf import settings
+from django.shortcuts import get_object_or_404, render
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 from django.db.models import Q
 
 from .models import (
-    Tender, Vacancy, StaffMember, WorkSchedule, RequiredExperience, JobType,
+    Tender, Vacancy, StaffMember, RequiredExperience, JobType,
     AntiCorruptionDocument, AntiCorruptionDocumentCategory, AntiCorruptionInfo, CorruptionReport, BranchesGlobal, Feedback, VacancySubscription,
     Competition, CompetitionResult, StaffReserveInfo, StaffReserveDocument, VacancyDocument, WorkPartner, YouthInfo, PracticeApplication,
-    TrainingEvent, TrainingFeedback, NewsPost, Department, Deputy,
+    TrainingEvent, TrainingFeedback, NewsPost, Department, Deputy, CompetitionDocument,
+)
+from .search import search_portal
+from .notifications import (
+    email_from_unsubscribe_token, notify_recipients, KIND_VACANCIES, KIND_RESERVE, KIND_PRACTICE, KIND_TRAINING, KIND_FEEDBACK,
 )
 from .serializers import (
     TenderSerializer, VacancySerializer, StaffMemberSerializer,
-    JobApplicationSerializer, WorkScheduleSerializer,
+    JobApplicationSerializer,
     RequiredExperienceSerializer, JobTypeSerializer,
     AntiCorruptionDocumentSerializer, AntiCorruptionDocumentCategorySerializer, AntiCorruptionInfoSerializer, CorruptionReportSerializer,
     BranchesGlobalSerializer, WorkPartnerSerializer, FeedbackSerializer, VacancySubscriptionSerializer,
     CompetitionSerializer, CompetitionResultSerializer, StaffReserveInfoSerializer, StaffReserveDocumentSerializer, VacancyDocumentSerializer,
     YouthInfoSerializer, PracticeApplicationSerializer,
     TrainingEventSerializer, TrainingFeedbackSerializer, NewsPostSerializer,
-    DepartmentSerializer, DeputySerializer,
+    DepartmentSerializer, DeputySerializer, CompetitionDocumentSerializer,
 )
 
 
@@ -32,94 +39,11 @@ def hello(request):
 @api_view(['GET'])
 def portal_search(request):
     query = (request.query_params.get('q') or '').strip()
-    if len(query) < 2:
-        return Response({'vacancies': [], 'contacts': [], 'documents': []})
-
-    limit = 8
-
-    vacancies = list(
-        Vacancy.objects.filter(is_active=True, title__icontains=query)
-        .values('id', 'title', 'branch')[:limit]
-    )
-
-    contacts = list(
-        StaffMember.objects.filter(
-            is_active=True,
-            show_on_contacts=True,
-        )
-        .filter(
-            Q(surname__icontains=query)
-            | Q(name__icontains=query)
-            | Q(patronym__icontains=query)
-            | Q(role__icontains=query)
-            | Q(phone__icontains=query)
-            | Q(email__icontains=query)
-        )
-        .values('id', 'surname', 'name', 'patronym', 'role', 'phone', 'email')[:limit]
-    )
-
-    documents = []
-
-    for item in Tender.objects.filter(is_active=True, name__icontains=query).values('id', 'name')[:limit]:
-        documents.append({
-            'kind': 'tender',
-            'id': item['id'],
-            'title': item['name'],
-            'section': 'Конкурсы — документы',
-            'to': '/tenders#competition-rules',
-        })
-        if len(documents) >= limit:
-            break
-
-    if len(documents) < limit:
-        remaining = limit - len(documents)
-        for item in CompetitionResult.objects.filter(title__icontains=query).values('id', 'title', 'competition_type')[:remaining]:
-            documents.append({
-                'kind': 'competition_result',
-                'id': item['id'],
-                'title': item['title'],
-                'section': 'Конкурсы — результаты',
-                'to': '/tenders?tab=results',
-            })
-
-    if len(documents) < limit:
-        remaining = limit - len(documents)
-        for item in VacancyDocument.objects.filter(is_active=True, name__icontains=query).values('id', 'name')[:remaining]:
-            documents.append({
-                'kind': 'vacancy_document',
-                'id': item['id'],
-                'title': item['name'],
-                'section': 'Вакансии — документы',
-                'to': '/vacancies#vacancies-documents',
-            })
-
-    if len(documents) < limit:
-        remaining = limit - len(documents)
-        for item in StaffReserveDocument.objects.filter(is_active=True, name__icontains=query).values('id', 'name')[:remaining]:
-            documents.append({
-                'kind': 'staff_reserve_document',
-                'id': item['id'],
-                'title': item['name'],
-                'section': 'Кадровый резерв — документы',
-                'to': '/staffreserve#reserve-documents',
-            })
-
-    if len(documents) < limit:
-        remaining = limit - len(documents)
-        for item in AntiCorruptionDocument.objects.filter(name__icontains=query).values('id', 'name')[:remaining]:
-            documents.append({
-                'kind': 'anti_corruption',
-                'id': item['id'],
-                'title': item['name'],
-                'section': 'Противодействие коррупции — документы',
-                'to': '/anti-corruption#anticorruption-documents',
-            })
-
-    return Response({
-        'vacancies': vacancies,
-        'contacts': contacts,
-        'documents': documents,
-    })
+    try:
+        limit = max(1, min(int(request.query_params.get('limit', 6)), 100))
+    except ValueError:
+        limit = 6
+    return Response(search_portal(request, query, limit))
 
 
 @api_view(['GET'])
@@ -173,6 +97,24 @@ def submit_practice_application(request):
     serializer = PracticeApplicationSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
+        app = serializer.instance
+        notify_recipients(
+            KIND_PRACTICE,
+            f'Заявка на практику: {app.last_name} {app.first_name}',
+            [
+                ('ФИО', ' '.join(filter(None, [app.last_name, app.first_name, app.middle_name]))),
+                ('Дата рождения', app.birth_date),
+                ('Телефон', app.phone),
+                ('Email', app.email),
+                ('Учебное заведение', app.educational_institution),
+                ('Курс', app.course),
+                ('Специальность', app.specialty),
+                ('Желаемый период практики', app.practice_period),
+                ('Желаемый орган', app.preferred_department),
+                ('Комментарий', app.comment),
+            ],
+            files=[app.application_letter],
+        )
         return Response(
             {
                 'message': 'Заявка на практику успешно отправлена!',
@@ -211,6 +153,17 @@ def training_events(request):
     return Response(serializer.data)
 
 
+@api_view(['GET'])
+def training_event_detail(request, pk: int):
+    try:
+        item = TrainingEvent.objects.get(pk=pk, is_published=True)
+    except TrainingEvent.DoesNotExist:
+        return Response({'error': 'Training event not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = TrainingEventSerializer(item)
+    return Response(serializer.data)
+
+
 @api_view(['POST'])
 def submit_training_feedback(request):
     cooldown_seconds = 60
@@ -231,6 +184,15 @@ def submit_training_feedback(request):
     serializer = TrainingFeedbackSerializer(data=request.data)
     if serializer.is_valid():
         instance = serializer.save()
+        notify_recipients(
+            KIND_TRAINING,
+            'Предложение по обучению',
+            [
+                ('Имя', instance.name or 'Анонимно'),
+                ('Подразделение', instance.department),
+                ('Предложение', instance.message),
+            ],
+        )
         response = Response(
             {'message': 'Спасибо! Ваше предложение отправлено.', 'id': instance.id},
             status=status.HTTP_201_CREATED,
@@ -247,8 +209,18 @@ def submit_training_feedback(request):
 
 
 @api_view(['GET'])
+def competition_documents(request):
+    items = CompetitionDocument.objects.filter(is_active=True)
+    competition_type = request.query_params.get('type')
+    if competition_type in (Competition.TYPE_VACANCY, Competition.TYPE_RESERVE):
+        items = items.filter(competition_type=competition_type)
+    serializer = CompetitionDocumentSerializer(items, many=True, context={'request': request})
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
 def competition_results(request):
-    items = CompetitionResult.objects.all()
+    items = CompetitionResult.objects.prefetch_related('winners')
     competition_type = request.query_params.get('type')
     if competition_type in (Competition.TYPE_VACANCY, Competition.TYPE_RESERVE):
         items = items.filter(competition_type=competition_type)
@@ -280,10 +252,6 @@ def staff_members(request):
 def vacancies(request):
     items = Vacancy.objects.filter(is_active=True)
 
-    work_schedule = request.query_params.get('work_schedule')
-    if work_schedule:
-        items = items.filter(work_schedule_id=work_schedule)
-
     required_experience = request.query_params.get('required_experience')
     if required_experience:
         items = items.filter(required_experience_id=required_experience)
@@ -311,7 +279,6 @@ def vacancy_detail(request, pk):
 @api_view(['GET'])
 def vacancy_filters(request, field_name):
     model_map = {
-        'work_schedule': (WorkSchedule, WorkScheduleSerializer),
         'required_experience': (RequiredExperience, RequiredExperienceSerializer),
         'job_type': (JobType, JobTypeSerializer),
     }
@@ -332,6 +299,28 @@ def apply(request):
     serializer = JobApplicationSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
+        app = serializer.instance
+        kind = KIND_RESERVE if 'резерв' in (app.vacancy_title or '').lower() else KIND_VACANCIES
+        subject = f'Заявка на вакансию: {app.last_name} {app.first_name}'
+        if app.vacancy_title:
+            subject += f' — {app.vacancy_title}'
+        notify_recipients(
+            kind,
+            subject,
+            [
+                ('Вакансия', app.vacancy_title),
+                ('ФИО', ' '.join(filter(None, [app.last_name, app.first_name, app.middle_name]))),
+                ('Дата рождения', app.birth_date),
+                ('Телефон', app.phone),
+                ('Email', app.email),
+                ('Образование', app.education),
+                ('Специальность', app.specialty),
+                ('Стаж муниципальной службы', app.municipal_experience),
+                ('Трудовая деятельность', app.work_experience),
+                ('Откуда узнал(а)', app.vacancy_source),
+            ],
+            files=[app.resume, app.photo],
+        )
         return Response(
             {"message": "Заявка успешно отправлена!", "id": serializer.instance.id},
             status=status.HTTP_201_CREATED
@@ -344,6 +333,26 @@ def vacancy_subscribe(request):
     serializer = VacancySubscriptionSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
+        sub = serializer.instance
+        has_resume = bool(
+            sub.resume or sub.desired_position or sub.education or sub.work_experience or sub.about
+        )
+        if has_resume:
+            notify_recipients(
+                KIND_VACANCIES,
+                f'Резюме из подписки на вакансии: {sub.name or sub.email}',
+                [
+                    ('Имя', sub.name),
+                    ('Email', sub.email),
+                    ('Телефон', sub.phone),
+                    ('Отраслевой орган', sub.branch or 'любой'),
+                    ('Желаемая должность', sub.desired_position),
+                    ('Образование', sub.education),
+                    ('Опыт работы', sub.work_experience),
+                    ('О себе, навыки', sub.about),
+                ],
+                files=[sub.resume],
+            )
         return Response(
             {
                 'message': 'Подписка оформлена. Уведомления о новых вакансиях будут приходить на указанный email.',
@@ -352,6 +361,22 @@ def vacancy_subscribe(request):
             status=status.HTTP_201_CREATED,
         )
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@csrf_exempt  # токен в ссылке подписан, а почтовые клиенты шлют одношаговую отписку POST-ом без cookie
+@require_http_methods(['GET', 'POST'])
+def vacancy_unsubscribe(request, token):
+    email = email_from_unsubscribe_token(token)
+    context = {'site_url': settings.SITE_URL.rstrip('/'), 'email': email}
+    if not email:
+        context['state'] = 'invalid'
+        return render(request, 'api/unsubscribe.html', context, status=400)
+    if request.method == 'POST':
+        VacancySubscription.objects.filter(email__iexact=email).update(is_active=False)
+        context['state'] = 'done'
+    else:
+        context['state'] = 'confirm'
+    return render(request, 'api/unsubscribe.html', context)
 
 
 @api_view(['GET'])
@@ -473,6 +498,12 @@ def submit_feedback(request):
     serializer = FeedbackSerializer(data=request.data)
     if serializer.is_valid():
         instance = serializer.save()
+        notify_recipients(
+            KIND_FEEDBACK,
+            'Обратная связь с портала',
+            [('Сообщение', instance.message)],
+            files=[instance.photo],
+        )
 
         response = Response(
             {"message": "Сообщение отправлено!", "id": instance.id},

@@ -32,7 +32,7 @@
             label="Кадровый резерв"
             to="/staffreserve"
             color="neutral"
-            variant="outline"
+            variant="soft"
             trailing-icon="i-lucide-arrow-right"
             class="cursor-pointer transition-colors duration-200"
           />
@@ -42,99 +42,83 @@
 
     <ul
       v-else
-      class="flex flex-col gap-5 lg:gap-6"
+      class="flex flex-col gap-4"
     >
       <li
         v-for="item in competitions"
         :key="item.id"
       >
-        <UCard
-          variant="subtle"
-          class="min-w-0"
-          :ui="{
-            root: 'overflow-hidden rounded-xl',
-            body: 'p-0',
-          }"
+        <article
+          class="flex min-w-0 flex-col gap-4 rounded-xl bg-elevated p-6"
+          :aria-labelledby="`competition-${item.id}-title`"
         >
-          <div class="flex flex-wrap items-start justify-between gap-3 border-b border-default px-5 py-4 lg:px-6">
-            <div class="min-w-0 space-y-2">
-              <h3 class="text-h3 text-text-primary text-balance">
-                {{ item.title }}
-              </h3>
-              <p
-                v-if="item.date_start || item.date_end"
-                class="flex flex-wrap items-center gap-x-2 gap-y-1 text-caption text-text-muted"
-              >
-                <UIcon
-                  name="i-lucide-calendar"
-                  class="size-4 shrink-0 text-primary"
-                  aria-hidden="true"
-                />
-                <span class="text-text-secondary">Приём документов:</span>
-                <time :datetime="item.date_start || item.date_end || undefined">
-                  {{ formatDateRange(item.date_start, item.date_end) }}
-                </time>
-              </p>
-            </div>
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <h3
+              :id="`competition-${item.id}-title`"
+              class="min-w-0 flex-1 text-h3 text-text-primary text-balance"
+            >
+              {{ item.title }}
+            </h3>
             <UBadge
               color="primary"
-              variant="subtle"
+              variant="soft"
               class="shrink-0"
             >
               {{ item.competitionTypeLabel }}
             </UBadge>
           </div>
 
-          <div class="space-y-5 p-5 lg:p-6">
-            <div
-              v-if="item.content"
-              class="text-body text-text-secondary leading-relaxed whitespace-pre-line text-pretty"
+          <ul
+            v-if="item.date_start || item.date_end || item.contact_phones"
+            class="flex flex-col gap-2 text-caption text-text-muted sm:flex-row sm:flex-wrap sm:gap-x-6"
+          >
+            <li
+              v-if="item.date_start || item.date_end"
+              class="flex items-center gap-2"
             >
-              {{ item.content }}
-            </div>
-
-            <div
-              v-if="item.requirements"
-              class="space-y-2"
-            >
-              <h4 class="text-overline uppercase tracking-wide text-text-muted">
-                Требования
-              </h4>
-              <p class="text-body text-text-secondary leading-relaxed whitespace-pre-line text-pretty">
-                {{ item.requirements }}
-              </p>
-            </div>
-
-            <div
-              v-if="item.acceptance_info"
-              class="space-y-2"
-            >
-              <h4 class="text-overline uppercase tracking-wide text-text-muted">
-                Место и время приёма документов
-              </h4>
-              <p class="text-body text-text-secondary leading-relaxed whitespace-pre-line text-pretty">
-                {{ item.acceptance_info }}
-              </p>
-            </div>
-
-            <div
+              <UIcon
+                name="i-lucide-calendar"
+                class="size-4 shrink-0 text-primary"
+                aria-hidden="true"
+              />
+              <span>Приём документов:</span>
+              <time
+                class="font-medium text-text-primary"
+                :datetime="item.date_start || item.date_end || undefined"
+              >
+                {{ formatDateRange(item.date_start, item.date_end) }}
+              </time>
+            </li>
+            <li
               v-if="item.contact_phones"
-              class="space-y-2"
+              class="flex items-start gap-2"
             >
-              <h4 class="text-overline uppercase tracking-wide text-text-muted">
-                Контакты ответственных лиц
-              </h4>
-              <p class="flex items-start gap-2 text-body text-text-secondary whitespace-pre-line">
-                <UIcon
-                  name="i-lucide-phone"
-                  class="size-4 shrink-0 text-primary mt-1"
-                  aria-hidden="true"
-                />
-                <span>{{ item.contact_phones }}</span>
-              </p>
-            </div>
-          </div>
-        </UCard>
+              <UIcon
+                name="i-lucide-phone"
+                class="mt-0.5 size-4 shrink-0 text-primary"
+                aria-hidden="true"
+              />
+              <span class="whitespace-pre-line text-text-primary">{{ item.contact_phones }}</span>
+            </li>
+          </ul>
+
+          <UAccordion
+            v-if="detailItems(item).length"
+            type="multiple"
+            :items="detailItems(item)"
+            :ui="{
+              root: 'flex flex-col gap-2',
+              item: 'rounded-lg bg-default border-b-0',
+              trigger: 'cursor-pointer px-4 py-3 text-base font-semibold text-text-primary',
+              leadingIcon: 'size-5 text-primary',
+              body: 'px-4 pb-4 text-body text-text-primary',
+            }"
+          >
+            <template #body="{ item: section }">
+              <DsMarkdown :source="section.text" />
+            </template>
+          </UAccordion>
+        </article>
       </li>
     </ul>
   </div>
@@ -173,6 +157,16 @@ const competitions = computed(() => {
   if (!props.typeFilter) return items
   return items.filter(item => item.competition_type === props.typeFilter)
 })
+
+function detailItems(item: CompetitionItem) {
+  return [
+    { label: 'О конкурсе', icon: 'i-lucide-file-text', text: item.content },
+    { label: 'Требования', icon: 'i-lucide-list-checks', text: item.requirements },
+    { label: 'Место и время приёма документов', icon: 'i-lucide-map-pin', text: item.acceptance_info },
+  ]
+    .filter(section => section.text)
+    .map(section => ({ ...section, value: `${item.id}-${section.label}` }))
+}
 
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString('ru-RU', {

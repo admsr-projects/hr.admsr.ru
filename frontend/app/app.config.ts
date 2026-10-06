@@ -1,3 +1,5 @@
+// Глобальные настройки Nuxt UI. Правила — в docs/DESIGN-RULES.md (дизайн SOFT):
+// на месте эти значения не переопределять.
 export default defineAppConfig({
   ui: {
     colors: {
@@ -7,28 +9,47 @@ export default defineAppConfig({
     },
     card: {
       slots: {
-        root: 'ring-1 ring-[var(--color-border-default)] shadow-xs',
+        root: 'rounded-xl shadow-none',
+      },
+      variants: {
+        variant: {
+          // Мягкая панель: серый фон без рамки и тени
+          soft: {
+            root: 'bg-elevated ring-0',
+          },
+          subtle: {
+            root: 'bg-elevated ring-0',
+          },
+        },
+      },
+      defaultVariants: {
+        variant: 'soft',
       },
     },
     input: {
       slots: {
         root: 'relative inline-flex items-center',
-        base: 'rounded-md ring-[var(--color-border-default)] bg-surface-raised text-text-primary',
+        base: 'rounded-lg ring-[var(--color-border-default)] bg-surface-raised text-text-primary',
       },
     },
     textarea: {
       slots: {
-        base: 'rounded-md ring-[var(--color-border-default)] bg-surface-raised text-text-primary',
+        base: 'rounded-lg ring-[var(--color-border-default)] bg-surface-raised text-text-primary',
       },
     },
     select: {
       slots: {
-        base: 'rounded-md',
+        base: 'rounded-lg',
+      },
+    },
+    selectMenu: {
+      slots: {
+        base: 'rounded-lg',
       },
     },
     inputDate: {
       slots: {
-        base: 'rounded-md',
+        base: 'rounded-lg',
       },
     },
     formField: {
@@ -44,18 +65,28 @@ export default defineAppConfig({
       slots: {
         base: 'rounded-full',
       },
-      defaultVariants: {
-        size: 'lg',
-      },
     },
     badge: {
+      slots: {
+        base: 'rounded-full',
+      },
+      // Скругление у Nuxt UI задано в размерах метки, поэтому переопределяем каждый
+      variants: {
+        size: {
+          xs: { base: 'rounded-full' },
+          sm: { base: 'rounded-full' },
+          md: { base: 'rounded-full' },
+          lg: { base: 'rounded-full' },
+          xl: { base: 'rounded-full' },
+        },
+      },
       defaultVariants: {
-        size: 'lg',
+        variant: 'soft',
       },
     },
-    checkbox: {
-      slots: {
-        base: 'rounded-md',
+    alert: {
+      defaultVariants: {
+        variant: 'soft',
       },
     },
     pagination: {

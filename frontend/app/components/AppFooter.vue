@@ -2,7 +2,6 @@
 import {
   careerNavGroup,
   footerLegalLinks,
-  footerResourceLinks,
   footerCareerLinks,
   siteContact,
   socialLinks,
@@ -11,10 +10,6 @@ import {
 
 const currentYear = new Date().getFullYear()
 const teamLinks = teamNavGroup.items
-
-function isExternal(url: string) {
-  return url.startsWith('http')
-}
 </script>
 
 <template>
@@ -166,8 +161,7 @@ function isExternal(url: string) {
               icon="i-lucide-phone"
               color="neutral"
               variant="soft"
-              size="lg"
-              class="rounded-full"
+              
             />
             <UButton
               to="/feedback"
@@ -175,34 +169,8 @@ function isExternal(url: string) {
               icon="i-lucide-message-square"
               color="primary"
               variant="soft"
-              size="lg"
-              class="rounded-full"
+              
             />
-          </div>
-        </div>
-      </div>
-
-      <div class="mt-10 border-t border-default pt-8">
-        <div class="flex flex-col gap-4">
-          <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p class="text-xs font-medium uppercase tracking-wide text-muted">
-              Полезные ресурсы
-            </p>
-            <ul class="flex flex-wrap gap-x-5 gap-y-2">
-              <li
-                v-for="item in footerResourceLinks"
-                :key="item.to"
-              >
-                <NuxtLink
-                  :to="item.to"
-                  :target="isExternal(item.to) ? '_blank' : undefined"
-                  :rel="isExternal(item.to) ? 'noopener noreferrer' : undefined"
-                  class="text-sm text-muted transition hover:text-primary motion-reduce:transition-none"
-                >
-                  {{ item.label }}
-                </NuxtLink>
-              </li>
-            </ul>
           </div>
         </div>
       </div>

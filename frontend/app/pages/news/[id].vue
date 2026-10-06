@@ -1,90 +1,53 @@
 <template>
-  <div class="bg-default">
-    <article>
-      <header class="border-b border-default">
-        <UContainer class="flex flex-col gap-6 py-10 lg:gap-8 lg:py-14">
-          <div
-            v-if="pending"
-            class="mx-auto w-full max-w-3xl space-y-4"
-            aria-busy="true"
-            aria-label="Загрузка новости"
-          >
-            <USkeleton class="h-6 w-28 rounded-full" />
-            <USkeleton class="h-12 w-full" />
-            <USkeleton class="h-12 w-5/6" />
-            <USkeleton class="h-20 w-full" />
-          </div>
+  <div class="ds-inner">
+    <DsBreadcrumbs :items="breadcrumbs" />
 
-          <template v-else-if="post">
-            <div class="mx-auto flex w-full max-w-3xl flex-col items-start gap-4">
-              <UBadge
-                v-if="post.date"
-                color="primary"
-                variant="subtle"
-                size="lg"
-                class="rounded-full"
-              >
-                <time :datetime="post.date">
-                  {{ formatDate(post.date) }}
-                </time>
-              </UBadge>
-
-              <h1 class="text-balance text-3xl font-bold tracking-tight text-highlighted sm:text-4xl lg:text-5xl lg:leading-[1.08]">
-                {{ post.title }}
-              </h1>
-
-              <p
-                v-if="post.description"
-                class="max-w-2xl text-pretty text-lg leading-8 text-muted sm:text-xl sm:leading-9"
-              >
-                {{ post.description }}
-              </p>
-            </div>
-
-            <figure
-              v-if="post.imageUrl"
-              class="mt-2 w-full overflow-hidden rounded-3xl border border-default bg-elevated shadow-sm"
-            >
-              <img
-                :src="post.imageUrl"
-                :alt="post.title"
-                loading="eager"
-                class="block h-auto w-full"
-              >
-            </figure>
-          </template>
-        </UContainer>
-      </header>
-
-      <UContainer class="py-10 lg:py-14">
-        <div
-          v-if="pending"
-          class="mx-auto max-w-2xl space-y-3"
-          aria-hidden="true"
-        >
-          <USkeleton class="h-5 w-full" />
+    <div class="ds-container pb-12 lg:pb-16">
+      <article
+        class="mx-auto flex max-w-3xl flex-col gap-4"
+        :aria-busy="pending"
+      >
+        <template v-if="pending">
+          <USkeleton class="h-4 w-28" />
+          <USkeleton class="h-10 w-full" />
+          <USkeleton class="h-10 w-3/4" />
+          <USkeleton class="aspect-video w-full rounded-lg" />
           <USkeleton class="h-5 w-full" />
           <USkeleton class="h-5 w-11/12" />
-          <USkeleton class="h-5 w-4/5" />
-        </div>
+        </template>
 
-        <div
-          v-else
-          class="mx-auto max-w-2xl"
-        >
-          <div
-            v-if="contentParagraphs.length"
-            class="space-y-5 border-s-2 border-primary/25 ps-5 sm:ps-6"
+        <template v-else-if="post">
+          <time
+            v-if="post.date"
+            :datetime="post.date"
+            class="text-sm text-text-muted"
           >
-            <p
-              v-for="(paragraph, index) in contentParagraphs"
-              :key="index"
-              class="whitespace-pre-line text-pretty text-base leading-8 text-text-secondary sm:text-lg sm:leading-8"
-              :class="index === 0 ? 'text-lg text-highlighted sm:text-xl' : undefined"
-            >
-              {{ paragraph }}
-            </p>
-          </div>
+            {{ formatDate(post.date) }}
+          </time>
+
+          <h1 class="text-h1 text-text-primary text-balance">
+            {{ post.title }}
+          </h1>
+
+          <p
+            v-if="post.description"
+            class="text-xl leading-8 text-text-muted text-pretty"
+          >
+            {{ post.description }}
+          </p>
+
+          <DsBlurredImage
+            v-if="post.imageUrl"
+            :src="post.imageUrl"
+            :alt="post.title"
+            loading="eager"
+            class="rounded-lg"
+          />
+
+          <DsMarkdown
+            v-if="post.content?.trim()"
+            :source="post.content"
+          />
 
           <DsEmptyState
             v-else
@@ -92,85 +55,37 @@
             title="Полный текст готовится"
             description="Мы опубликуем материал в ближайшее время."
           />
-        </div>
-      </UContainer>
-    </article>
+        </template>
 
-    <section
-      v-if="!pending && relatedPosts.length"
-      class="border-t border-default bg-elevated/40"
-    >
-      <UContainer class="flex flex-col gap-8 py-16 lg:py-20">
-        <div class="flex max-w-2xl flex-col gap-3">
-          <UBadge
-            label="Также интересно"
-            color="primary"
-            variant="subtle"
-            size="lg"
-            class="w-fit rounded-full"
-          />
-          <h2
-            id="news-related"
-            class="text-3xl font-bold tracking-tight text-highlighted text-balance sm:text-4xl"
-          >
-            Ещё новости
-          </h2>
-          <p class="text-pretty text-lg leading-8 text-muted">
-            Другие события и материалы
-          </p>
-        </div>
+        <DsEmptyState
+          v-else
+          icon="i-lucide-search-x"
+          title="Новость не найдена"
+          description="Материал снят с публикации или адрес указан неверно."
+        />
+      </article>
+
+      <section
+        v-if="!pending && relatedPosts.length"
+        aria-labelledby="news-related"
+        class="mt-12"
+      >
+        <h2
+          id="news-related"
+          class="mb-4 text-xl font-bold text-text-primary"
+        >
+          Ещё новости
+        </h2>
 
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <article
-            v-for="(item, index) in relatedPosts"
+          <NewsCard
+            v-for="item in relatedPosts"
             :key="item.id"
-            class="group"
-          >
-            <NuxtLink
-              :to="`/news/${item.id}`"
-              class="flex h-full flex-col overflow-hidden rounded-2xl border border-default bg-default transition hover:border-primary/40 hover:bg-elevated motion-reduce:transition-none"
-            >
-              <div
-                v-if="item.imageUrl"
-                class="w-full overflow-hidden bg-elevated"
-              >
-                <img
-                  :src="item.imageUrl"
-                  :alt="item.title"
-                  class="block h-auto w-full transition duration-500 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-                  :loading="index === 0 ? 'eager' : 'lazy'"
-                >
-              </div>
-
-              <div class="flex flex-1 flex-col gap-2 p-4">
-                <UBadge
-                  v-if="item.date"
-                  color="primary"
-                  variant="subtle"
-                  size="lg"
-                  class="w-fit rounded-full"
-                >
-                  <time :datetime="item.date">
-                    {{ formatDate(item.date) }}
-                  </time>
-                </UBadge>
-
-                <h3 class="text-base font-semibold leading-snug text-highlighted line-clamp-2 group-hover:text-primary">
-                  {{ item.title }}
-                </h3>
-
-                <p
-                  v-if="item.description"
-                  class="text-sm leading-5 text-muted line-clamp-2"
-                >
-                  {{ item.description }}
-                </p>
-              </div>
-            </NuxtLink>
-          </article>
+            :post="item"
+          />
         </div>
-      </UContainer>
-    </section>
+      </section>
+    </div>
   </div>
 </template>
 
@@ -214,14 +129,11 @@ const relatedPosts = computed(() =>
     .slice(0, 3),
 )
 
-const contentParagraphs = computed(() => {
-  const raw = post.value?.content?.trim()
-  if (!raw) return []
-  return raw
-    .split(/\n{2,}/g)
-    .map(p => p.trim())
-    .filter(Boolean)
-})
+const breadcrumbs = computed(() => [
+  { label: 'Главная', to: '/', icon: 'i-lucide-home' },
+  { label: 'Новости', to: '/#news' },
+  { label: post.value?.title ?? 'Новость' },
+])
 
 function formatDate(value: string) {
   try {

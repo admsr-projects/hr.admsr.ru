@@ -1,0 +1,52 @@
+/* Редактор Markdown в админке: подстраиваем цвета EasyMDE под светлую и тёмную тему Django */
+.EasyMDEContainer { max-width: 900px; }
+
+.EasyMDEContainer .CodeMirror {
+  background: var(--body-bg, #fff);
+  color: var(--body-fg, #333);
+  border-color: var(--border-color, #ccc);
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.EasyMDEContainer .CodeMirror-cursor { border-left-color: var(--body-fg, #333); }
+
+.EasyMDEContainer .editor-toolbar {
+  background: var(--darkened-bg, #f8f8f8);
+  border-color: var(--border-color, #ccc);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  opacity: 1;
+}
+
+.EasyMDEContainer .editor-toolbar button.md-btn {
+  width: auto;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 8px;
+  color: var(--body-fg, #333);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 28px;
+}
+
+.EasyMDEContainer .editor-toolbar button.md-btn-bold { font-weight: 700; }
+.EasyMDEContainer .editor-toolbar button.md-btn-italic { font-style: italic; }
+
+.EasyMDEContainer .editor-toolbar button:hover,
+.EasyMDEContainer .editor-toolbar button.active {
+  background: var(--selected-bg, #e1e1e1);
+  border-color: var(--border-color, #ccc);
+}
+
+.EasyMDEContainer .editor-toolbar i.separator { border-color: var(--border-color, #ccc); }
+
+.EasyMDEContainer .editor-preview,
+.EasyMDEContainer .editor-preview-side {
+  background: var(--body-bg, #fff);
+  color: var(--body-fg, #333);
+}
+
+.EasyMDEContainer .editor-preview a,
+.EasyMDEContainer .editor-preview-side a { color: var(--link-fg, #447e9b); }

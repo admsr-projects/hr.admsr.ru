@@ -1,60 +1,28 @@
 <template>
-  <header class="bg-surface-sunken/60">
-    <div class="ds-container py-6 lg:py-8">
-      <UPageHeader
-        :headline="resolvedHeadline"
-        :title="title"
-        :description="description"
-        :ui="{
-          root: 'gap-y-2 border-0',
-          headline: 'text-overline uppercase tracking-wide text-text-accent font-medium',
-          title: 'text-h1 lg:text-[2rem] text-text-primary text-balance leading-tight',
-          description: 'text-body-lg text-text-secondary text-pretty max-w-2xl mt-2',
-          links: 'mt-4',
-        }"
+  <div class="flex flex-col gap-4">
+    <header class="flex flex-col gap-4 border-b border-default pb-4">
+      <h1 class="text-h1 text-text-primary text-balance">
+        {{ title }}
+      </h1>
+      <p
+        v-if="description"
+        class="text-base text-text-muted text-pretty"
       >
-        <template
-          v-if="$slots.actions"
-          #links
-        >
-          <slot name="actions" />
-        </template>
-      </UPageHeader>
+        {{ description }}
+      </p>
+    </header>
+    <div
+      v-if="$slots.actions"
+      class="flex flex-wrap gap-3"
+    >
+      <slot name="actions" />
     </div>
-  </header>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { resolveStandardSection } from '~/data/standard-pages'
-
-const props = withDefaults(defineProps<{
+defineProps<{
   title: string
   description?: string
-  headline?: string
-}>(), {
-  description: undefined,
-  headline: undefined,
-})
-
-const route = useRoute()
-
-const resolvedHeadline = computed(() => {
-  if (props.headline) return props.headline
-
-  const section = resolveStandardSection(route.path)
-  if (section) return section.label
-
-  const pathHeadlines: Record<string, string> = {
-    '/vacancies': 'Карьера',
-    '/anti-corruption': 'Противодействие коррупции',
-    '/privacy': 'Правовая информация',
-    '/feedback': 'Сервисы портала',
-  }
-
-  if (route.path.startsWith('/vacancyinfo/')) {
-    return 'Карьера'
-  }
-
-  return pathHeadlines[route.path] ?? 'Кадровый портал'
-})
+}>()
 </script>

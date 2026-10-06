@@ -25,6 +25,12 @@ useHead(() => ({
   title: vacancy.value?.title ?? 'Вакансия',
 }))
 
+/** Оплату указывают не всегда: пустое значение и прочерк считаем «не указана» */
+const salary = computed(() => {
+  const value = (vacancy.value?.salary ?? '').trim()
+  return /^[-–—\s]*$/.test(value) ? '' : value
+})
+
 const pageDescription = computed(() => {
   if (!vacancy.value) {
     return 'Подробная информация о вакантной должности в администрации Сургутского района'
@@ -33,7 +39,7 @@ const pageDescription = computed(() => {
   const parts = [
     vacancy.value.branch,
     vacancy.value.location,
-    vacancy.value.salary,
+    salary.value,
   ].filter(Boolean)
 
   return parts.length
@@ -42,7 +48,7 @@ const pageDescription = computed(() => {
 })
 
 const publishedLabel = computed(() => {
-  const raw = vacancy.value?.created_at
+  const raw = vacancy.value?.published_at || vacancy.value?.created_at
   if (!raw) return ''
 
   return new Date(raw).toLocaleDateString('ru-RU', {
@@ -86,8 +92,8 @@ const conditionItems = computed<ConditionItem[]>(() => {
     vacancy.value.location
       ? { key: 'location', title: 'Локация', value: vacancy.value.location, icon: 'i-lucide-map-pin' }
       : null,
-    vacancy.value.salary
-      ? { key: 'salary', title: 'Оплата труда', value: vacancy.value.salary, icon: 'i-lucide-wallet' }
+    salary.value
+      ? { key: 'salary', title: 'Оплата труда', value: salary.value, icon: 'i-lucide-wallet' }
       : null,
     (vacancy.value.requiredExperience || vacancy.value.experience)
       ? {
@@ -97,14 +103,8 @@ const conditionItems = computed<ConditionItem[]>(() => {
           icon: 'i-lucide-award',
         }
       : null,
-    vacancy.value.workSchedule
-      ? { key: 'schedule', title: 'График работы', value: vacancy.value.workSchedule, icon: 'i-lucide-clock' }
-      : null,
     vacancy.value.workingHours
       ? { key: 'hours', title: 'Режим работы', value: vacancy.value.workingHours, icon: 'i-lucide-calendar-clock' }
-      : null,
-    vacancy.value.employmentType
-      ? { key: 'employment', title: 'Тип занятости', value: vacancy.value.employmentType, icon: 'i-lucide-briefcase' }
       : null,
     vacancy.value.jobType
       ? { key: 'job-type', title: 'Тип должности', value: vacancy.value.jobType, icon: 'i-lucide-id-card' }
@@ -118,10 +118,7 @@ const tagItems = computed(() => {
   if (!vacancy.value) return []
 
   return [
-    vacancy.value.isNew ? 'Новая вакансия' : null,
-    vacancy.value.workSchedule,
     vacancy.value.jobType,
-    vacancy.value.employmentType,
   ].filter((item): item is string => Boolean(item))
 })
 
@@ -229,9 +226,8 @@ async function handleFormSubmit(formData: Record<string, unknown>) {
         <UButton
           label="Откликнуться"
           color="primary"
-          size="lg"
           trailing-icon="i-lucide-arrow-right"
-          class="cursor-pointer rounded-full"
+          class="cursor-pointer"
           @click="openApplicationForm"
         />
       </template>
@@ -263,8 +259,7 @@ async function handleFormSubmit(formData: Record<string, unknown>) {
             label="Вернуться к вакансиям"
             to="/vacancies"
             color="primary"
-            size="lg"
-            class="cursor-pointer rounded-full"
+            class="cursor-pointer"
           />
         </template>
       </DsEmptyState>
@@ -287,9 +282,8 @@ async function handleFormSubmit(formData: Record<string, unknown>) {
                 :key="tag"
                 :label="tag"
                 color="primary"
-                variant="subtle"
-                size="lg"
-                class="rounded-full"
+                variant="soft"
+                
               />
               <span
                 v-if="publishedLabel"
@@ -345,7 +339,7 @@ async function handleFormSubmit(formData: Record<string, unknown>) {
             <li
               v-for="skill in skills"
               :key="skill"
-              class="flex items-start gap-3 rounded-xl border border-default bg-elevated/30 p-4"
+              class="flex items-start gap-3 rounded-xl bg-elevated p-4"
             >
               <UIcon
                 name="i-lucide-check"
@@ -377,9 +371,8 @@ async function handleFormSubmit(formData: Record<string, unknown>) {
               <UButton
                 label="Откликнуться"
                 color="primary"
-                size="lg"
                 trailing-icon="i-lucide-arrow-right"
-                class="w-full cursor-pointer justify-center rounded-full sm:w-auto"
+                class="w-full cursor-pointer justify-center sm:w-auto"
                 @click="openApplicationForm"
               />
             </template>
@@ -394,76 +387,41 @@ async function handleFormSubmit(formData: Record<string, unknown>) {
           spacing="lg"
         >
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <UPageCard
+            <DsLinkCard
               title="Все вакансии"
               description="Вернуться к полному списку открытых должностей администрации района."
               icon="i-lucide-briefcase"
               to="/vacancies"
-              variant="subtle"
-              class="h-full cursor-pointer"
-              :ui="{
-                root: 'h-full',
-                container: 'h-full',
-                wrapper: 'h-full',
-              }"
             />
 
-            <UPageCard
+            <DsLinkCard
               v-if="vacancy.branch"
               title="Вакансии подразделения"
               :description="`Другие открытые должности в «${vacancy.branch}».`"
               icon="i-lucide-building-2"
               :to="orgVacanciesLink"
-              variant="subtle"
-              class="h-full cursor-pointer"
-              :ui="{
-                root: 'h-full',
-                container: 'h-full',
-                wrapper: 'h-full',
-              }"
             />
 
-            <UPageCard
+            <DsLinkCard
               v-if="relatedDepartment"
               title="Страница подразделения"
               :description="`Подробнее о деятельности «${relatedDepartment.name}».`"
               icon="i-lucide-network"
               :to="`/about/departments/${relatedDepartment.slug}`"
-              variant="subtle"
-              class="h-full cursor-pointer"
-              :ui="{
-                root: 'h-full',
-                container: 'h-full',
-                wrapper: 'h-full',
-              }"
             />
 
-            <UPageCard
+            <DsLinkCard
               title="Конкурсы"
               description="Действующие конкурсы на замещение должностей и кадровый резерв."
               icon="i-lucide-clipboard-list"
               to="/tenders"
-              variant="subtle"
-              class="h-full cursor-pointer"
-              :ui="{
-                root: 'h-full',
-                container: 'h-full',
-                wrapper: 'h-full',
-              }"
             />
 
-            <UPageCard
+            <DsLinkCard
               title="Кадровый резерв"
               description="Как вступить в резерв и развивать карьеру в администрации района."
               icon="i-lucide-users"
               to="/staffreserve"
-              variant="subtle"
-              class="h-full cursor-pointer"
-              :ui="{
-                root: 'h-full',
-                container: 'h-full',
-                wrapper: 'h-full',
-              }"
             />
           </div>
         </DsContentSection>

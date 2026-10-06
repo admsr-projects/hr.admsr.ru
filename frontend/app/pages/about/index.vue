@@ -65,8 +65,6 @@ const missionCards = [
       />
     </DsContentSection>
 
-    <DeputyStructure />
-
     <DsContentSection
       title="Будьте в курсе жизни администрации"
       description="Новости, события и проекты района — в официальных социальных сетях"
@@ -91,7 +89,7 @@ const missionCards = [
             :icon="link.image ? undefined : link.icon"
             :label="link.label"
             color="neutral"
-            variant="outline"
+            variant="soft"
             class="cursor-pointer transition-colors duration-200"
           >
             <template

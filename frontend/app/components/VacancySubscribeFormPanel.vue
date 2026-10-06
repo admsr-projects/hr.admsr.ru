@@ -15,10 +15,10 @@
         />
       </span>
       <div class="flex flex-col gap-2">
-        <h3 class="text-xl font-semibold text-highlighted">
+        <h3 class="text-h3 text-text-primary">
           Подписка оформлена
         </h3>
-        <p class="text-pretty text-sm leading-6 text-muted">
+        <p class="text-pretty text-caption text-text-muted">
           Уведомления{{ submittedOfoHint }} будут приходить на {{ submittedEmail }}
         </p>
       </div>
@@ -26,7 +26,7 @@
         label="Подписать другой email"
         color="neutral"
         variant="link"
-        class="rounded-full"
+        
         @click="$emit('reset')"
       />
     </div>
@@ -45,7 +45,6 @@
         <UInput
           v-model="form.name"
           type="text"
-          size="lg"
           placeholder="Иван Иванов"
           autocomplete="name"
           class="w-full min-w-0"
@@ -59,7 +58,6 @@
         <UInput
           v-model="form.email"
           type="email"
-          size="lg"
           placeholder="name@example.com"
           autocomplete="email"
           class="w-full min-w-0"
@@ -74,7 +72,7 @@
         <USelectMenu
           v-model="form.branch"
           :items="ofoOptions"
-          size="lg"
+          aria-label="Отраслевой функциональный орган"
           value-key="value"
           :search-input="{
             placeholder: 'Поиск ОФО…',
@@ -91,6 +89,95 @@
       </UFormField>
 
       <UFormField
+        label="Резюме"
+        description="Необязательно"
+        name="resumeMode"
+        class="min-w-0 w-full"
+      >
+        <URadioGroup
+          v-model="form.resumeMode"
+          :items="resumeModeItems"
+          class="mt-1"
+        />
+      </UFormField>
+
+      <UFormField
+        v-if="form.resumeMode === 'file'"
+        label="Файл резюме"
+        name="resumeFile"
+        class="min-w-0 w-full"
+      >
+        <UFileUpload
+          v-model="form.resumeFile"
+          accept=".pdf,.doc,.docx,.rtf,.odt,.txt"
+          label="Перетащите файл или выберите"
+          description="PDF, DOC, DOCX, RTF, ODT или TXT (макс. 10 МБ)"
+          class="w-full min-w-0"
+        />
+      </UFormField>
+
+      <template v-else-if="form.resumeMode === 'form'">
+        <UFormField name="desiredPosition">
+          <template #label>
+            <DsRequiredLabel label="Желаемая должность" />
+          </template>
+          <UInput
+            v-model="form.desiredPosition"
+            placeholder="Например, специалист по кадрам"
+            class="w-full min-w-0"
+          />
+        </UFormField>
+
+        <UFormField name="phone">
+          <template #label>
+            <DsRequiredLabel label="Телефон" />
+          </template>
+          <UInput
+            v-model="form.phone"
+            type="tel"
+            placeholder="+7 (900) 000-00-00"
+            autocomplete="tel"
+            class="w-full min-w-0"
+          />
+        </UFormField>
+
+        <UFormField
+          label="Образование"
+          name="education"
+        >
+          <UInput
+            v-model="form.education"
+            placeholder="Учебное заведение, специальность, год окончания"
+            class="w-full min-w-0"
+          />
+        </UFormField>
+
+        <UFormField
+          label="Опыт работы"
+          name="workExperience"
+        >
+          <UTextarea
+            v-model="form.workExperience"
+            :rows="4"
+            placeholder="Места работы, должности, периоды"
+            class="w-full min-w-0"
+          />
+        </UFormField>
+
+        <UFormField
+          label="О себе, навыки"
+          name="about"
+        >
+          <UTextarea
+            v-model="form.about"
+            :rows="3"
+            placeholder="Ключевые навыки и достижения"
+            class="w-full min-w-0"
+          />
+        </UFormField>
+      </template>
+
+      <UFormField
         name="consentPersonalData"
         class="min-w-0 w-full"
       >
@@ -103,11 +190,11 @@
           }"
         >
           <template #label>
-            <span class="block min-w-0 text-pretty text-sm leading-6 text-muted">
+            <span class="block min-w-0 text-pretty text-caption text-text-muted">
               Согласен на
               <NuxtLink
                 to="/privacy"
-                class="text-primary underline-offset-2 hover:underline"
+                class="text-primary underline underline-offset-2 hover:no-underline"
               >
                 обработку персональных данных
               </NuxtLink>
@@ -116,7 +203,7 @@
                 class="text-error"
                 aria-hidden="true"
               > *</span>
-              <span class="text-xs text-muted"> обязательно</span>
+              <span class="text-overline text-text-muted"> обязательно</span>
             </span>
           </template>
         </UCheckbox>
@@ -126,10 +213,9 @@
         type="submit"
         label="Подписаться"
         trailing-icon="i-lucide-arrow-right"
-        size="lg"
         color="primary"
         :loading="loading"
-        class="w-full justify-center rounded-full"
+        class="w-full justify-center"
       />
     </UForm>
   </div>
@@ -143,7 +229,20 @@ interface SubscribeForm {
   email: string
   branch: string
   consentPersonalData: boolean
+  resumeMode: 'none' | 'file' | 'form'
+  resumeFile: File | null
+  phone: string
+  desiredPosition: string
+  education: string
+  workExperience: string
+  about: string
 }
+
+const resumeModeItems = [
+  { value: 'none', label: 'Без резюме' },
+  { value: 'file', label: 'Прикрепить файл' },
+  { value: 'form', label: 'Заполнить в форме' },
+]
 
 const props = withDefaults(defineProps<{
   form: SubscribeForm
@@ -170,11 +269,12 @@ const submittedOfoHint = computed(() =>
     : ` о вакансиях в «${props.submittedOfo}»`,
 )
 
+// Внутри серой панели-обёртки форма — белый элемент второго уровня; сама по себе на странице — серая панель
 const panelClass = computed(() => {
-  const base = 'min-w-0 w-full max-w-full rounded-2xl border border-default bg-default'
+  const base = 'min-w-0 w-full max-w-full rounded-xl'
   if (props.accent || props.plain) {
-    return `${base} p-4 sm:p-6 lg:p-8`
+    return `${base} bg-default p-6`
   }
-  return `${base} p-4 sm:p-5 lg:p-6`
+  return `${base} bg-elevated p-6`
 })
 </script>
