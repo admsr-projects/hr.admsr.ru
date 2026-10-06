@@ -12,6 +12,7 @@ from .models import (
     Competition, CompetitionResult, StaffReserveInfo, StaffReserveDocument, VacancyDocument, WorkPartner, YouthInfo, PracticeApplication,
     TrainingEvent, TrainingFeedback, NewsPost, Department, Deputy, CompetitionDocument,
 )
+from .search import search_portal
 from .notifications import (
     notify_recipients, KIND_VACANCIES, KIND_RESERVE, KIND_PRACTICE, KIND_TRAINING, KIND_FEEDBACK,
 )
@@ -35,94 +36,11 @@ def hello(request):
 @api_view(['GET'])
 def portal_search(request):
     query = (request.query_params.get('q') or '').strip()
-    if len(query) < 2:
-        return Response({'vacancies': [], 'contacts': [], 'documents': []})
-
-    limit = 8
-
-    vacancies = list(
-        Vacancy.objects.filter(is_active=True, title__icontains=query)
-        .values('id', 'title', 'branch')[:limit]
-    )
-
-    contacts = list(
-        StaffMember.objects.filter(
-            is_active=True,
-            show_on_contacts=True,
-        )
-        .filter(
-            Q(surname__icontains=query)
-            | Q(name__icontains=query)
-            | Q(patronym__icontains=query)
-            | Q(role__icontains=query)
-            | Q(phone__icontains=query)
-            | Q(email__icontains=query)
-        )
-        .values('id', 'surname', 'name', 'patronym', 'role', 'phone', 'email')[:limit]
-    )
-
-    documents = []
-
-    for item in Tender.objects.filter(is_active=True, name__icontains=query).values('id', 'name')[:limit]:
-        documents.append({
-            'kind': 'tender',
-            'id': item['id'],
-            'title': item['name'],
-            'section': 'Конкурсы — документы',
-            'to': '/tenders#competition-rules',
-        })
-        if len(documents) >= limit:
-            break
-
-    if len(documents) < limit:
-        remaining = limit - len(documents)
-        for item in CompetitionResult.objects.filter(title__icontains=query).values('id', 'title', 'competition_type')[:remaining]:
-            documents.append({
-                'kind': 'competition_result',
-                'id': item['id'],
-                'title': item['title'],
-                'section': 'Конкурсы — результаты',
-                'to': '/tenders?tab=results',
-            })
-
-    if len(documents) < limit:
-        remaining = limit - len(documents)
-        for item in VacancyDocument.objects.filter(is_active=True, name__icontains=query).values('id', 'name')[:remaining]:
-            documents.append({
-                'kind': 'vacancy_document',
-                'id': item['id'],
-                'title': item['name'],
-                'section': 'Вакансии — документы',
-                'to': '/vacancies#vacancies-documents',
-            })
-
-    if len(documents) < limit:
-        remaining = limit - len(documents)
-        for item in StaffReserveDocument.objects.filter(is_active=True, name__icontains=query).values('id', 'name')[:remaining]:
-            documents.append({
-                'kind': 'staff_reserve_document',
-                'id': item['id'],
-                'title': item['name'],
-                'section': 'Кадровый резерв — документы',
-                'to': '/staffreserve#reserve-documents',
-            })
-
-    if len(documents) < limit:
-        remaining = limit - len(documents)
-        for item in AntiCorruptionDocument.objects.filter(name__icontains=query).values('id', 'name')[:remaining]:
-            documents.append({
-                'kind': 'anti_corruption',
-                'id': item['id'],
-                'title': item['name'],
-                'section': 'Противодействие коррупции — документы',
-                'to': '/anti-corruption#anticorruption-documents',
-            })
-
-    return Response({
-        'vacancies': vacancies,
-        'contacts': contacts,
-        'documents': documents,
-    })
+    try:
+        limit = max(1, min(int(request.query_params.get('limit', 6)), 100))
+    except ValueError:
+        limit = 6
+    return Response(search_portal(request, query, limit))
 
 
 @api_view(['GET'])
