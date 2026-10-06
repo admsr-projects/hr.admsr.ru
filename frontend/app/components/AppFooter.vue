@@ -12,6 +12,7 @@ const kiosk = useKiosk()
 const currentYear = new Date().getFullYear()
 const legalLinks = computed(() => footerLegalLinks.filter(item => !kiosk || item.to !== '/feedback'))
 const teamLinks = teamNavGroup.items
+const { openSettings: openCookieSettings } = useCookieConsent()
 </script>
 
 <template>
@@ -199,6 +200,15 @@ const teamLinks = teamNavGroup.items
             >
               {{ item.label }}
             </NuxtLink>
+          </li>
+          <li>
+            <button
+              type="button"
+              class="cursor-pointer text-sm text-muted transition hover:text-primary motion-reduce:transition-none"
+              @click="openCookieSettings"
+            >
+              Настройки cookie
+            </button>
           </li>
         </ul>
       </UContainer>
