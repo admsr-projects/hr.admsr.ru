@@ -3,7 +3,7 @@
     :to="logo.url"
     target="_blank"
     rel="noopener noreferrer"
-    class="group flex flex-col items-center gap-4 rounded-xl bg-elevated p-5 text-center transition hover:bg-accented motion-reduce:transition-none"
+    class="group flex flex-col items-center gap-4 rounded-xl bg-default p-5 text-center transition-colors duration-200 hover:bg-accented motion-reduce:transition-none"
     :class="$attrs.class"
   >
     <div class="flex h-14 w-full items-center justify-center">
@@ -13,11 +13,11 @@
         width="56"
         height="56"
         loading="lazy"
-        class="max-h-12 max-w-full object-contain opacity-80 transition group-hover:opacity-100 motion-reduce:transition-none"
+        class="max-h-12 max-w-full object-contain"
       >
     </div>
 
-    <span class="text-sm font-medium leading-snug text-highlighted">
+    <span class="text-caption font-medium text-text-primary text-balance">
       {{ logo.name }}
       <span class="sr-only"> (откроется в новой вкладке)</span>
     </span>

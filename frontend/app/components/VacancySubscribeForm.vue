@@ -5,7 +5,7 @@
   >
     <UContainer
       v-if="promo"
-      class="min-w-0 py-12 sm:py-16 lg:py-20"
+      class="min-w-0 py-12 lg:py-16"
     >
       <article class="min-w-0 w-full overflow-hidden rounded-xl bg-elevated p-6 lg:p-8">
         <PromoCardContent

@@ -1,6 +1,6 @@
 <template>
   <section class="bg-default">
-    <UContainer class="flex min-w-0 flex-col gap-8 py-12 sm:gap-10 sm:py-16 lg:py-20">
+    <UContainer class="flex min-w-0 flex-col gap-8 py-12 sm:gap-10 lg:py-16">
       <div class="flex max-w-2xl flex-col gap-3">
         <UBadge
           label="Принципы"
@@ -10,7 +10,7 @@
         />
         <h2
           id="values"
-          class="text-h2 text-highlighted text-balance"
+          class="text-h2 text-text-primary text-balance"
         >
           Для нас муниципальная служба — это:
         </h2>
@@ -49,7 +49,7 @@
               />
             </span>
             <span class="flex min-w-0 flex-col gap-1">
-              <span class="font-semibold text-highlighted text-balance">
+              <span class="font-semibold text-text-primary text-balance">
                 {{ value.title }}
               </span>
               <span class="text-sm leading-5 text-muted text-pretty">
@@ -70,7 +70,7 @@
             <p class="text-sm font-medium text-primary">
               {{ activeValue.subtitle }}
             </p>
-            <h3 class="text-h3 text-highlighted text-balance">
+            <h3 class="text-h3 text-text-primary text-balance">
               {{ activeValue.title }}
             </h3>
           </div>
@@ -99,11 +99,11 @@
           >
             <p class="text-pretty leading-7 text-muted">
               <template v-if="activeValue.benefit">
-                <span class="font-semibold text-highlighted">Что это даёт сотрудникам:</span>
+                <span class="font-semibold text-text-primary">Что это даёт сотрудникам:</span>
                 {{ ' ' }}{{ activeValue.benefit }}
               </template>
               <template v-else-if="activeValue.footerLabel">
-                <span class="font-semibold text-highlighted">{{ activeValue.footerLabel }}</span>
+                <span class="font-semibold text-text-primary">{{ activeValue.footerLabel }}</span>
                 {{ ' ' }}{{ activeValue.footerText }}
               </template>
             </p>

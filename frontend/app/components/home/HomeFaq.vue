@@ -1,6 +1,6 @@
 <template>
-  <section class="bg-elevated/40">
-    <UContainer class="flex flex-col gap-10 py-16 lg:py-20">
+  <section class="bg-default">
+    <UContainer class="flex flex-col gap-10 py-12 lg:py-16">
       <div class="flex max-w-2xl flex-col gap-3">
         <UBadge
           label="Вопрос - ответ"
@@ -10,11 +10,11 @@
         />
         <h2
           id="faq"
-          class="text-h2 text-highlighted text-balance"
+          class="text-h2 text-text-primary text-balance"
         >
           Что важно знать перед откликом
         </h2>
-        <p class="text-pretty text-lg leading-8 text-muted">
+        <p class="text-pretty text-base text-text-muted">
           Короткие ответы на вопросы, которые помогают принять решение о работе в администрации.
         </p>
       </div>
@@ -55,7 +55,7 @@
               <span class="text-xs font-medium tabular-nums text-muted">
                 {{ String(index + 1).padStart(2, '0') }}
               </span>
-              <span class="font-semibold text-highlighted text-balance">
+              <span class="font-semibold text-text-primary text-balance">
                 {{ item.label }}
               </span>
             </span>
@@ -81,7 +81,7 @@
               <p class="text-sm font-medium text-primary">
                 Вопрос {{ activeIndex + 1 }} из {{ items.length }}
               </p>
-              <h3 class="text-h3 text-highlighted text-balance">
+              <h3 class="text-h3 text-text-primary text-balance">
                 {{ activeItem.label }}
               </h3>
             </div>
@@ -93,7 +93,7 @@
 
           <div class="flex flex-col gap-4 rounded-xl bg-elevated p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
             <div class="flex flex-col gap-1">
-              <p class="font-semibold text-highlighted">
+              <p class="font-semibold text-text-primary">
                 Не нашли нужного ответа?
               </p>
               <p class="text-sm leading-6 text-muted text-pretty">

@@ -4,14 +4,6 @@
 
     <HomeHero />
 
-    <PartnersLogos />
-
-    <HomeHighlights />
-
-    <HomeNews :posts="posts" />
-
-    <HomeValuesBento />
-
     <VacancyCarousel
       title="Актуальные вакансии"
       subtitle="Открытые должности в администрации Сургутского района"
@@ -19,9 +11,16 @@
       :pending="vacanciesPending"
     />
 
+    <PartnersLogos />
+
+    <HomeNews :posts="posts" />
+
+    <HomeValuesBento />
+
     <VacancySubscribeForm promo />
 
     <HomeFaq />
+
   </div>
 </template>
 

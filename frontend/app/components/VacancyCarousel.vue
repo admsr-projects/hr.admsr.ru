@@ -1,5 +1,5 @@
 <template>
-  <section class="bg-elevated/40">
+  <section class="bg-default">
     <UModal
       v-model:open="isApplicationFormOpen"
       :ui="{ content: 'max-w-3xl w-[calc(100vw-2rem)] sm:w-full' }"
@@ -13,7 +13,7 @@
       </template>
     </UModal>
 
-    <UContainer class="flex flex-col gap-8 py-16 lg:gap-10 lg:py-20">
+    <UContainer class="flex flex-col gap-8 py-12 lg:gap-10 lg:py-16">
       <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div class="flex max-w-2xl flex-col gap-3">
           <UBadge
@@ -24,11 +24,11 @@
           />
           <h2
             id="vacancies"
-            class="text-h2 text-highlighted text-balance"
+            class="text-h2 text-text-primary text-balance"
           >
             {{ title }}
           </h2>
-          <p class="text-pretty text-lg leading-8 text-muted">
+          <p class="text-pretty text-base text-text-muted">
             {{ subtitle }}
           </p>
         </div>
@@ -81,7 +81,7 @@
           aria-hidden="true"
         />
         <div class="flex max-w-md flex-col gap-2">
-          <p class="text-lg font-semibold text-highlighted">
+          <p class="text-lg font-semibold text-text-primary">
             Сейчас нет открытых позиций
           </p>
           <p class="text-pretty text-sm leading-6 text-muted">
@@ -132,7 +132,7 @@
                 />
               </div>
               <div class="flex flex-col gap-2">
-                <h3 class="text-xl font-semibold text-highlighted">
+                <h3 class="text-xl font-semibold text-text-primary">
                   Ознакомиться со всеми вакансиями
                 </h3>
                 <p class="text-pretty text-base leading-7 text-muted">

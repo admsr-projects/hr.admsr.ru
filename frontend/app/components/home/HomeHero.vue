@@ -1,112 +1,95 @@
 <template>
-  <section class="relative isolate overflow-hidden bg-default">
-    <div
-      class="absolute inset-0 -z-10 bg-[radial-gradient(60rem_40rem_at_50%_-10%,--alpha(var(--ui-primary)/14%),transparent_60%)]"
-      aria-hidden="true"
-    />
+  <section class="bg-default">
+    <UContainer class="flex min-w-0 flex-col gap-8 py-12 lg:gap-10 lg:py-16">
+      <div class="grid min-w-0 gap-8 lg:grid-cols-2 lg:items-center lg:gap-12">
+        <div class="flex min-w-0 flex-col items-start gap-5">
+          <UBadge
+            label="Кадровый портал администрации Сургутского района"
+            color="primary"
+            variant="soft"
+            class="max-w-full whitespace-normal leading-snug"
+          />
 
-    <UContainer class="relative flex min-w-0 flex-col justify-center gap-10 py-12 sm:gap-14 sm:py-16 lg:min-h-[calc(100dvh-var(--ui-header-height,4rem))] lg:py-24">
-      <!-- Centered headline block -->
-      <div class="mx-auto flex w-full min-w-0 max-w-3xl flex-col items-center gap-5 text-center sm:gap-6">
-        <UBadge
-          label="Кадровый портал администрации Сургутского района"
-          color="primary"
-          variant="soft"
-          class="max-w-full whitespace-normal text-center leading-snug"
-        />
+          <h1 class="text-balance text-4xl font-bold text-text-primary sm:text-5xl">
+            Успешная команда
+            <span class="text-primary">успешный район</span>
+          </h1>
 
-        <h1 class="text-balance text-4xl font-bold text-highlighted sm:text-5xl">
-          Успешная команда 
-          <span class="text-primary">успешный район</span>
-        </h1>
+          <p class="max-w-xl text-pretty text-base text-text-muted">
+            Вакансии, кадровый резерв и развитие для тех, кто работает на жителей Сургутского района — рядом с домом, с понятными условиями и предсказуемым ростом.
+          </p>
 
-        <p class="max-w-xl text-pretty text-base leading-7 text-muted sm:text-lg sm:leading-8">
-          Вакансии, кадровый резерв и развитие для тех, кто работает на жителей Сургутского района — рядом с домом, с понятными условиями и предсказуемым ростом.
-        </p>
-
-        <div class="flex w-full flex-col items-center gap-3">
-          <div class="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:justify-center">
+          <div class="flex flex-wrap items-center gap-3">
             <UButton
-              label="Стать частью команды"
+              label="Смотреть вакансии"
               to="/vacancies"
               icon="i-lucide-briefcase"
-              size="xl"
-              class="w-full justify-center sm:w-auto"
             />
             <UButton
-              label="Узнать больше"
+              label="О нас"
               to="/about"
               color="neutral"
               variant="soft"
               trailing-icon="i-lucide-arrow-up-right"
-              size="xl"
-              class="w-full justify-center sm:w-auto"
+            />
+            <UButton
+              label="Обратная связь"
+              to="/feedback"
+              icon="i-lucide-message-square"
+              color="neutral"
+              variant="link"
             />
           </div>
-          <UButton
-            label="Обратная связь"
-            to="/feedback"
-            icon="i-lucide-message-square"
-            color="neutral"
-            variant="soft"
-            size="xl"
-            class="w-full justify-center sm:w-auto"
-          />
-        </div>
-      </div>
-
-      <div class="flex w-full min-w-0 flex-col gap-4">
-        <div class="relative h-52 w-full overflow-hidden rounded-xl sm:h-72 lg:h-[420px]">
-          <img
-            src="/images/Picture.png"
-            alt="Команда администрации Сургутского района"
-            width="1408"
-            height="420"
-            loading="eager"
-            class="block size-full object-cover"
-          >
-          <div class="absolute left-3 top-3 flex max-w-[calc(100%-1.5rem)] items-center gap-2 rounded-full bg-default/85 px-3 py-1.5 text-xs font-medium text-highlighted backdrop-blur-md sm:left-4 sm:top-4">
-            <span class="relative flex size-2 shrink-0">
-              <span class="absolute inline-flex size-full animate-ping rounded-full bg-primary opacity-75 motion-reduce:hidden" />
-              <span class="relative inline-flex size-2 rounded-full bg-primary" />
-            </span>
-            <span class="text-pretty leading-4">
-              Сейчас в команде 420+ человек
-            </span>
-          </div>
         </div>
 
-        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <NuxtLink
+        <ul class="grid min-w-0 grid-cols-2 gap-3 sm:gap-4">
+          <li
             v-for="item in careerItems"
             :key="item.to"
-            :to="item.to"
-            class="group flex flex-col gap-4 rounded-xl bg-elevated p-5 transition hover:bg-accented motion-reduce:transition-none"
           >
-            <div class="flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition group-hover:bg-primary group-hover:text-inverted">
-              <UIcon
-                :name="item.icon"
-                class="size-5"
+            <NuxtLink
+              :to="item.to"
+              class="group flex h-full flex-col gap-3 rounded-xl bg-elevated p-4 transition-colors sm:p-6 duration-200 hover:bg-accented motion-reduce:transition-none"
+            >
+              <span
+                class="flex size-10 items-center justify-center rounded-full bg-default text-primary"
                 aria-hidden="true"
-              />
-            </div>
-            <div class="flex flex-col gap-1">
-              <h2 class="font-semibold text-highlighted">
-                {{ item.label }}
-              </h2>
-              <p class="text-sm leading-6 text-muted">
-                {{ item.description }}
-              </p>
-            </div>
-            <span class="inline-flex items-center gap-1 text-sm font-medium text-primary">
-              Перейти
-              <UIcon
-                name="i-lucide-arrow-right"
-                class="size-4 transition group-hover:translate-x-0.5"
-                aria-hidden="true"
-              />
-            </span>
-          </NuxtLink>
+              >
+                <UIcon
+                  :name="item.icon"
+                  class="size-5"
+                />
+              </span>
+              <span class="flex flex-col gap-1">
+                <span class="text-base font-semibold text-text-primary">
+                  {{ item.label }}
+                </span>
+                <span class="hidden text-caption text-text-muted text-pretty sm:block">
+                  {{ item.description }}
+                </span>
+              </span>
+            </NuxtLink>
+          </li>
+        </ul>
+      </div>
+
+      <div class="relative h-56 w-full overflow-hidden rounded-xl sm:h-72 lg:h-96">
+        <img
+          src="/images/Picture.png"
+          alt="Команда администрации Сургутского района"
+          width="1408"
+          height="420"
+          loading="eager"
+          class="block size-full object-cover"
+        >
+        <div class="absolute left-4 top-4 flex max-w-[calc(100%-2rem)] items-center gap-2 rounded-full bg-default/85 px-3 py-1.5 text-overline text-text-primary backdrop-blur-md">
+          <span class="relative flex size-2 shrink-0">
+            <span class="absolute inline-flex size-full animate-ping rounded-full bg-primary opacity-75 motion-reduce:hidden" />
+            <span class="relative inline-flex size-2 rounded-full bg-primary" />
+          </span>
+          <span class="text-pretty">
+            Сейчас в команде 420+ человек
+          </span>
         </div>
       </div>
     </UContainer>
@@ -119,7 +102,7 @@ import { navIcons } from '~/data/navigation'
 const careerItems = [
   {
     label: 'Вакансии',
-    description: 'Актуальные должности в администрации района и форма отклика на сайте.',
+    description: 'Актуальные должности и форма отклика на сайте.',
     to: '/vacancies',
     icon: navIcons['/vacancies'],
   },

@@ -1,48 +1,70 @@
 <template>
   <section
     v-if="pending || partners.length"
-    class="bg-elevated/40"
+    class="bg-default"
   >
-    <UContainer class="flex flex-col items-center gap-10 py-16 text-center lg:py-20">
-      <div class="flex max-w-2xl flex-col items-center gap-3">
-        <h2 class="text-h2 text-highlighted text-balance">
-          С нами работают
-        </h2>
-        <p class="text-pretty text-lg leading-8 text-muted">
-          Федеральные и региональные организации, с которыми мы выстраиваем прозрачную кадровую политику и социальные гарантии для сотрудников.
-        </p>
-      </div>
-
+    <UContainer class="pb-12 lg:pb-16">
+      <!-- До трёх организаций: заголовок слева, логотипы справа. Больше — заголовок сверху, сетка по четыре в ряд -->
       <div
-        v-if="pending"
-        class="flex w-full gap-4 overflow-hidden"
-        aria-busy="true"
-        aria-label="Загрузка партнёров"
+        class="grid min-w-0 gap-6 rounded-xl bg-elevated p-6 lg:p-8"
+        :class="many ? 'lg:gap-8' : 'lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:items-center lg:gap-8'"
       >
-        <USkeleton
-          v-for="index in 4"
-          :key="index"
-          class="h-28 w-48 shrink-0 rounded-xl"
-        />
-      </div>
+        <div class="flex min-w-0 flex-col gap-3">
+          <h2 class="text-h2 text-text-primary text-balance">
+            С нами работают
+          </h2>
+          <p
+            class="text-pretty text-base text-text-muted"
+            :class="many && 'max-w-3xl'"
+          >
+            Федеральные и региональные организации, с которыми мы выстраиваем прозрачную кадровую политику и социальные гарантии для сотрудников.
+          </p>
+        </div>
 
-      <UCarousel
-        v-else
-        v-slot="{ item }"
-        :items="partners"
-        arrows
-        dots
-        loop
-        align="start"
-        :ui="carouselUi"
-        class="w-full max-w-5xl"
-        aria-label="Партнёры администрации"
-      >
-        <PartnerLogoLink
-          :logo="item"
-          class="h-full"
-        />
-      </UCarousel>
+        <div class="flex min-w-0 flex-col items-start gap-4">
+          <ul
+            v-if="pending"
+            class="grid w-full gap-4 sm:grid-cols-3"
+            aria-busy="true"
+            aria-label="Загрузка партнёров"
+          >
+            <li
+              v-for="index in 3"
+              :key="index"
+            >
+              <USkeleton class="h-28 w-full rounded-xl" />
+            </li>
+          </ul>
+
+          <ul
+            v-else
+            class="grid w-full gap-4"
+            :class="many ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4' : 'sm:grid-cols-3'"
+            aria-label="Партнёры администрации"
+          >
+            <li
+              v-for="partner in visiblePartners"
+              :key="partner.id"
+            >
+              <PartnerLogoLink
+                :logo="partner"
+                class="h-full"
+              />
+            </li>
+          </ul>
+
+          <UButton
+            v-if="partners.length > COLLAPSED_COUNT"
+            :label="expanded ? 'Свернуть' : `Показать всех (${partners.length})`"
+            :icon="expanded ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
+            color="neutral"
+            variant="soft"
+            class="cursor-pointer bg-default"
+            :aria-expanded="expanded"
+            @click="expanded = !expanded"
+          />
+        </div>
+      </div>
     </UContainer>
   </section>
 </template>
@@ -65,8 +87,11 @@ const { data: partnersData, pending } = await useAsyncData(
 
 const partners = computed(() => partnersData.value ?? [])
 
-const carouselUi = {
-  item: 'basis-[85%] min-[480px]:basis-1/2 lg:basis-1/3 px-2',
-  controls: 'mt-6',
-}
+// Показываем первые 8 организаций, остальные — по кнопке
+const COLLAPSED_COUNT = 8
+const expanded = ref(false)
+const many = computed(() => partners.value.length > 3)
+const visiblePartners = computed(() =>
+  expanded.value ? partners.value : partners.value.slice(0, COLLAPSED_COUNT),
+)
 </script>
