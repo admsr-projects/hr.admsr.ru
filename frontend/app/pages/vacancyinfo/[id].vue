@@ -205,7 +205,8 @@ async function handleFormSubmit(formData: Record<string, unknown>) {
     <UModal
       v-if="!kiosk"
       v-model:open="isApplicationFormOpen"
-      :ui="{ content: 'max-w-3xl w-[calc(100vw-2rem)] sm:w-full' }"
+      :close="false"
+      :ui="{ content: 'max-w-3xl w-[calc(100vw-2rem)] rounded-xl sm:w-full', body: 'p-0 sm:p-0' }"
     >
       <template #body>
         <ApplicationForm

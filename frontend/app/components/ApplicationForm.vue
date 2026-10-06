@@ -1,61 +1,37 @@
 <template>
-  <div class="flex min-w-0 w-full max-w-full flex-col gap-6">
-    <div class="space-y-3 border-b border-default pb-5">
-      <UBadge
-        v-if="vacancy?.title"
-        :label="vacancy.title"
-        color="primary"
-        variant="soft"
-        class="max-w-full whitespace-normal text-start leading-snug"
-      />
-      <div class="space-y-1">
+  <div class="flex min-w-0 w-full max-w-full flex-col">
+    <!-- Заголовок и шаги закреплены: при прокрутке полей остаются на виду -->
+    <div class="sticky top-0 z-10 flex flex-col gap-6 bg-default px-5 pb-4 pt-5 sm:px-8 sm:pt-8">
+    <header class="flex items-start justify-between gap-4">
+      <div class="min-w-0 space-y-1">
+        <p
+          v-if="vacancy?.title"
+          class="text-caption font-semibold text-primary text-pretty"
+        >
+          {{ vacancy.title }}
+        </p>
         <h2 class="text-h2 text-text-primary text-balance">
           Отклик на вакансию
         </h2>
-        <p class="text-body text-text-secondary text-pretty">
-          Заполните анкету по шагам. Поля со звёздочкой обязательны.
-        </p>
       </div>
-    </div>
+      <UButton
+        icon="i-lucide-x"
+        color="neutral"
+        variant="ghost"
+        class="-mr-2 -mt-1 shrink-0 cursor-pointer"
+        aria-label="Закрыть форму отклика"
+        @click="$emit('cancel')"
+      />
+    </header>
 
     <UStepper
       v-model="currentStep"
       :items="stepItems"
       linear
-      size="lg"
       color="primary"
       class="w-full min-w-0"
-      :ui="{ title: 'text-caption sm:text-body' }"
+      :ui="{ title: 'text-caption' }"
     />
-
-    <div
-      v-if="currentGuide"
-      class="flex items-start gap-3 rounded-xl bg-elevated px-4 py-4 sm:px-5"
-      role="note"
-    >
-      <UIcon
-        :name="currentGuide.icon"
-        class="mt-0.5 size-5 shrink-0 text-primary"
-        aria-hidden="true"
-      />
-      <div class="min-w-0 space-y-2">
-        <p class="text-body font-medium text-text-primary">
-          {{ currentGuide.title }}
-        </p>
-        <ul class="space-y-1.5 text-caption text-text-secondary leading-relaxed">
-          <li
-            v-for="(item, index) in currentGuide.items"
-            :key="index"
-            class="flex gap-2 text-pretty"
-          >
-            <span
-              class="mt-2 size-1.5 shrink-0 rounded-full bg-primary"
-              aria-hidden="true"
-            />
-            <span>{{ item }}</span>
-          </li>
-        </ul>
-      </div>
     </div>
 
     <div
@@ -69,89 +45,63 @@
     <UForm
       :state="formState"
       :validate="validate"
-      class="flex min-w-0 flex-col gap-6"
+      class="flex min-w-0 flex-col gap-6 px-5 pt-2 sm:px-8"
       @submit="handleSubmit"
       @error="onError"
     >
       <div
-        v-show="currentStep === 0"
-        class="space-y-4"
+        v-if="currentGuide"
+        class="space-y-1"
       >
-        <DsSurface
-          elevation="none"
-          padding="lg"
-          class="w-full"
+        <h3 class="text-h3 text-text-primary">
+          {{ currentGuide.title }}
+        </h3>
+        <p class="text-caption text-text-muted text-pretty">
+          {{ currentGuide.items.join(' ') }} Поля со звёздочкой обязательны.
+        </p>
+      </div>
+
+      <div
+        v-show="currentStep === 0"
+        class="space-y-3"
+      >
+        <UCheckbox
+          v-model="allConsents"
+          label="Согласен (согласна) со всеми пунктами"
+          :ui="{ root: 'rounded-xl bg-elevated p-4', label: 'text-body font-semibold text-text-primary' }"
+        />
+
+        <UFormField
+          v-for="consent in consentFields"
+          :key="consent.name"
+          :name="consent.name"
         >
-          <div class="space-y-4">
-            <div class="space-y-1">
-              <h3 class="text-h3 text-text-primary">
-                Обязательные согласия
-              </h3>
-              <p class="text-body text-text-secondary text-pretty">
-                Для подачи заявки необходимо отметить все пункты ниже.
-              </p>
-            </div>
-
-            <UCollapsible>
-              <UButton
-                label="Что означает каждый пункт?"
-                color="neutral"
-                variant="link"
-                trailing-icon="i-lucide-chevron-down"
-                class="h-auto px-0"
-              />
-              <template #content>
-                <ul class="mt-2 list-disc space-y-2 pl-5 text-caption text-text-secondary leading-relaxed">
-                  <li>Подтверждение достоверности сведений и соответствия квалификации.</li>
-                  <li>Согласие на проверочные мероприятия при отборе кандидатов.</li>
-                  <li>Согласие на обработку персональных данных по 152-ФЗ.</li>
-                  <li>Согласие на направление анкеты в муниципальные организации района.</li>
-                </ul>
-              </template>
-            </UCollapsible>
-
-            <div class="space-y-4">
-              <UFormField
-                v-for="consent in consentFields"
-                :key="consent.name"
-                :name="consent.name"
-              >
-                <UCheckbox
-                  v-model="formState[consent.name]"
-                  :ui="{
-                    root: 'relative flex items-start gap-3',
-                    wrapper: 'min-w-0 flex-1',
-                    label: 'min-w-0 text-pretty',
-                  }"
-                >
-                  <template #label>
-                    <span class="text-body leading-relaxed text-text-secondary">
-                      {{ consent.label }}
-                      <span
-                        class="text-error"
-                        aria-hidden="true"
-                      > *</span>
-                    </span>
-                  </template>
-                </UCheckbox>
-              </UFormField>
-            </div>
-          </div>
-        </DsSurface>
+          <UCheckbox
+            v-model="formState[consent.name]"
+            :ui="{
+              root: 'flex w-full items-start gap-3 rounded-xl bg-elevated p-4 transition-colors duration-150 hover:bg-accented motion-reduce:transition-none',
+              wrapper: 'min-w-0 flex-1',
+              label: 'min-w-0 cursor-pointer text-pretty',
+            }"
+          >
+            <template #label>
+              <span class="text-body text-text-primary">
+                {{ consent.label }}
+                <span
+                  class="text-error"
+                  aria-hidden="true"
+                > *</span>
+              </span>
+            </template>
+          </UCheckbox>
+        </UFormField>
       </div>
 
       <section
         v-show="currentStep === 1"
         class="space-y-4"
-        aria-labelledby="apply-form-personal"
+        aria-label="Личные данные"
       >
-        <h3
-          id="apply-form-personal"
-          class="border-b border-default pb-2 text-h3 text-text-primary"
-        >
-          Личные данные
-        </h3>
-
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <UFormField name="lastName">
             <template #label>
@@ -191,7 +141,7 @@
           </UFormField>
         </div>
 
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <UFormField name="birthDate">
             <template #label>
               <DsRequiredLabel label="Дата рождения" />
@@ -210,39 +160,37 @@
             <UInput
               v-model="formState.phone"
               type="tel"
+              icon="i-lucide-phone"
               placeholder="+7 (XXX) XXX-XX-XX"
               autocomplete="tel"
               class="w-full min-w-0"
             />
           </UFormField>
-        </div>
 
-        <UFormField name="email">
-          <template #label>
-            <DsRequiredLabel label="Email" />
-          </template>
-          <UInput
-            v-model="formState.email"
-            type="email"
-            placeholder="example@email.com"
-            autocomplete="email"
-            class="w-full min-w-0"
-          />
-        </UFormField>
+          <UFormField
+            name="email"
+            class="sm:col-span-2 lg:col-span-1"
+          >
+            <template #label>
+              <DsRequiredLabel label="Email" />
+            </template>
+            <UInput
+              v-model="formState.email"
+              type="email"
+              icon="i-lucide-mail"
+              placeholder="example@email.com"
+              autocomplete="email"
+              class="w-full min-w-0"
+            />
+          </UFormField>
+        </div>
       </section>
 
       <section
         v-show="currentStep === 2"
         class="space-y-4"
-        aria-labelledby="apply-form-address"
+        aria-label="Адресные данные"
       >
-        <h3
-          id="apply-form-address"
-          class="border-b border-default pb-2 text-h3 text-text-primary"
-        >
-          Адресные данные
-        </h3>
-
         <UFormField name="registrationAddress">
           <template #label>
             <DsRequiredLabel label="Адрес прописки" />
@@ -266,7 +214,10 @@
           />
         </UFormField>
 
-        <UFormField name="citizenship">
+        <UFormField
+          name="citizenship"
+          class="sm:max-w-sm"
+        >
           <template #label>
             <DsRequiredLabel label="Гражданство" />
           </template>
@@ -280,42 +231,42 @@
 
       <section
         v-show="currentStep === 3"
-        class="space-y-6"
-        aria-labelledby="apply-form-education"
+        class="space-y-8"
+        aria-label="Образование, семья и документы"
       >
         <div class="space-y-4">
-          <h3
-            id="apply-form-education"
-            class="border-b border-default pb-2 text-h3 text-text-primary"
-          >
+          <h4 class="text-base font-semibold text-text-primary">
             Образование и опыт
-          </h3>
+          </h4>
 
-          <UFormField name="education">
-            <template #label>
-              <DsRequiredLabel label="Образование" />
-            </template>
-            <UInput
-              v-model="formState.education"
-              placeholder="Уровень и учебное заведение"
-              class="w-full min-w-0"
-            />
-          </UFormField>
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <UFormField name="education">
+              <template #label>
+                <DsRequiredLabel label="Образование" />
+              </template>
+              <UInput
+                v-model="formState.education"
+                placeholder="Уровень и учебное заведение"
+                class="w-full min-w-0"
+              />
+            </UFormField>
 
-          <UFormField name="specialty">
-            <template #label>
-              <DsRequiredLabel label="Специальность" />
-            </template>
-            <UInput
-              v-model="formState.specialty"
-              placeholder="Направление подготовки"
-              class="w-full min-w-0"
-            />
-          </UFormField>
+            <UFormField name="specialty">
+              <template #label>
+                <DsRequiredLabel label="Специальность" />
+              </template>
+              <UInput
+                v-model="formState.specialty"
+                placeholder="Направление подготовки"
+                class="w-full min-w-0"
+              />
+            </UFormField>
+          </div>
 
           <UFormField
             label="Стаж муниципальной службы"
             name="municipalExperience"
+            class="sm:max-w-sm"
           >
             <UInput
               v-model="formState.municipalExperience"
@@ -338,9 +289,9 @@
         </div>
 
         <div class="space-y-4">
-          <h3 class="border-b border-default pb-2 text-h3 text-text-primary">
-            Семейное положение
-          </h3>
+          <h4 class="text-base font-semibold text-text-primary">
+            Семья
+          </h4>
 
           <UFormField name="maritalStatus">
             <template #label>
@@ -349,12 +300,14 @@
             <URadioGroup
               v-model="formState.maritalStatus"
               :items="maritalStatusOptions"
+              orientation="horizontal"
             />
           </UFormField>
 
           <UFormField
             label="Наличие детей"
             name="children"
+            class="sm:max-w-sm"
           >
             <UInput
               v-model="formState.children"
@@ -365,54 +318,57 @@
         </div>
 
         <div class="space-y-4">
-          <h3 class="border-b border-default pb-2 text-h3 text-text-primary">
+          <h4 class="text-base font-semibold text-text-primary">
             Документы
-          </h3>
+          </h4>
+
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <UFormField name="resume">
+              <template #label>
+                <DsRequiredLabel label="Резюме" />
+              </template>
+              <UFileUpload
+                v-model="formState.resume"
+                variant="area"
+                accept=".pdf,.doc,.docx"
+                label="Прикрепить резюме"
+                description="PDF, DOC или DOCX (макс. 10 МБ)"
+                class="w-full min-w-0"
+              />
+            </UFormField>
+
+            <UFormField
+              label="Фото"
+              name="photo"
+              hint="Необязательно"
+            >
+              <UFileUpload
+                v-model="formState.photo"
+                variant="area"
+                accept="image/*"
+                label="Прикрепить фото"
+                description="JPG, PNG или GIF (макс. 5 МБ)"
+                class="w-full min-w-0"
+              />
+            </UFormField>
+          </div>
 
           <UFormField
-            label="Фото"
-            name="photo"
-            hint="JPG, PNG или GIF — необязательно"
+            label="О вакансии узнал(а)"
+            name="vacancySource"
           >
-            <UFileUpload
-              v-model="formState.photo"
-              variant="area"
-              accept="image/*"
-              label="Прикрепить фото"
-              description="JPG, PNG или GIF (макс. 5 МБ)"
-              class="w-full min-w-0"
-            />
-          </UFormField>
-
-          <UFormField name="resume">
-            <template #label>
-              <DsRequiredLabel label="Резюме" />
-            </template>
-            <UFileUpload
-              v-model="formState.resume"
-              variant="area"
-              accept=".pdf,.doc,.docx"
-              label="Прикрепить резюме"
-              description="PDF, DOC или DOCX (макс. 10 МБ)"
+            <UTextarea
+              v-model="formState.vacancySource"
+              placeholder="Источник информации о вакансии"
+              :rows="2"
               class="w-full min-w-0"
             />
           </UFormField>
         </div>
-
-        <UFormField
-          label="О вакансии узнал(а)"
-          name="vacancySource"
-        >
-          <UTextarea
-            v-model="formState.vacancySource"
-            placeholder="Источник информации о вакансии"
-            :rows="3"
-            class="w-full min-w-0"
-          />
-        </UFormField>
       </section>
 
-      <div class="flex flex-col-reverse gap-3 border-t border-default pt-4 sm:flex-row sm:items-center sm:justify-between">
+      <!-- Кнопки навигации закреплены внизу окна -->
+      <div class="sticky bottom-0 z-10 -mx-5 flex flex-col-reverse gap-3 border-t border-default bg-default px-5 py-4 sm:-mx-8 sm:flex-row sm:items-center sm:justify-between sm:px-8">
         <div class="flex flex-col gap-2 sm:flex-row">
           <UButton
             v-if="currentStep > 0"
@@ -506,15 +462,15 @@ const isSubmitting = ref(false)
 const liveMessage = ref('')
 
 const stepItems = [
-  { value: 0, title: 'Согласия', icon: 'i-lucide-shield-check' },
-  { value: 1, title: 'Личные', icon: 'i-lucide-user' },
-  { value: 2, title: 'Адрес', icon: 'i-lucide-map-pin' },
-  { value: 3, title: 'Документы', icon: 'i-lucide-graduation-cap' },
+  { value: 0, title: 'Согласия' },
+  { value: 1, title: 'Личные данные' },
+  { value: 2, title: 'Адрес' },
+  { value: 3, title: 'Документы' },
 ]
 
 const stepGuides = [
   {
-    title: 'Перед началом',
+    title: 'Обязательные согласия',
     icon: 'i-lucide-shield-check',
     items: [
       'Все согласия обязательны для подачи заявки на вакансию.',
@@ -599,6 +555,14 @@ const maritalStatusOptions = [
 ]
 
 const currentGuide = computed(() => stepGuides[currentStep.value])
+
+// «Отметить всё» для четырёх обязательных согласий
+const allConsents = computed({
+  get: () => consentFields.every(consent => formState[consent.name]),
+  set: (value: boolean | 'indeterminate') => {
+    for (const consent of consentFields) formState[consent.name] = value === true
+  },
+})
 
 function hasResumeFile(value: FormState['resume']) {
   if (!value) return false
