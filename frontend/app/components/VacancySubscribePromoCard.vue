@@ -1,5 +1,5 @@
 <template>
-  <div class="grid w-full min-w-0 grid-cols-1 gap-8 sm:gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start lg:gap-12 xl:gap-16">
+  <div class="grid w-full min-w-0 grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start lg:gap-8">
     <div
       class="min-w-0"
       :class="compact ? 'flex flex-col gap-4' : 'flex flex-col gap-6 sm:gap-8'"
@@ -13,11 +13,11 @@
         />
         <h2
           :id="headingId"
-          class="text-h2 text-highlighted text-balance"
+          class="text-h2 text-text-primary text-balance"
         >
           Не пропустите подходящую должность
         </h2>
-        <p class="max-w-lg text-pretty text-base leading-7 text-muted sm:text-lg sm:leading-8">
+        <p class="max-w-lg text-pretty text-base text-text-muted">
           Укажите имя и email — сообщим, когда в выбранном ОФО появится новая вакансия в администрации района.
         </p>
       </div>
@@ -31,7 +31,7 @@
           :key="item.title"
           class="flex min-w-0 items-start gap-3 sm:gap-4"
         >
-          <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-elevated text-primary sm:size-12">
+          <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-default text-primary">
             <UIcon
               :name="item.icon"
               class="size-5"
@@ -39,19 +39,19 @@
             />
           </span>
           <div class="min-w-0 flex flex-col gap-0.5 pt-0.5">
-            <span class="font-semibold text-highlighted text-balance">
+            <span class="text-base font-semibold text-text-primary text-balance">
               {{ item.title }}
             </span>
             <NuxtLink
               v-if="item.to"
               :to="item.to"
-              class="text-sm leading-6 text-muted text-pretty transition hover:text-primary"
+              class="text-caption text-text-muted text-pretty transition-colors duration-200 hover:text-primary"
             >
               {{ item.text }}
             </NuxtLink>
             <p
               v-else
-              class="text-sm leading-6 text-muted text-pretty"
+              class="text-caption text-text-muted text-pretty"
             >
               {{ item.text }}
             </p>

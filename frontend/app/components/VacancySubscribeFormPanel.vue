@@ -15,10 +15,10 @@
         />
       </span>
       <div class="flex flex-col gap-2">
-        <h3 class="text-xl font-semibold text-highlighted">
+        <h3 class="text-h3 text-text-primary">
           Подписка оформлена
         </h3>
-        <p class="text-pretty text-sm leading-6 text-muted">
+        <p class="text-pretty text-caption text-text-muted">
           Уведомления{{ submittedOfoHint }} будут приходить на {{ submittedEmail }}
         </p>
       </div>
@@ -190,7 +190,7 @@
           }"
         >
           <template #label>
-            <span class="block min-w-0 text-pretty text-sm leading-6 text-muted">
+            <span class="block min-w-0 text-pretty text-caption text-text-muted">
               Согласен на
               <NuxtLink
                 to="/privacy"
@@ -203,7 +203,7 @@
                 class="text-error"
                 aria-hidden="true"
               > *</span>
-              <span class="text-xs text-muted"> обязательно</span>
+              <span class="text-overline text-text-muted"> обязательно</span>
             </span>
           </template>
         </UCheckbox>
@@ -269,11 +269,12 @@ const submittedOfoHint = computed(() =>
     : ` о вакансиях в «${props.submittedOfo}»`,
 )
 
+// Внутри серой панели-обёртки форма — белый элемент второго уровня; сама по себе на странице — серая панель
 const panelClass = computed(() => {
-  const base = 'min-w-0 w-full max-w-full rounded-xl bg-elevated'
+  const base = 'min-w-0 w-full max-w-full rounded-xl'
   if (props.accent || props.plain) {
-    return `${base} p-4 sm:p-6 lg:p-8`
+    return `${base} bg-default p-6`
   }
-  return `${base} p-4 sm:p-5 lg:p-6`
+  return `${base} bg-elevated p-6`
 })
 </script>

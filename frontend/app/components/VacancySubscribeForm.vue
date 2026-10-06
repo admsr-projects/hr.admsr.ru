@@ -7,7 +7,7 @@
       v-if="promo"
       class="min-w-0 py-12 sm:py-16 lg:py-20"
     >
-      <article class="min-w-0 w-full overflow-hidden rounded-xl bg-elevated p-4 sm:rounded-xl sm:p-6 lg:p-10 xl:p-12">
+      <article class="min-w-0 w-full overflow-hidden rounded-xl bg-elevated p-6 lg:p-8">
         <PromoCardContent
           :heading-id="headingId"
           :highlights="highlights"
@@ -25,7 +25,7 @@
 
     <article
       v-else-if="block"
-      class="min-w-0 w-full overflow-hidden rounded-xl bg-elevated p-4 sm:rounded-xl sm:p-6 lg:p-10 xl:p-12"
+      class="min-w-0 w-full overflow-hidden rounded-xl bg-elevated p-6 lg:p-8"
     >
       <PromoCardContent
         compact
