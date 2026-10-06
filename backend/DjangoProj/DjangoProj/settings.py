@@ -159,6 +159,8 @@ if EMAIL_HOST:
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'Кадровый портал <no-reply@hr.admsr.ru>')
+# Адрес сайта для ссылок в письмах (вакансия, отписка, админ-панель)
+SITE_URL = os.environ.get('SITE_URL', 'https://hr.admsr.ru')
 
 
 # Безопасность соединения. На боевом сервере (за nginx с HTTPS) задайте DJANGO_HTTPS_ONLY=True:

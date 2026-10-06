@@ -168,6 +168,13 @@ class Vacancy(models.Model):
     is_active = models.BooleanField('Активна', default=True)
     published_at = models.DateField('Дата публикации', default=timezone.localdate)
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
+    subscribers_notified_at = models.DateTimeField(
+        'Подписчики уведомлены',
+        null=True,
+        blank=True,
+        editable=False,
+        help_text='Когда подписчикам ушло письмо о вакансии. Пока пусто, письмо уйдёт при первой публикации (активной вакансии).',
+    )
 
     class Meta:
         verbose_name = 'Вакансия'

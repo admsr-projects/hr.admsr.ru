@@ -3,7 +3,10 @@ from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status
-from django.shortcuts import get_object_or_404
+from django.conf import settings
+from django.shortcuts import get_object_or_404, render
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 from django.db.models import Q
 
 from .models import (
@@ -14,7 +17,7 @@ from .models import (
 )
 from .search import search_portal
 from .notifications import (
-    notify_recipients, KIND_VACANCIES, KIND_RESERVE, KIND_PRACTICE, KIND_TRAINING, KIND_FEEDBACK,
+    email_from_unsubscribe_token, notify_recipients, KIND_VACANCIES, KIND_RESERVE, KIND_PRACTICE, KIND_TRAINING, KIND_FEEDBACK,
 )
 from .serializers import (
     TenderSerializer, VacancySerializer, StaffMemberSerializer,
@@ -358,6 +361,22 @@ def vacancy_subscribe(request):
             status=status.HTTP_201_CREATED,
         )
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@csrf_exempt  # токен в ссылке подписан, а почтовые клиенты шлют одношаговую отписку POST-ом без cookie
+@require_http_methods(['GET', 'POST'])
+def vacancy_unsubscribe(request, token):
+    email = email_from_unsubscribe_token(token)
+    context = {'site_url': settings.SITE_URL.rstrip('/'), 'email': email}
+    if not email:
+        context['state'] = 'invalid'
+        return render(request, 'api/unsubscribe.html', context, status=400)
+    if request.method == 'POST':
+        VacancySubscription.objects.filter(email__iexact=email).update(is_active=False)
+        context['state'] = 'done'
+    else:
+        context['state'] = 'confirm'
+    return render(request, 'api/unsubscribe.html', context)
 
 
 @api_view(['GET'])
