@@ -20,6 +20,7 @@
       </UMain>
       <AppFooter />
       <ScrollToTop />
+      <CookieConsent />
     </div>
   </UApp>
 </template>
@@ -35,39 +36,4 @@ useHead({
 })
 
 usePrimaryFavicon()
-
-const cookieConsent = useCookie('cookieConsent', {
-  maxAge: 60 * 60 * 24 * 365,
-  sameSite: 'lax',
-  path: '/'
-})
-const toast = useToast()
-
-onMounted(() => {
-  if (!cookieConsent.value) {
-    toast.add({
-      id: 'cookie-consent',
-      title: 'Файлы cookie',
-      description: 'Используем cookie для корректной работы сайта и сохранения пользовательских настроек. Подробнее о защите данных — в Политике обработки персональных данных.',
-      icon: 'i-lucide-cookie',
-      color: 'neutral',
-      duration: 0,
-      progress: false,
-      actions: [{
-        label: 'Политика',
-        color: 'neutral',
-        variant: 'outline',
-        to: '/privacy'
-      }, {
-        label: 'Понятно',
-        color: 'primary',
-        onClick: (event) => {
-          event?.stopPropagation()
-          cookieConsent.value = 'true'
-          toast.remove('cookie-consent')
-        }
-      }]
-    })
-  }
-})
 </script>
