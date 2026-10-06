@@ -18,11 +18,11 @@
 </template>
 
 <script setup lang="ts">
-/** Показываем кнопку, когда страницу прокрутили больше чем на ~1,5 экрана */
+/** Показываем кнопку, когда страницу прокрутили больше чем на четверть экрана */
 const visible = ref(false)
 
 function update() {
-  visible.value = window.scrollY > window.innerHeight * 1.5
+  visible.value = window.scrollY > window.innerHeight / 4
 }
 
 function scrollToTop() {
