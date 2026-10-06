@@ -115,9 +115,7 @@
             }"
           >
             <template #body="{ item: section }">
-              <p class="whitespace-pre-line text-pretty">
-                {{ section.text }}
-              </p>
+              <DsMarkdown :source="section.text" />
             </template>
           </UAccordion>
         </article>
