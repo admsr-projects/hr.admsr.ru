@@ -14,6 +14,7 @@ KIND_VACANCIES = 'vacancies'
 KIND_RESERVE = 'reserve'
 KIND_PRACTICE = 'practice'
 KIND_TRAINING = 'training'
+KIND_FEEDBACK = 'feedback'
 
 # Суммарный размер вложений, больше которого файлы не прикладываем (лимит почтовых серверов)
 MAX_ATTACHMENTS_BYTES = 20 * 1024 * 1024
@@ -33,7 +34,7 @@ def notify_recipients(kind, subject, fields, files=()):
     """
     Отправить копию заявки уполномоченным лицам.
 
-    kind    — vacancies | reserve | practice | training
+    kind    — vacancies | reserve | practice | training | feedback
     fields  — список пар («Название поля», значение)
     files   — FieldFile'ы, которые нужно приложить к письму
 

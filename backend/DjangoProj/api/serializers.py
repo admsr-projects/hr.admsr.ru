@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import (
-    Tender, StaffMember, Vacancy, JobApplication, Branch, WorkSchedule, RequiredExperience,
+    Tender, StaffMember, Vacancy, JobApplication, Branch, RequiredExperience,
     JobType, AntiCorruptionDocument, AntiCorruptionDocumentCategory, AntiCorruptionInfo, CorruptionReport, BranchesGlobal, Feedback, VacancySubscription,
     Competition, CompetitionResult, CompetitionDocument, CompetitionWinner, StaffReserveInfo, StaffReservePosition, StaffReserveDocument, VacancyDocument, WorkPartner, YouthInfo, PracticeApplication,
     TrainingEvent, TrainingFeedback, NewsPost, Department, Deputy,
@@ -43,12 +43,6 @@ class StaffMemberSerializer(serializers.ModelSerializer):
         return None
 
 
-class WorkScheduleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = WorkSchedule
-        fields = ['id', 'name']
-
-
 class RequiredExperienceSerializer(serializers.ModelSerializer):
     class Meta:
         model = RequiredExperience
@@ -65,7 +59,6 @@ class VacancySerializer(serializers.ModelSerializer):
     company = serializers.CharField(source='branch', read_only=True)
     employmentType = serializers.CharField(source='employment_type')
     isNew = serializers.BooleanField(source='is_new')
-    workSchedule = serializers.CharField(source='work_schedule.name', read_only=True)
     requiredExperience = serializers.CharField(source='required_experience.name', read_only=True)
     jobType = serializers.CharField(source='job_type.name', read_only=True)
     skills = serializers.SerializerMethodField()
@@ -75,7 +68,7 @@ class VacancySerializer(serializers.ModelSerializer):
     class Meta:
         model = Vacancy
         fields = ['id', 'title', 'branch', 'company', 'location', 'salary', 'employmentType',
-                  'experience', 'workSchedule', 'requiredExperience', 'jobType',
+                  'experience', 'requiredExperience', 'jobType',
                   'isNew', 'description', 'skills', 'workingHours', 'detailsLink', 'published_at', 'created_at']
 
     def get_skills(self, obj):

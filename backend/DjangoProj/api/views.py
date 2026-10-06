@@ -7,17 +7,17 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
 from .models import (
-    Tender, Vacancy, StaffMember, WorkSchedule, RequiredExperience, JobType,
+    Tender, Vacancy, StaffMember, RequiredExperience, JobType,
     AntiCorruptionDocument, AntiCorruptionDocumentCategory, AntiCorruptionInfo, CorruptionReport, BranchesGlobal, Feedback, VacancySubscription,
     Competition, CompetitionResult, StaffReserveInfo, StaffReserveDocument, VacancyDocument, WorkPartner, YouthInfo, PracticeApplication,
     TrainingEvent, TrainingFeedback, NewsPost, Department, Deputy, CompetitionDocument,
 )
 from .notifications import (
-    notify_recipients, KIND_VACANCIES, KIND_RESERVE, KIND_PRACTICE, KIND_TRAINING,
+    notify_recipients, KIND_VACANCIES, KIND_RESERVE, KIND_PRACTICE, KIND_TRAINING, KIND_FEEDBACK,
 )
 from .serializers import (
     TenderSerializer, VacancySerializer, StaffMemberSerializer,
-    JobApplicationSerializer, WorkScheduleSerializer,
+    JobApplicationSerializer,
     RequiredExperienceSerializer, JobTypeSerializer,
     AntiCorruptionDocumentSerializer, AntiCorruptionDocumentCategorySerializer, AntiCorruptionInfoSerializer, CorruptionReportSerializer,
     BranchesGlobalSerializer, WorkPartnerSerializer, FeedbackSerializer, VacancySubscriptionSerializer,
@@ -331,10 +331,6 @@ def staff_members(request):
 def vacancies(request):
     items = Vacancy.objects.filter(is_active=True)
 
-    work_schedule = request.query_params.get('work_schedule')
-    if work_schedule:
-        items = items.filter(work_schedule_id=work_schedule)
-
     required_experience = request.query_params.get('required_experience')
     if required_experience:
         items = items.filter(required_experience_id=required_experience)
@@ -362,7 +358,6 @@ def vacancy_detail(request, pk):
 @api_view(['GET'])
 def vacancy_filters(request, field_name):
     model_map = {
-        'work_schedule': (WorkSchedule, WorkScheduleSerializer),
         'required_experience': (RequiredExperience, RequiredExperienceSerializer),
         'job_type': (JobType, JobTypeSerializer),
     }
@@ -566,6 +561,12 @@ def submit_feedback(request):
     serializer = FeedbackSerializer(data=request.data)
     if serializer.is_valid():
         instance = serializer.save()
+        notify_recipients(
+            KIND_FEEDBACK,
+            'Обратная связь с портала',
+            [('Сообщение', instance.message)],
+            files=[instance.photo],
+        )
 
         response = Response(
             {"message": "Сообщение отправлено!", "id": instance.id},

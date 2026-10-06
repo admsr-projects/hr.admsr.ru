@@ -4,7 +4,7 @@ from .forms import DepartmentAdminForm, VacancyAdminForm
 from .widgets import MarkdownFieldsMixin
 from .models import (
     Tender, ContactStaffMember, HonorBoardStaffMember, Vacancy, JobApplication, Branch,
-    WorkSchedule, RequiredExperience, JobType, WorkingHours, AntiCorruptionDocument,
+    RequiredExperience, JobType, WorkingHours, AntiCorruptionDocument,
     AntiCorruptionDocumentCategory, AntiCorruptionInfo, CorruptionReport, BranchesGlobal, Feedback, VacancySubscription,
     Competition, CompetitionResult, StaffReserveInfo, StaffReservePosition, StaffReserveDocument, VacancyDocument, WorkPartner, YouthInfo,
     PracticeApplication, TrainingEvent, TrainingFeedback, NewsPost, Department, Deputy,
@@ -85,11 +85,6 @@ class VacancyAdmin(admin.ModelAdmin):
         ('Детали', {'fields': ['experience', 'required_experience', 'job_type', 'working_hours', 'is_active']}),
         ('Описание и навыки', {'fields': ['description', 'skills']}),
     ]
-
-
-class WorkScheduleAdmin(admin.ModelAdmin):
-    list_display = ['name']
-    search_fields = ['name']
 
 
 class RequiredExperienceAdmin(admin.ModelAdmin):
@@ -173,7 +168,8 @@ class VacancySubscriptionAdmin(admin.ModelAdmin):
         return obj.branch.strip() if obj.branch else 'Любой ОФО / не имеет значения'
 
 
-class CompetitionAdmin(admin.ModelAdmin):
+class CompetitionAdmin(MarkdownFieldsMixin, admin.ModelAdmin):
+    markdown_fields = ('content', 'requirements', 'acceptance_info')
     list_display = ['title', 'competition_type', 'date_start', 'date_end', 'is_active', 'created_at']
     list_filter = ['is_active', 'competition_type', 'created_at']
     search_fields = ['title', 'content']
@@ -197,11 +193,11 @@ class CompetitionWinnerInline(admin.StackedInline):
 class ApplicationRecipientAdmin(admin.ModelAdmin):
     list_display = [
         'full_name', 'email', 'is_active', 'receives_vacancies',
-        'receives_reserve', 'receives_practice', 'receives_training',
+        'receives_reserve', 'receives_practice', 'receives_training', 'receives_feedback',
     ]
     list_editable = [
         'is_active', 'receives_vacancies', 'receives_reserve',
-        'receives_practice', 'receives_training',
+        'receives_practice', 'receives_training', 'receives_feedback',
     ]
     list_filter = ['is_active']
     search_fields = ['full_name', 'email']
@@ -326,7 +322,6 @@ custom_admin_site.register(Tender, TenderAdmin)
 custom_admin_site.register(ContactStaffMember, ContactStaffMemberAdmin)
 custom_admin_site.register(HonorBoardStaffMember, HonorBoardStaffMemberAdmin)
 custom_admin_site.register(Vacancy, VacancyAdmin)
-custom_admin_site.register(WorkSchedule, WorkScheduleAdmin)
 custom_admin_site.register(RequiredExperience, RequiredExperienceAdmin)
 custom_admin_site.register(JobType, JobTypeAdmin)
 custom_admin_site.register(WorkingHours, WorkingHoursAdmin)

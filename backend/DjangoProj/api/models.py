@@ -18,8 +18,8 @@ class Tender(models.Model):
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
 
     class Meta:
-        verbose_name = 'Документ'
-        verbose_name_plural = 'Документы'
+        verbose_name = 'Документ раздела «Конкурсы»'
+        verbose_name_plural = 'Документы раздела «Конкурсы»'
         ordering = ['-created_at']
 
     def __str__(self):
@@ -31,8 +31,8 @@ class Branch(models.Model):
     address = models.CharField('Адрес', max_length=255)
 
     class Meta:
-        verbose_name = 'Отдел'
-        verbose_name_plural = 'Отделы'
+        verbose_name = 'Отдел (для контактов)'
+        verbose_name_plural = 'Отделы (для контактов)'
 
     def __str__(self):
         return self.name
@@ -89,8 +89,8 @@ class ContactStaffMember(StaffMember):
 
     class Meta:
         proxy = True
-        verbose_name = 'Сотрудник'
-        verbose_name_plural = 'Сотрудники'
+        verbose_name = 'Сотрудник (контакты)'
+        verbose_name_plural = 'Сотрудники (контакты)'
 
 
 class HonorBoardStaffMember(StaffMember):
@@ -155,7 +155,7 @@ class Vacancy(models.Model):
         help_text='Отраслевой (функциональный) орган из утверждённого списка',
     ) 
     location = models.CharField('Локация', max_length=255) 
-    salary = models.CharField('Зарплата', max_length=255) 
+    salary = models.CharField('Оплата труда', max_length=255, blank=True, help_text='Необязательно: если поле пустое, оплата в карточке и на странице вакансии не показывается')
     employment_type = models.CharField('Тип занятости', max_length=100, blank=True) 
     experience = models.CharField('Опыт', max_length=100, blank=True) 
     work_schedule = models.ForeignKey(WorkSchedule, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='График работы')
@@ -309,8 +309,8 @@ class CorruptionReport(models.Model):
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
 
     class Meta:
-        verbose_name = 'Репорт о коррупции'
-        verbose_name_plural = 'Репорты о коррупции'
+        verbose_name = 'Сообщение о коррупции'
+        verbose_name_plural = 'Сообщения о коррупции'
         ordering = ['-created_at']
 
     def __str__(self):
@@ -696,8 +696,8 @@ class TrainingEvent(models.Model):
     created_at = models.DateTimeField('Создано', auto_now_add=True)
 
     class Meta:
-        verbose_name = 'Обучающее мероприятие'
-        verbose_name_plural = 'Обучающие мероприятия'
+        verbose_name = 'Мероприятие'
+        verbose_name_plural = 'Мероприятия'
         ordering = ['event_date']
 
     def __str__(self):
@@ -729,6 +729,7 @@ class ApplicationRecipient(models.Model):
     receives_reserve = models.BooleanField('Кадровый резерв', default=True)
     receives_practice = models.BooleanField('Практика', default=True)
     receives_training = models.BooleanField('Обучение', default=True)
+    receives_feedback = models.BooleanField('Обратная связь', default=False)
 
     class Meta:
         verbose_name = 'Получатель заявок'
