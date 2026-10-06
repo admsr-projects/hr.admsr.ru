@@ -1,6 +1,7 @@
 from django.db.models import Q
 from django.contrib import admin
 from .forms import DepartmentAdminForm, VacancyAdminForm
+from .widgets import MarkdownFieldsMixin
 from .models import (
     Tender, ContactStaffMember, HonorBoardStaffMember, Vacancy, JobApplication, Branch,
     WorkSchedule, RequiredExperience, JobType, WorkingHours, AntiCorruptionDocument,
@@ -262,7 +263,8 @@ class PracticeApplicationAdmin(admin.ModelAdmin):
     readonly_fields = ['consent_personal_data', 'created_at']
 
 
-class TrainingEventAdmin(admin.ModelAdmin):
+class TrainingEventAdmin(MarkdownFieldsMixin, admin.ModelAdmin):
+    markdown_fields = ('description',)
     list_display = ['title', 'event_type', 'event_date', 'location', 'is_published', 'created_at']
     list_filter = ['event_type', 'is_published', 'event_date']
     search_fields = ['title', 'description', 'location']
@@ -277,7 +279,8 @@ class TrainingFeedbackAdmin(admin.ModelAdmin):
     readonly_fields = ['created_at']
 
 
-class NewsPostAdmin(admin.ModelAdmin):
+class NewsPostAdmin(MarkdownFieldsMixin, admin.ModelAdmin):
+    markdown_fields = ('content',)
     list_display = ['title', 'published_at', 'is_published', 'show_on_main', 'order', 'created_at']
     list_filter = ['is_published', 'show_on_main', 'published_at']
     search_fields = ['title', 'description']

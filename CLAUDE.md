@@ -21,3 +21,7 @@
 - Локальные `backend/DjangoProj/db.sqlite3` и `frontend/.data/content/contents.sqlite` меняются при разработке —
   в коммиты их не добавлять.
 - Новые миграции применять командой `python manage.py migrate`.
+- Полный текст новостей и описание мероприятий — Markdown: в админке редактор EasyMDE
+  (`backend/DjangoProj/api/widgets.py`, файлы редактора в `api/static/api/`), на сайте `DsMarkdown` / `renderMarkdown`
+  (`frontend/app/utils/markdown.ts`). После деплоя бэкенда нужен `python manage.py collectstatic`.
+  Новое поле с Markdown в админке — через `MarkdownFieldsMixin`.

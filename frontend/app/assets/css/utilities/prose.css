@@ -38,3 +38,94 @@
 .ds-prose a:hover {
   color: #059669;
 }
+
+/* Текст из админки в формате Markdown (DsMarkdown) */
+
+.ds-markdown {
+  font-size: var(--text-body);
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
+}
+
+.ds-markdown > * + * {
+  margin-top: 1rem;
+}
+
+.ds-markdown :is(h2, h3, h4, p):empty {
+  display: none;
+}
+
+.ds-markdown h2 {
+  margin-top: 2rem;
+  font-size: var(--text-h2);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.ds-markdown h3,
+.ds-markdown h4 {
+  margin-top: 1.5rem;
+  font-size: var(--text-h3);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.ds-markdown ul,
+.ds-markdown ol {
+  padding-left: 1.5rem;
+}
+
+.ds-markdown ul {
+  list-style: disc;
+}
+
+.ds-markdown ol {
+  list-style: decimal;
+}
+
+.ds-markdown li + li {
+  margin-top: 0.25rem;
+}
+
+.ds-markdown a {
+  color: var(--ui-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.ds-markdown a:hover {
+  text-decoration-thickness: 2px;
+}
+
+.ds-markdown blockquote {
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--ui-bg-elevated);
+  color: var(--color-text-muted);
+}
+
+.ds-markdown hr {
+  border-color: var(--ui-border);
+}
+
+.ds-markdown code {
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.375rem;
+  background: var(--ui-bg-elevated);
+  font-size: 0.875em;
+}
+
+.ds-markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-caption);
+}
+
+.ds-markdown th,
+.ds-markdown td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--ui-border);
+  text-align: left;
+}

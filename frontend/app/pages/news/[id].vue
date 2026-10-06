@@ -44,18 +44,10 @@
             class="rounded-lg"
           />
 
-          <div
-            v-if="contentParagraphs.length"
-            class="flex flex-col gap-4"
-          >
-            <p
-              v-for="(paragraph, index) in contentParagraphs"
-              :key="index"
-              class="whitespace-pre-line text-lg leading-8 text-text-primary text-pretty"
-            >
-              {{ paragraph }}
-            </p>
-          </div>
+          <DsMarkdown
+            v-if="post.content?.trim()"
+            :source="post.content"
+          />
 
           <DsEmptyState
             v-else
@@ -142,15 +134,6 @@ const breadcrumbs = computed(() => [
   { label: 'Новости', to: '/#news' },
   { label: post.value?.title ?? 'Новость' },
 ])
-
-const contentParagraphs = computed(() => {
-  const raw = post.value?.content?.trim()
-  if (!raw) return []
-  return raw
-    .split(/\n{2,}/g)
-    .map(p => p.trim())
-    .filter(Boolean)
-})
 
 function formatDate(value: string) {
   try {
