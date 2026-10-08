@@ -15,6 +15,7 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.text import Truncator
 
+from .audit import log_event
 from .models import ApplicationRecipient, Vacancy, VacancySubscription
 
 logger = logging.getLogger(__name__)
@@ -61,7 +62,7 @@ def recipient_emails(kind):
     )
 
 
-def notify_recipients(kind, subject, fields, files=(), emails=None):
+def notify_recipients(kind, subject, fields, files=(), emails=None, obj=None):
     """
     Отправить копию заявки уполномоченным лицам.
 
@@ -69,6 +70,7 @@ def notify_recipients(kind, subject, fields, files=(), emails=None):
     fields  — список пар («Название поля», значение)
     files   — FieldFile'ы, которые нужно приложить к письму
     emails  — явный список адресов (для проверочной отправки); по умолчанию — получатели из админки
+    obj     — сохранённая заявка: по ней в журнал доступа к ПД записывается передача копии по почте
 
     Ошибка отправки никогда не ломает приём заявки: она только пишется в лог.
     Возвращает число получателей, которым ушло письмо.
@@ -146,6 +148,11 @@ def notify_recipients(kind, subject, fields, files=(), emails=None):
     except Exception:
         logger.exception('Не удалось отправить копию заявки (%s)', kind)
         return 0
+    if obj is not None:
+        log_event(
+            'transfer', model=obj, object_id=obj.pk,
+            details=f'копия на почту: получателей {len(emails)}, вложений {len(attached)}',
+        )
     return len(emails)
 
 

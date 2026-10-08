@@ -5,14 +5,15 @@ from .widgets import MarkdownFieldsMixin
 from .models import (
     Tender, ContactStaffMember, HonorBoardStaffMember, Vacancy, JobApplication, Branch,
     RequiredExperience, JobType, WorkingHours, AntiCorruptionDocument,
-    AntiCorruptionDocumentCategory, AntiCorruptionInfo, CorruptionReport, BranchesGlobal, Feedback, VacancySubscription,
+    AntiCorruptionDocumentCategory, AntiCorruptionInfo, BranchesGlobal, Feedback, VacancySubscription,
     Competition, CompetitionResult, StaffReserveInfo, StaffReservePosition, StaffReserveDocument, VacancyDocument, WorkPartner, YouthInfo,
     PracticeApplication, TrainingEvent, TrainingFeedback, NewsPost, Department, Deputy,
     DeputyDepartment, ApplicationRecipient, CompetitionDocument, CompetitionWinner,
-    EducationReviewPage, EducationCategory, EducationLegalAct, EducationPosition,
+    EducationReviewPage, EducationCategory, EducationLegalAct, EducationPosition, PersonalDataAccessLog,
 )
 from .adminsite import custom_admin_site
 from .admin_auth import register_auth_models
+from .audit import PersonalDataAuditMixin
 
 
 STAFF_MEMBER_FORM_FIELDS = [
@@ -103,7 +104,7 @@ class WorkingHoursAdmin(admin.ModelAdmin):
     search_fields = ['name']
 
 
-class JobApplicationAdmin(admin.ModelAdmin):
+class JobApplicationAdmin(PersonalDataAuditMixin, admin.ModelAdmin):
     list_display = ['last_name', 'first_name', 'vacancy_title', 'email', 'phone', 'created_at']
     list_filter = ['vacancy_title', 'created_at', 'marital_status']
     search_fields = ['last_name', 'first_name', 'email', 'phone']
@@ -175,12 +176,6 @@ class EducationPositionAdmin(admin.ModelAdmin):
     ]
 
 
-class CorruptionReportAdmin(admin.ModelAdmin):
-    list_display = ['full_name', 'email', 'created_at']
-    list_filter = ['created_at']
-    search_fields = ['full_name', 'email']
-
-
 class BranchesGlobalAdmin(admin.ModelAdmin):
     list_display = ['name', 'link']
     search_fields = ['name']
@@ -194,7 +189,7 @@ class WorkPartnerAdmin(admin.ModelAdmin):
     fields = ['name', 'url', 'logo_file', 'logo_path', 'order', 'is_active']
 
 
-class VacancySubscriptionAdmin(admin.ModelAdmin):
+class VacancySubscriptionAdmin(PersonalDataAuditMixin, admin.ModelAdmin):
     list_display = ['name', 'email', 'branch_display', 'has_resume', 'is_active', 'created_at']
     list_filter = ['is_active', 'created_at']
     search_fields = ['name', 'email', 'branch', 'desired_position']
@@ -236,7 +231,7 @@ class CompetitionWinnerInline(admin.StackedInline):
     fields = ['full_name', 'position', 'description', 'photo', 'order']
 
 
-class ApplicationRecipientAdmin(admin.ModelAdmin):
+class ApplicationRecipientAdmin(PersonalDataAuditMixin, admin.ModelAdmin):
     list_display = [
         'full_name', 'email', 'is_active', 'receives_vacancies',
         'receives_reserve', 'receives_practice', 'receives_training', 'receives_feedback',
@@ -296,7 +291,7 @@ class YouthInfoAdmin(MarkdownFieldsMixin, admin.ModelAdmin):
     ]
 
 
-class PracticeApplicationAdmin(admin.ModelAdmin):
+class PracticeApplicationAdmin(PersonalDataAuditMixin, admin.ModelAdmin):
     list_display = [
         'last_name', 'first_name', 'educational_institution', 'course',
         'practice_period', 'created_at',
@@ -315,7 +310,7 @@ class TrainingEventAdmin(MarkdownFieldsMixin, admin.ModelAdmin):
     date_hierarchy = 'event_date'
 
 
-class TrainingFeedbackAdmin(admin.ModelAdmin):
+class TrainingFeedbackAdmin(PersonalDataAuditMixin, admin.ModelAdmin):
     list_display = ['name', 'department', 'message', 'created_at']
     list_filter = ['created_at']
     search_fields = ['name', 'department', 'message']
@@ -380,12 +375,11 @@ custom_admin_site.register(EducationReviewPage, EducationReviewPageAdmin)
 custom_admin_site.register(EducationPosition, EducationPositionAdmin)
 custom_admin_site.register(EducationCategory, EducationCategoryAdmin)
 custom_admin_site.register(EducationLegalAct, EducationLegalActAdmin)
-custom_admin_site.register(CorruptionReport, CorruptionReportAdmin)
 custom_admin_site.register(BranchesGlobal, BranchesGlobalAdmin)
 custom_admin_site.register(WorkPartner, WorkPartnerAdmin)
 
 
-class FeedbackAdmin(admin.ModelAdmin):
+class FeedbackAdmin(PersonalDataAuditMixin, admin.ModelAdmin):
     list_display = ['message', 'created_at']
     list_filter = ['created_at']
     search_fields = ['message']
@@ -407,5 +401,34 @@ custom_admin_site.register(TrainingFeedback, TrainingFeedbackAdmin)
 custom_admin_site.register(NewsPost, NewsPostAdmin)
 custom_admin_site.register(Department, DepartmentAdmin)
 custom_admin_site.register(Deputy, DeputyAdmin)
+
+class PersonalDataAccessLogAdmin(admin.ModelAdmin):
+    """Журнал только для чтения и только для суперпользователей (модератору права на него не выдаются)."""
+    list_display = ['created_at', 'action', 'username', 'object_type', 'object_id', 'ip_address', 'details']
+    list_filter = ['action', 'created_at', 'object_type']
+    search_fields = ['username', 'object_id', 'ip_address', 'details']
+    date_hierarchy = 'created_at'
+    list_per_page = 100
+
+    def _superuser_only(self, request):
+        return request.user.is_active and request.user.is_superuser
+
+    def has_module_permission(self, request):
+        return self._superuser_only(request)
+
+    def has_view_permission(self, request, obj=None):
+        return self._superuser_only(request)
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+custom_admin_site.register(PersonalDataAccessLog, PersonalDataAccessLogAdmin)
 
 register_auth_models(custom_admin_site)

@@ -11,10 +11,11 @@ from django.db.models import Q
 
 from .models import (
     Tender, Vacancy, StaffMember, RequiredExperience, JobType,
-    AntiCorruptionDocument, AntiCorruptionDocumentCategory, AntiCorruptionInfo, CorruptionReport, BranchesGlobal, Feedback, VacancySubscription,
+    AntiCorruptionDocument, AntiCorruptionDocumentCategory, AntiCorruptionInfo, BranchesGlobal, Feedback, VacancySubscription,
     Competition, CompetitionResult, StaffReserveInfo, StaffReserveDocument, VacancyDocument, WorkPartner, YouthInfo, PracticeApplication,
     TrainingEvent, TrainingFeedback, NewsPost, Department, Deputy, CompetitionDocument,
 )
+from .audit import log_event
 from .education import build_education_payload
 from .search import search_portal
 from .notifications import (
@@ -24,7 +25,7 @@ from .serializers import (
     TenderSerializer, VacancySerializer, StaffMemberSerializer,
     JobApplicationSerializer,
     RequiredExperienceSerializer, JobTypeSerializer,
-    AntiCorruptionDocumentSerializer, AntiCorruptionDocumentCategorySerializer, AntiCorruptionInfoSerializer, CorruptionReportSerializer,
+    AntiCorruptionDocumentSerializer, AntiCorruptionDocumentCategorySerializer, AntiCorruptionInfoSerializer,
     BranchesGlobalSerializer, WorkPartnerSerializer, FeedbackSerializer, VacancySubscriptionSerializer,
     CompetitionSerializer, CompetitionResultSerializer, StaffReserveInfoSerializer, StaffReserveDocumentSerializer, VacancyDocumentSerializer,
     YouthInfoSerializer, PracticeApplicationSerializer,
@@ -99,6 +100,7 @@ def submit_practice_application(request):
     if serializer.is_valid():
         serializer.save()
         app = serializer.instance
+        log_event('submit', request, model=app, object_id=app.pk)
         notify_recipients(
             KIND_PRACTICE,
             f'Заявка на практику: {app.last_name} {app.first_name}',
@@ -115,6 +117,7 @@ def submit_practice_application(request):
                 ('Комментарий', app.comment),
             ],
             files=[app.application_letter],
+            obj=app,
         )
         return Response(
             {
@@ -185,6 +188,7 @@ def submit_training_feedback(request):
     serializer = TrainingFeedbackSerializer(data=request.data)
     if serializer.is_valid():
         instance = serializer.save()
+        log_event('submit', request, model=instance, object_id=instance.pk)
         notify_recipients(
             KIND_TRAINING,
             'Предложение по обучению',
@@ -193,6 +197,7 @@ def submit_training_feedback(request):
                 ('Подразделение', instance.department),
                 ('Предложение', instance.message),
             ],
+            obj=instance,
         )
         response = Response(
             {'message': 'Спасибо! Ваше предложение отправлено.', 'id': instance.id},
@@ -301,6 +306,7 @@ def apply(request):
     if serializer.is_valid():
         serializer.save()
         app = serializer.instance
+        log_event('submit', request, model=app, object_id=app.pk)
         kind = KIND_RESERVE if 'резерв' in (app.vacancy_title or '').lower() else KIND_VACANCIES
         subject = f'Заявка на вакансию: {app.last_name} {app.first_name}'
         if app.vacancy_title:
@@ -321,6 +327,7 @@ def apply(request):
                 ('Откуда узнал(а)', app.vacancy_source),
             ],
             files=[app.resume, app.photo],
+            obj=app,
         )
         return Response(
             {"message": "Заявка успешно отправлена!", "id": serializer.instance.id},
@@ -335,6 +342,7 @@ def vacancy_subscribe(request):
     if serializer.is_valid():
         serializer.save()
         sub = serializer.instance
+        log_event('submit', request, model=sub, object_id=sub.pk)
         has_resume = bool(
             sub.resume or sub.desired_position or sub.education or sub.work_experience or sub.about
         )
@@ -353,6 +361,7 @@ def vacancy_subscribe(request):
                     ('О себе, навыки', sub.about),
                 ],
                 files=[sub.resume],
+                obj=sub,
             )
         return Response(
             {
@@ -408,42 +417,6 @@ def anti_corruption_documents(request):
         context={'request': request},
     )
     return Response(serializer.data)
-
-
-@api_view(['POST'])
-@parser_classes([MultiPartParser, FormParser])
-def submit_corruption_report(request):
-    cooldown_seconds = 60
-
-    last_submit = request.COOKIES.get('corruption_cooldown')
-    if last_submit:
-        try:
-            last_time = float(last_submit)
-            if time.time() - last_time < cooldown_seconds:
-                remaining = int(cooldown_seconds - (time.time() - last_time))
-                return Response(
-                    {'error': f'Слишком частая отправка. Подождите {remaining} сек.'},
-                    status=status.HTTP_429_TOO_MANY_REQUESTS
-                )
-        except ValueError:
-            pass
-
-    serializer = CorruptionReportSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        response = Response(
-            {"message": "Сообщение успешно отправлено!", "id": serializer.instance.id},
-            status=status.HTTP_201_CREATED
-        )
-        response.set_cookie(
-            'corruption_cooldown',
-            str(time.time()),
-            max_age=cooldown_seconds,
-            httponly=True,
-            samesite='Lax'
-        )
-        return response
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
@@ -504,11 +477,13 @@ def submit_feedback(request):
     serializer = FeedbackSerializer(data=request.data)
     if serializer.is_valid():
         instance = serializer.save()
+        log_event('submit', request, model=instance, object_id=instance.pk)
         notify_recipients(
             KIND_FEEDBACK,
             'Обратная связь с портала',
             [('Сообщение', instance.message)],
             files=[instance.photo],
+            obj=instance,
         )
 
         response = Response(

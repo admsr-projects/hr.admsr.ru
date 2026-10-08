@@ -57,7 +57,7 @@ class CustomAdminSite(AdminSite):
             },
             'Нет коррупции!: основная информация': {
                 'app_label': 'anticorruption_group',
-                'models': ['AntiCorruptionInfo', 'AntiCorruptionDocumentCategory', 'AntiCorruptionDocument', 'CorruptionReport'],
+                'models': ['AntiCorruptionInfo', 'AntiCorruptionDocumentCategory', 'AntiCorruptionDocument'],
             },
             'Нет коррупции!: просвещение': {
                 'app_label': 'anticorruption_education_group',
@@ -70,6 +70,11 @@ class CustomAdminSite(AdminSite):
             'Настройки': {
                 'app_label': 'settings_group',
                 'models': ['ApplicationRecipient', 'BranchesGlobal'],
+            },
+            'Журнал': {
+                'app_label': 'audit_group',
+                'models': ['PersonalDataAccessLog'],
+                'superuser_only': True,
             },
             'Пользователи': {
                 'app_label': 'users_group',

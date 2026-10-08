@@ -6,4 +6,4 @@ class ApiConfig(AppConfig):
     name = 'api'
 
     def ready(self):
-        from . import signals  # noqa: F401
+        from . import audit, signals  # noqa: F401

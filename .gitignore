@@ -49,6 +49,15 @@ openclaudefordesktop.bat
 # Архивы для деплоя на сервер
 deploy_out/
 
-# Сборка киоска (kiosk.hr.admsr.ru)
+# Сборка киоска (kiosk-hr.admsr.ru)
 frontend/.nuxt-kiosk/
 frontend/.output-kiosk/
+
+# Локальные данные разработки и персональные данные: в репозиторий не попадают
+backend/DjangoProj/db.sqlite3
+frontend/.data/
+backend/DjangoProj/media/resumes/
+backend/DjangoProj/media/photos/
+backend/DjangoProj/media/subscription_resumes/
+backend/DjangoProj/media/practice_applications/
+backend/DjangoProj/media/feedback_photos/

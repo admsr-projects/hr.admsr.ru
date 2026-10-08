@@ -480,23 +480,6 @@ class EducationPosition(models.Model):
         return f'№ {self.number}. {self.title}'
 
 
-class CorruptionReport(models.Model):
-    full_name = models.CharField('ФИО нарушителя', max_length=255)
-    email = models.EmailField('Email')
-    message = models.TextField('Сообщение')
-    attachment = models.FileField('Вложение', upload_to='corruption_reports/', blank=True, null=True)
-    image = models.ImageField('Изображение', upload_to='corruption_images/', blank=True, null=True)
-    created_at = models.DateTimeField('Дата создания', auto_now_add=True)
-
-    class Meta:
-        verbose_name = 'Сообщение о коррупции'
-        verbose_name_plural = 'Сообщения о коррупции'
-        ordering = ['-created_at']
-
-    def __str__(self):
-        return f'{self.full_name} ({self.created_at.strftime("%d.%m.%Y")})'
-
-
 class JobApplication(models.Model):
     MARITAL_STATUS_CHOICES = [
         ('single', 'Холост/Не замужем'),
@@ -1047,3 +1030,56 @@ class NewsPost(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class PersonalDataAccessLog(models.Model):
+    """Журнал доступа к персональным данным: кто, когда и что смотрел, менял, скачивал, получил с сайта.
+
+    Записи только добавляются (в админке журнал доступен лишь для чтения). Персональных данных
+    субъектов в журнал не пишем: только тип записи, её номер и служебные сведения о действии.
+    """
+    ACTION_VIEW = 'view'
+    ACTION_LIST = 'list'
+    ACTION_ADD = 'add'
+    ACTION_CHANGE = 'change'
+    ACTION_DELETE = 'delete'
+    ACTION_DOWNLOAD = 'download'
+    ACTION_SUBMIT = 'submit'
+    ACTION_TRANSFER = 'transfer'
+    ACTION_LOGIN = 'login'
+    ACTION_LOGIN_FAILED = 'login_failed'
+    ACTION_LOGOUT = 'logout'
+    ACTION_CHOICES = [
+        (ACTION_VIEW, 'Просмотр записи'),
+        (ACTION_LIST, 'Просмотр списка'),
+        (ACTION_ADD, 'Создание записи'),
+        (ACTION_CHANGE, 'Изменение записи'),
+        (ACTION_DELETE, 'Удаление записи'),
+        (ACTION_DOWNLOAD, 'Скачивание файла'),
+        (ACTION_SUBMIT, 'Получено с сайта'),
+        (ACTION_TRANSFER, 'Передача по почте'),
+        (ACTION_LOGIN, 'Вход в админку'),
+        (ACTION_LOGIN_FAILED, 'Неудачный вход'),
+        (ACTION_LOGOUT, 'Выход из админки'),
+    ]
+
+    created_at = models.DateTimeField('Время', auto_now_add=True, db_index=True)
+    action = models.CharField('Действие', max_length=20, choices=ACTION_CHOICES, db_index=True)
+    user = models.ForeignKey(
+        'auth.User', verbose_name='Пользователь', null=True, blank=True,
+        on_delete=models.SET_NULL, related_name='+',
+    )
+    username = models.CharField('Логин', max_length=150, blank=True, db_index=True)
+    object_type = models.CharField('Раздел / тип данных', max_length=120, blank=True)
+    object_id = models.CharField('Номер записи', max_length=64, blank=True)
+    ip_address = models.GenericIPAddressField('IP-адрес', null=True, blank=True)
+    user_agent = models.CharField('Браузер', max_length=255, blank=True)
+    details = models.CharField('Подробности', max_length=500, blank=True)
+
+    class Meta:
+        verbose_name = 'Запись журнала доступа к ПД'
+        verbose_name_plural = 'Журнал доступа к ПД'
+        ordering = ['-created_at', '-id']
+
+    def __str__(self):
+        return f'{self.created_at:%d.%m.%Y %H:%M:%S} {self.get_action_display()} — {self.username or "аноним"}'

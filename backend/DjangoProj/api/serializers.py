@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import (
     Tender, StaffMember, Vacancy, JobApplication, Branch, RequiredExperience,
-    JobType, AntiCorruptionDocument, AntiCorruptionDocumentCategory, AntiCorruptionInfo, CorruptionReport, BranchesGlobal, Feedback, VacancySubscription,
+    JobType, AntiCorruptionDocument, AntiCorruptionDocumentCategory, AntiCorruptionInfo, BranchesGlobal, Feedback, VacancySubscription,
     Competition, CompetitionResult, CompetitionDocument, CompetitionWinner, StaffReserveInfo, StaffReservePosition, StaffReserveDocument, VacancyDocument, WorkPartner, YouthInfo, PracticeApplication,
     TrainingEvent, TrainingFeedback, NewsPost, Department, Deputy,
 )
@@ -155,27 +155,6 @@ class AntiCorruptionInfoSerializer(serializers.ModelSerializer):
 
     def get_officialsList(self, obj):
         return [line.strip() for line in obj.officials.splitlines() if line.strip()]
-
-
-class CorruptionReportSerializer(serializers.ModelSerializer):
-    MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024
-
-    class Meta:
-        model = CorruptionReport
-        fields = '__all__'
-        read_only_fields = ['created_at']
-
-    def validate(self, data):
-        total_size = 0
-        for field in ('attachment', 'image'):
-            file_obj = data.get(field)
-            if file_obj:
-                total_size += file_obj.size
-        if total_size > self.MAX_ATTACHMENT_BYTES:
-            raise serializers.ValidationError(
-                'Суммарный объём вложений не должен превышать 10 МБ'
-            )
-        return data
 
 
 class BranchesGlobalSerializer(serializers.ModelSerializer):

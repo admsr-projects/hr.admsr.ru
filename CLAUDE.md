@@ -15,7 +15,7 @@
 - Бэкенд: `cd backend/DjangoProj && DJANGO_DEBUG=True python manage.py runserver 8000`
 - Фронт: `cd frontend && npm run dev` (порт 3000; CORS бэка разрешает только его)
 - После добавления новых файлов страниц и плагинов dev-сервер Nuxt нужно перезапустить.
-- Киоск (kiosk.hr.admsr.ru, экран 1080×1920, без форм) — отдельная сборка того же фронта, правила в
+- Киоск (kiosk-hr.admsr.ru, экран 1080×1920, без форм) — отдельная сборка того же фронта, правила в
   [`docs/DESIGN-RULES.md`](docs/DESIGN-RULES.md) §10. Разработка: `cd frontend && npm run dev:kiosk`;
   сборка: `npm run generate:kiosk` (результат в `frontend/.output-kiosk/public`), архив: `python deploy/pack_deploy.py --kiosk`.
   Любая новая форма или поле ввода на сайте должна скрываться в киоске (`useKiosk()`).
@@ -33,3 +33,9 @@
   (`backend/DjangoProj/api/widgets.py`, файлы редактора в `api/static/api/`), на сайте `DsMarkdown` / `renderMarkdown`
   (`frontend/app/utils/markdown.ts`). После деплоя бэкенда нужен `python manage.py collectstatic`.
   Новое поле с Markdown в админке — через `MarkdownFieldsMixin`.
+- Персональные данные: перечень и замечания в [`docs/PD-INVENTORY.md`](docs/PD-INVENTORY.md). Файлы из форм (`resumes/`, `photos/`,
+  `subscription_resumes/`, `practice_applications/`, `feedback_photos/`) отдаёт только `api/media.py` вошедшим сотрудникам с правом
+  просмотра; новый публичный каталог загрузок нужно добавить в `PUBLIC_DIRS`, иначе он закрыт. Доступ к ПД журналируется
+  (`api/audit.py`, «Журнал доступа к ПД» в админке): у ModelAdmin с ПД подключать `PersonalDataAuditMixin`, у новой формы вызывать
+  `log_event('submit', request, model=obj, object_id=obj.pk)`. Форм о коррупции на сайте нет: обращения идут через баннер Госуслуг.
+- `db.sqlite3`, `frontend/.data/` и каталоги загрузок с ПД в `.gitignore`; в индекс их не возвращать.
