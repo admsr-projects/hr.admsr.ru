@@ -8,7 +8,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-yx26n2*h9^w#2$
 
 DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.onrender.com', '172.17.30.36', 'hr.admsr.ru', 'kiosk.hr.admsr.ru']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.onrender.com', '172.17.30.36', 'hr.admsr.ru', 'kiosk-hr.admsr.ru']
 
 
 # Application definition
@@ -134,7 +134,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://diploma-project-gamma.vercel.app",
     "http://172.17.30.36",
     "https://hr.admsr.ru",
-    "https://kiosk.hr.admsr.ru",
+    "https://kiosk-hr.admsr.ru",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -144,7 +144,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://diploma-project-gamma.vercel.app",
     "http://172.17.30.36",
     "https://hr.admsr.ru",
-    "https://kiosk.hr.admsr.ru",
+    "https://kiosk-hr.admsr.ru",
 ]
 
 

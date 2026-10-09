@@ -6,7 +6,7 @@ Scenario B: also pack deploy_db_sqlite.zip and deploy_media.zip.
 Usage:
   python deploy/pack_deploy.py          # scenario A
   python deploy/pack_deploy.py --with-data   # scenario B
-  python deploy/pack_deploy.py --kiosk  # also deploy_kiosk_static.zip for kiosk.hr.admsr.ru
+  python deploy/pack_deploy.py --kiosk  # also deploy_kiosk_static.zip for kiosk-hr.admsr.ru
                                         # (needs `npm run generate:kiosk` in frontend/ first)
 """
 import argparse
@@ -82,7 +82,7 @@ def main() -> None:
     parser.add_argument(
         "--kiosk",
         action="store_true",
-        help="Also pack deploy_kiosk_static.zip (frontend/.output-kiosk/public) for kiosk.hr.admsr.ru",
+        help="Also pack deploy_kiosk_static.zip (frontend/.output-kiosk/public) for kiosk-hr.admsr.ru",
     )
     args = parser.parse_args()
 
@@ -122,7 +122,7 @@ def main() -> None:
     assert_no_backslashes(frontend_zip)
     print(f"OK {frontend_zip.name}: {fcount} files, {frontend_zip.stat().st_size / 1024 / 1024:.1f} MB")
 
-    # 4. Kiosk frontend (separate build, served on kiosk.hr.admsr.ru)
+    # 4. Kiosk frontend (separate build, served on kiosk-hr.admsr.ru)
     if args.kiosk:
         kiosk_zip = DEPLOY / "deploy_kiosk_static.zip"
         kiosk_dir = ROOT / "frontend" / ".output-kiosk" / "public"

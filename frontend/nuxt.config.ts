@@ -2,7 +2,7 @@
 // Сам счётчик запускает плагин yandex-metrika.client.ts — только после согласия посетителя на cookie.
 const YANDEX_METRIKA_ID = 113462586
 const isProduction = process.env.NODE_ENV === 'production'
-// Режим информационного киоска (kiosk.hr.admsr.ru, экран 1080×1920): отдельная сборка, см. docs/DESIGN-RULES.md §10
+// Режим информационного киоска (kiosk-hr.admsr.ru, экран 1080×1920): отдельная сборка, см. docs/DESIGN-RULES.md §10
 const isKiosk = process.env.KIOSK_MODE === 'true'
 
 export default defineNuxtConfig({
