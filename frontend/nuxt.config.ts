@@ -68,7 +68,23 @@ export default defineNuxtConfig({
   colorMode: isKiosk ? { preference: 'light', fallback: 'light', storageKey: 'nuxt-color-mode-kiosk' } : undefined,
 
   icon: {
-    clientBundle: { sizeLimitKb: 1024 },
+    // Иконки вшиваем в клиентский бандл: на статическом хостинге нет серверного API иконок (/api/_nuxt_icon),
+    // а запасной api.iconify.design недоступен из закрытой сети и на киоске. Имена иконок лежат и в .ts-файлах
+    // (data/navigation.ts и др.), поэтому добавляем их к стандартному шаблону сканирования (vue, md, yml).
+    clientBundle: {
+      sizeLimitKb: 1024,
+      // Иконки, имена которых лежат внутри Nuxt UI (тема, меню, загрузка файла, спиннер, уведомления и т. п.): в исходниках проекта их нет
+      icons: [
+        'lucide:menu', 'lucide:moon', 'lucide:sun', 'lucide:monitor', 'lucide:upload', 'lucide:loader-circle',
+        'lucide:circle-alert', 'lucide:circle-x', 'lucide:triangle-alert', 'lucide:eye', 'lucide:eye-off',
+        'lucide:plus', 'lucide:copy', 'lucide:copy-check', 'lucide:chevrons-left', 'lucide:chevrons-right',
+        'lucide:rotate-ccw', 'lucide:folder', 'lucide:folder-open', 'lucide:hash', 'lucide:lightbulb',
+        'lucide:square', 'lucide:grip-vertical', 'lucide:panel-left-close', 'lucide:panel-left-open', 'lucide:terminal'
+      ],
+      scan: {
+        globInclude: ['**/*.{vue,jsx,tsx,md,mdc,mdx,yml,yaml}', 'app/**/*.{ts,js,json}']
+      }
+    },
     customCollections: [{
       prefix: 'custom',
       dir: './public/Icons'
