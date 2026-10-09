@@ -117,6 +117,7 @@ export const educationNavItems: NavItem[] = [
 export const mainNavItems: NavItem[] = [
   { label: 'Главная', to: '/' },
   ...navGroups.slice(0, 2).flatMap(group => group.items),
+  { label: 'Кадровые резервы: порядок формирования', to: '/staffreserve/review' },
   { label: 'Нет коррупции!', to: '/anti-corruption' },
   { label: 'Антикоррупционное просвещение', to: '/anti-corruption/education' },
   { label: '27 правовых позиций по антикоррупционным делам', to: '/anti-corruption/education/positions' },

@@ -3,8 +3,8 @@
     v-if="!kiosk"
     v-model="model"
     type="search"
-    variant="soft"
-    :ui="{ base: 'bg-elevated' }"
+    :variant="variant"
+    :ui="variant === 'soft' ? { base: 'bg-elevated' } : undefined"
     icon="i-lucide-search"
     :placeholder="placeholder"
     :aria-label="placeholder"
@@ -30,8 +30,11 @@
 <script setup lang="ts">
 withDefaults(defineProps<{
   placeholder?: string
+  /** soft — серое поле (таблицы документов), outline — с контуром, как соседние фильтры */
+  variant?: 'soft' | 'outline'
 }>(), {
   placeholder: 'Поиск по названию',
+  variant: 'soft'
 })
 
 const model = defineModel<string>({ default: '' })

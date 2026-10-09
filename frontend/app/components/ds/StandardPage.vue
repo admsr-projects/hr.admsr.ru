@@ -70,11 +70,14 @@ const props = withDefaults(defineProps<{
   intro?: string
   /** @deprecated Не отображается — контекст раздела даёт меню слева и хлебные крошки */
   badge?: string
+  /** Меню раздела слева (и полоса меню на телефоне); false — страница на всю ширину контейнера */
+  menu?: boolean
 }>(), {
   overline: undefined,
   description: undefined,
   intro: undefined,
-  badge: undefined
+  badge: undefined,
+  menu: true
 })
 
 const route = useRoute()
@@ -87,6 +90,7 @@ const inStructure = route.path.startsWith('/about/structure') || route.path.star
 const structureGroups = inStructure ? useAdminStructureMenu() : undefined
 
 const sidebar = computed<{ title: string, items: SidebarItem[] } | null>(() => {
+  if (!props.menu) return null
   if (structureGroups) {
     return {
       title: 'Структура администрации',
@@ -101,7 +105,7 @@ const sidebar = computed<{ title: string, items: SidebarItem[] } | null>(() => {
 
 // Горизонтальное меню на телефоне — только для страниц разделов (у структуры свой выбор заместителя на странице)
 const sectionNavItems = computed(() =>
-  menu.value && !inStructure ? toNavigationMenuItems(menu.value) : []
+  props.menu && menu.value && !inStructure ? toNavigationMenuItems(menu.value) : []
 )
 
 const breadcrumbs = computed<BreadcrumbItem[]>(() => {
@@ -126,6 +130,9 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => {
   }
   else if (route.path.startsWith('/vacancyinfo/')) {
     items.push({ label: 'Вакансии', to: '/vacancies' })
+  }
+  else if (route.path.startsWith('/staffreserve/')) {
+    items.push({ label: 'Кадровый резерв', to: '/staffreserve' })
   }
 
   items.push({ label: props.title })

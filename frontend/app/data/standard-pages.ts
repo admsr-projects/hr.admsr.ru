@@ -56,7 +56,8 @@ export const standardSections: StandardSection[] = [
 /** Страницы, вложенные в пункт раздела: путь-префикс → путь пункта меню */
 const nestedPaths: Array<{ prefix: string, parent: string }> = [
   { prefix: '/about/departments/', parent: '/about/structure' },
-  { prefix: '/vacancyinfo/', parent: '/vacancies' }
+  { prefix: '/vacancyinfo/', parent: '/vacancies' },
+  { prefix: '/staffreserve/', parent: '/staffreserve' }
 ]
 
 function resolveMenuPath(path: string): string {

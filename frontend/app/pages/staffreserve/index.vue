@@ -68,6 +68,13 @@ const positions = computed(() => info.value?.positions ?? [])
       </div>
     </DsContentSection>
 
+    <DsLinkCard
+      title="Порядок формирования кадровых резервов"
+      description="Три резерва администрации Сургутского района: требования к кандидатам, этапы конкурса, уровни готовности, методы оценки и перечень должностей."
+      icon="i-lucide-list-checks"
+      to="/staffreserve/review"
+    />
+
     <DsContentSection
       v-if="pending || positions.length"
       title="Должности, на которые формируется резерв"
