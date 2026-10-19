@@ -2,8 +2,9 @@
 import logging
 import mimetypes
 import os
+import secrets
 import threading
-from datetime import datetime
+from datetime import datetime, timedelta
 from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo
 
@@ -13,6 +14,7 @@ from django.core.mail import EmailMultiAlternatives, get_connection
 from django.db import connections
 from django.template.loader import render_to_string
 from django.utils import timezone
+from django.utils.crypto import constant_time_compare, salted_hmac
 from django.utils.text import Truncator
 
 from .models import ApplicationRecipient, Vacancy, VacancySubscription
@@ -165,11 +167,98 @@ def email_from_unsubscribe_token(token):
         return None
 
 
+# ---------------------------------------------------------------------------
+# Подтверждение email кодом из письма перед подпиской
+# ---------------------------------------------------------------------------
+
+CODE_LENGTH = 6
+CODE_TTL = timedelta(minutes=10)
+CODE_RESEND_COOLDOWN = timedelta(seconds=60)
+CODE_MAX_ATTEMPTS = 5  # неверных вводов, после чего нужен новый код
+CODE_MAX_SENDS = 5  # писем с кодом на одну подписку
+
+
+def _code_hash(sub, code):
+    return salted_hmac('vacancy-subscription-code', f'{sub.pk}:{sub.email}:{code}').hexdigest()
+
+
+def seconds_until_resend(sub):
+    """Сколько секунд осталось до следующей отправки кода (0 — можно отправлять)."""
+    if not sub.code_sent_at:
+        return 0
+    left = sub.code_sent_at + CODE_RESEND_COOLDOWN - timezone.now()
+    return max(0, int(left.total_seconds()) + (1 if left.microseconds else 0))
+
+
+def send_subscription_code(sub):
+    """
+    Сгенерировать новый код, сохранить его хэш и отправить письмо на адрес подписки.
+    Если письмо не ушло — исключение пробрасывается, а состояние подписки не меняется.
+    """
+    code = ''.join(secrets.choice('0123456789') for _ in range(CODE_LENGTH))
+    ttl_minutes = int(CODE_TTL.total_seconds() // 60)
+    name = (sub.name or '').strip()
+    greeting = f'Здравствуйте, {name}!' if name else 'Здравствуйте!'
+
+    message = EmailMultiAlternatives(
+        subject=f'Код подтверждения: {code}',
+        body='\n'.join([
+            greeting,
+            '',
+            f'Код подтверждения email для подписки на вакансии: {code}',
+            f'Введите его на сайте {_site_host()}. Код действует {ttl_minutes} минут.',
+            '',
+            'Если вы не оформляли подписку, просто проигнорируйте это письмо — без кода подписка не включится.',
+        ]),
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=[sub.email],
+    )
+    message.attach_alternative(
+        render_to_string('api/emails/subscription_code.html', {
+            'title': 'Код подтверждения',
+            'preheader': f'Ваш код: {code}',
+            'greeting': greeting,
+            'code': code,
+            'ttl_minutes': ttl_minutes,
+            'site_url': _site_url(),
+            'site_host': _site_host(),
+        }),
+        'text/html',
+    )
+    message.send()
+
+    sub.code_hash = _code_hash(sub, code)
+    sub.code_sent_at = timezone.now()
+    sub.code_attempts = 0
+    sub.code_sends += 1
+    sub.save(update_fields=['code_hash', 'code_sent_at', 'code_attempts', 'code_sends'])
+
+
+CODE_OK = 'ok'
+CODE_WRONG = 'wrong'
+CODE_EXPIRED = 'expired'
+CODE_LOCKED = 'locked'
+
+
+def check_subscription_code(sub, code):
+    """Проверить введённый код: CODE_OK / CODE_WRONG / CODE_EXPIRED / CODE_LOCKED. Неверный ввод учитывается."""
+    code = ''.join(str(code or '').split())
+    if not sub.code_hash or not sub.code_sent_at or timezone.now() > sub.code_sent_at + CODE_TTL:
+        return CODE_EXPIRED
+    if sub.code_attempts >= CODE_MAX_ATTEMPTS:
+        return CODE_LOCKED
+    if constant_time_compare(_code_hash(sub, code), sub.code_hash):
+        return CODE_OK
+    sub.code_attempts += 1
+    sub.save(update_fields=['code_attempts'])
+    return CODE_LOCKED if sub.code_attempts >= CODE_MAX_ATTEMPTS else CODE_WRONG
+
+
 def _subscribers_for(vacancy):
     """Активные подписки, подходящие вакансии: без отраслевого органа — на любые, иначе только на совпадающий."""
     vacancy_branch = (vacancy.branch or '').strip().casefold()
     result = {}
-    for sub in VacancySubscription.objects.filter(is_active=True).exclude(email=''):
+    for sub in VacancySubscription.objects.filter(is_active=True, email_verified=True).exclude(email=''):
         sub_branch = (sub.branch or '').strip().casefold()
         if vacancy_branch and sub_branch and sub_branch != vacancy_branch:
             continue

@@ -68,16 +68,22 @@
       :submitted-email="submittedEmail"
       :submitted-ofo="submittedOfo"
       :validate="validate"
+      :verification="verification"
       accent
       plain
       @submit="$emit('submit')"
       @reset="$emit('reset')"
+      @confirm="code => $emit('confirm', code)"
+      @resend="$emit('resend')"
+      @back="$emit('back')"
+      @edit="$emit('edit')"
     />
   </div>
 </template>
 
 <script setup lang="ts">
 import SubscribeFormPanel from './VacancySubscribeFormPanel.vue'
+import type { SubscribeVerification } from '~/utils/subscription-verification'
 
 defineProps<{
   headingId: string
@@ -105,6 +111,7 @@ defineProps<{
   submitted: boolean
   submittedEmail: string
   submittedOfo: string
+  verification: SubscribeVerification
   validate: (state: {
     name: string
     email: string
@@ -123,5 +130,9 @@ defineProps<{
 defineEmits<{
   submit: []
   reset: []
+  confirm: [code: string]
+  resend: []
+  back: []
+  edit: []
 }>()
 </script>

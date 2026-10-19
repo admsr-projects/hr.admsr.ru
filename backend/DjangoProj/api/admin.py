@@ -195,13 +195,13 @@ class WorkPartnerAdmin(admin.ModelAdmin):
 
 
 class VacancySubscriptionAdmin(admin.ModelAdmin):
-    list_display = ['name', 'email', 'branch_display', 'has_resume', 'is_active', 'created_at']
-    list_filter = ['is_active', 'created_at']
+    list_display = ['name', 'email', 'branch_display', 'has_resume', 'email_verified', 'is_active', 'created_at']
+    list_filter = ['is_active', 'email_verified', 'created_at']
     search_fields = ['name', 'email', 'branch', 'desired_position']
     list_editable = ['is_active']
     readonly_fields = ['created_at']
     fields = [
-        'name', 'email', 'branch', 'is_active', 'created_at',
+        'name', 'email', 'branch', 'is_active', 'email_verified', 'created_at',
         'resume', 'phone', 'desired_position', 'education', 'work_experience', 'about',
     ]
 

@@ -574,6 +574,13 @@ class VacancySubscription(models.Model):
     is_active = models.BooleanField('Активна', default=True)
     created_at = models.DateTimeField('Дата подписки', auto_now_add=True)
 
+    # Подтверждение email: подписка включается только после ввода кода из письма
+    email_verified = models.BooleanField('Email подтверждён', default=False)
+    code_hash = models.CharField('Хэш кода подтверждения', max_length=64, blank=True, editable=False)
+    code_sent_at = models.DateTimeField('Код отправлен', null=True, blank=True, editable=False)
+    code_attempts = models.PositiveSmallIntegerField('Неверных попыток ввода кода', default=0, editable=False)
+    code_sends = models.PositiveSmallIntegerField('Отправлено кодов', default=0, editable=False)
+
     # Резюме (необязательно): файлом или заполненное в электронной форме
     resume = models.FileField('Файл резюме', upload_to='subscription_resumes/', blank=True, null=True)
     phone = models.CharField('Телефон', max_length=30, blank=True)

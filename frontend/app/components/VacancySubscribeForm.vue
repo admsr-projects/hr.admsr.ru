@@ -17,8 +17,13 @@
           :submitted-email="submittedEmail"
           :submitted-ofo="submittedOfo"
           :validate="validate"
+          :verification="verification"
           @submit="onSubmit"
           @reset="resetForm"
+          @confirm="onConfirm"
+          @resend="onResend"
+          @back="backToForm"
+          @edit="verification.error = ''"
         />
       </article>
     </UContainer>
@@ -36,8 +41,13 @@
         :submitted-email="submittedEmail"
         :submitted-ofo="submittedOfo"
         :validate="validate"
+        :verification="verification"
         @submit="onSubmit"
         @reset="resetForm"
+        @confirm="onConfirm"
+        @resend="onResend"
+        @back="backToForm"
+        @edit="verification.error = ''"
       />
     </article>
 
@@ -62,8 +72,13 @@
           :submitted-email="submittedEmail"
           :submitted-ofo="submittedOfo"
           :validate="validate"
+          :verification="verification"
           @submit="onSubmit"
           @reset="resetForm"
+          @confirm="onConfirm"
+          @resend="onResend"
+          @back="backToForm"
+          @edit="verification.error = ''"
         />
       </div>
     </div>
@@ -74,6 +89,7 @@
 import PromoCardContent from './VacancySubscribePromoCard.vue'
 import SubscribeFormPanel from './VacancySubscribeFormPanel.vue'
 import { ofoAnyValue, ofoApiBranch, ofoLabel, ofoList } from '~/data/ofo-list'
+import type { SubscribeVerification } from '~/utils/subscription-verification'
 
 const props = defineProps({
   initialBranch: {
@@ -108,6 +124,43 @@ const loading = ref(false)
 const submitted = ref(false)
 const submittedEmail = ref('')
 const submittedOfo = ref('')
+
+// Подписка включается после ввода кода из письма: шаг 1 — форма, шаг 2 — код
+const pendingId = ref<number | null>(null)
+const verification = reactive<SubscribeVerification>({
+  active: false,
+  email: '',
+  loading: false,
+  resending: false,
+  error: '',
+  resendIn: 0,
+})
+
+let resendTimer: ReturnType<typeof setInterval> | undefined
+
+function startResendCountdown(seconds: number) {
+  verification.resendIn = Math.max(0, Math.ceil(seconds))
+  clearInterval(resendTimer)
+  if (!verification.resendIn) return
+  resendTimer = setInterval(() => {
+    verification.resendIn -= 1
+    if (verification.resendIn <= 0) clearInterval(resendTimer)
+  }, 1000)
+}
+
+onBeforeUnmount(() => clearInterval(resendTimer))
+
+interface ApiErrorData {
+  detail?: string
+  reason?: string
+  resend_after?: number
+  email?: string[]
+}
+
+function apiError(error: unknown): { status: number, data: ApiErrorData } {
+  const { status, statusCode, data } = (error ?? {}) as { status?: number, statusCode?: number, data?: ApiErrorData }
+  return { status: status ?? statusCode ?? 0, data: data ?? {} }
+}
 
 const highlights = [
   {
@@ -195,7 +248,17 @@ function resetForm() {
   submitted.value = false
   submittedEmail.value = ''
   submittedOfo.value = ''
+  verification.active = false
+  pendingId.value = null
   clearFields()
+}
+
+// «Изменить email»: вернуться к форме, введённые данные сохраняются
+function backToForm() {
+  clearInterval(resendTimer)
+  verification.active = false
+  verification.error = ''
+  verification.resendIn = 0
 }
 
 async function onSubmit() {
@@ -217,14 +280,51 @@ async function onSubmit() {
       body.append('about', form.about.trim())
     }
 
-    await $fetch(`${config.public.apiBaseUrl}/api/vacancy-subscribe/`, {
+    const response = await $fetch<{ id: number, email: string, resend_after: number }>(
+      `${config.public.apiBaseUrl}/api/vacancy-subscribe/`,
+      { method: 'POST', body },
+    )
+
+    pendingId.value = response.id
+    verification.email = response.email
+    verification.error = ''
+    verification.active = true
+    startResendCountdown(response.resend_after)
+
+    toast.add({
+      title: 'Код отправлен',
+      description: `Проверьте почту ${response.email} и введите код из письма.`,
+      color: 'success',
+    })
+  } catch (error) {
+    const { status, data } = apiError(error)
+    toast.add({
+      title: 'Не удалось оформить подписку',
+      description: data.email?.[0] ?? data.detail
+        ?? (status === 400 ? 'Проверьте данные и попробуйте снова' : 'Попробуйте ещё раз позже'),
+      color: 'error',
+    })
+  } finally {
+    loading.value = false
+  }
+}
+
+async function onConfirm(code: string) {
+  if (!pendingId.value || verification.loading) return
+  verification.loading = true
+  verification.error = ''
+  try {
+    await $fetch(`${config.public.apiBaseUrl}/api/vacancy-subscribe/confirm/`, {
       method: 'POST',
-      body,
+      body: { id: pendingId.value, code },
     })
 
-    submittedEmail.value = form.email.trim()
+    submittedEmail.value = verification.email
     submittedOfo.value = ofoLabel(form.branch)
     submitted.value = true
+    verification.active = false
+    pendingId.value = null
+    clearInterval(resendTimer)
 
     toast.add({
       title: 'Подписка оформлена',
@@ -233,14 +333,43 @@ async function onSubmit() {
     })
 
     clearFields()
-  } catch {
-    toast.add({
-      title: 'Не удалось оформить подписку',
-      description: 'Проверьте данные и попробуйте снова',
-      color: 'error',
-    })
+  } catch (error) {
+    const { status, data } = apiError(error)
+    if (status === 404) {
+      // Заявка удалена (например, устарела) — оформить заново
+      verification.active = false
+      pendingId.value = null
+      toast.add({ title: 'Заявка устарела', description: data.detail ?? 'Оформите подписку заново.', color: 'error' })
+    }
+    else {
+      verification.error = data.detail ?? 'Не удалось проверить код. Попробуйте ещё раз.'
+    }
   } finally {
-    loading.value = false
+    verification.loading = false
+  }
+}
+
+async function onResend() {
+  if (!pendingId.value || verification.resending || verification.resendIn > 0) return
+  verification.resending = true
+  verification.error = ''
+  try {
+    const response = await $fetch<{ email: string, resend_after: number }>(
+      `${config.public.apiBaseUrl}/api/vacancy-subscribe/resend/`,
+      { method: 'POST', body: { id: pendingId.value } },
+    )
+    startResendCountdown(response.resend_after)
+    toast.add({ title: 'Новый код отправлен', description: `Проверьте почту ${response.email}.`, color: 'success' })
+  } catch (error) {
+    const { status, data } = apiError(error)
+    if (status === 429 && data.resend_after) startResendCountdown(data.resend_after)
+    else if (status === 404) {
+      verification.active = false
+      pendingId.value = null
+    }
+    verification.error = data.detail ?? 'Не удалось отправить код. Попробуйте позже.'
+  } finally {
+    verification.resending = false
   }
 }
 </script>

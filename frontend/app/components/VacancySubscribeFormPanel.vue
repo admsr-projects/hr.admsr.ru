@@ -31,6 +31,15 @@
       />
     </div>
 
+    <VacancySubscribeCodeStep
+      v-else-if="verification?.active"
+      :verification="verification"
+      @confirm="code => $emit('confirm', code)"
+      @resend="$emit('resend')"
+      @back="$emit('back')"
+      @edit="$emit('edit')"
+    />
+
     <UForm
       v-else
       :state="form"
@@ -223,6 +232,7 @@
 
 <script setup lang="ts">
 import { ofoAnyLabel, ofoOptions } from '~/data/ofo-list'
+import type { SubscribeVerification } from '~/utils/subscription-verification'
 
 interface SubscribeForm {
   name: string
@@ -251,9 +261,11 @@ const props = withDefaults(defineProps<{
   submittedEmail: string
   submittedOfo: string
   validate: (state: SubscribeForm) => { name: string, message: string }[]
+  verification?: SubscribeVerification
   plain?: boolean
   accent?: boolean
 }>(), {
+  verification: undefined,
   plain: false,
   accent: false,
 })
@@ -261,6 +273,10 @@ const props = withDefaults(defineProps<{
 defineEmits<{
   submit: []
   reset: []
+  confirm: [code: string]
+  resend: []
+  back: []
+  edit: []
 }>()
 
 const submittedOfoHint = computed(() =>
