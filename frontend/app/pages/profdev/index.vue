@@ -4,8 +4,6 @@ import type { TrainingEvent } from '~/components/TrainingEventsList.vue'
 
 useHead({ title: 'Профессиональное развитие' })
 
-const kiosk = useKiosk()
-
 const route = useRoute()
 const router = useRouter()
 const config = useRuntimeConfig()
@@ -98,7 +96,7 @@ function sectionMetaForTab(tab: ProfdevTab) {
 <template>
   <DsStandardPage
     title="Профессиональное развитие"
-    description="Раздел для действующих сотрудников администрации Сургутского района: расписание обучающих программ, встреч с руководством, мастер-классов и лучших практик, а также форма предложений по организации обучения."
+    description="Раздел для действующих сотрудников администрации Сургутского района: расписание обучающих программ, встреч с руководством, мастер-классов и лучших практик, а также справочные материалы об обучении муниципальных служащих."
   >
     <UTabs
       v-model="activeTab"
@@ -110,26 +108,6 @@ function sectionMetaForTab(tab: ProfdevTab) {
     >
       <template #content="{ item }">
         <div class="mt-6 space-y-10 lg:space-y-12">
-          <!-- Презентация — отдельная страница из public/presentations; в ней есть калькулятор, поэтому в киоске не показываем -->
-          <DsCalloutPanel
-            v-if="!kiosk && item.value === 'training'"
-            color="primary"
-            icon="i-lucide-presentation"
-            title="Обучение муниципальных служащих"
-            description="Справочная презентация отдела развития и мотивации персонала: виды программ, как попасть в план обучения, ученический договор и калькулятор срока отработки, ответы на частые вопросы, правовые акты и контакты."
-          >
-            <template #actions>
-              <UButton
-                label="Открыть презентацию"
-                trailing-icon="i-lucide-arrow-up-right"
-                to="/presentations/training.html"
-                target="_blank"
-                external
-                color="primary"
-              />
-            </template>
-          </DsCalloutPanel>
-
           <DsContentSection
             :title="sectionMetaForTab(item.value as ProfdevTab).title"
             :description="sectionMetaForTab(item.value as ProfdevTab).description"
@@ -152,14 +130,20 @@ function sectionMetaForTab(tab: ProfdevTab) {
           </DsContentSection>
 
           <DsContentSection
-            v-if="!kiosk && activeTab === item.value"
-            title="Предложения по организации обучения"
-            description="Поделитесь идеями по темам, форматам и расписанию мероприятий. Форма не предназначена для подачи официальных обращений."
-            overline="Обратная связь"
-            heading-id="profdev-feedback"
+            v-if="activeTab === item.value"
+            title="Справочные материалы"
+            description="Условия обучения, ученический договор и срок отработки — со ссылками на пункты правовых актов."
+            heading-id="profdev-materials"
             spacing="lg"
           >
-            <TrainingFeedbackForm />
+            <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              <DsLinkCard
+                title="Обучение муниципальных служащих"
+                description="На что вы имеете право, как попасть в план обучения, ученический договор и срок отработки, ответы на частые вопросы, правовые акты и контакты."
+                icon="i-lucide-graduation-cap"
+                to="/profdev/training"
+              />
+            </div>
           </DsContentSection>
         </div>
       </template>

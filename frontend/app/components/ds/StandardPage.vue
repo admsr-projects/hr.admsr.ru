@@ -56,6 +56,7 @@
 import type { BreadcrumbItem } from '~/data/breadcrumbs'
 import {
   EDUCATION_PATH,
+  PROFDEV_PATH,
   type SidebarItem,
   resolveSectionMenu,
   resolveStandardSection,
@@ -113,6 +114,12 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => {
     items.push({ label: 'Нет коррупции!', to: '/anti-corruption' })
     if (route.path !== EDUCATION_PATH) items.push({ label: 'Антикоррупционное просвещение', to: EDUCATION_PATH })
     items.push({ label: props.title })
+    return items
+  }
+
+  // Раздел «Профразвитие» вложен в «Карьеру»
+  if (route.path.startsWith(`${PROFDEV_PATH}/`)) {
+    items.push({ label: 'Карьера', to: '/vacancies' }, { label: 'Профессиональное развитие', to: PROFDEV_PATH }, { label: props.title })
     return items
   }
 

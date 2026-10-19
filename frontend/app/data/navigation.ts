@@ -20,6 +20,7 @@ export const navIcons: Record<string, string> = {
   '/staffreserve': 'i-lucide-users',
   '/youth': 'i-lucide-graduation-cap',
   '/profdev': 'i-lucide-book-open',
+  '/profdev/training': 'i-lucide-graduation-cap',
   '/anti-corruption': 'i-lucide-shield-alert',
   '/anti-corruption/education': 'i-lucide-book-marked',
   '/anti-corruption/education/positions': 'i-lucide-scale',
@@ -113,10 +114,20 @@ export const educationNavItems: NavItem[] = [
   },
 ]
 
+/** Меню раздела «Профразвитие» (боковая панель его вложенных страниц) */
+export const profdevNavItems: NavItem[] = [
+  {
+    label: 'Обучение муниципальных служащих',
+    to: '/profdev/training',
+    description: 'Право на обучение, ученический договор, срок отработки',
+  },
+]
+
 /** Плоский список для футера и поиска */
 export const mainNavItems: NavItem[] = [
   { label: 'Главная', to: '/' },
   ...navGroups.slice(0, 2).flatMap(group => group.items),
+  { label: 'Обучение муниципальных служащих', to: '/profdev/training' },
   { label: 'Нет коррупции!', to: '/anti-corruption' },
   { label: 'Антикоррупционное просвещение', to: '/anti-corruption/education' },
   { label: '27 правовых позиций по антикоррупционным делам', to: '/anti-corruption/education/positions' },
