@@ -91,14 +91,22 @@
             {{ activeItem.content }}
           </p>
 
-          <div class="flex flex-col gap-4 rounded-xl bg-elevated p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
-            <div class="flex flex-col gap-1">
-              <p class="font-semibold text-text-primary">
-                Не нашли нужного ответа?
-              </p>
-              <p class="text-sm leading-6 text-muted text-pretty">
-                Отдел кадров подскажет, какие документы нужны именно вам.
-              </p>
+          <!-- Баннер: тон основного цвета, чтобы не сливаться с панелью (bg-elevated) вокруг; прижат к низу панели -->
+          <div class="mt-auto flex flex-col gap-4 rounded-xl bg-primary/10 p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+            <div class="flex items-start gap-3">
+              <UIcon
+                name="i-lucide-message-circle-question"
+                class="mt-0.5 size-6 shrink-0 text-primary"
+                aria-hidden="true"
+              />
+              <div class="flex flex-col gap-1">
+                <p class="font-semibold text-text-primary">
+                  Не нашли нужного ответа?
+                </p>
+                <p class="text-sm leading-6 text-text-muted text-pretty">
+                  Отдел кадров подскажет, какие документы нужны именно вам.
+                </p>
+              </div>
             </div>
             <div class="flex shrink-0 flex-col gap-2 sm:flex-row">
               <UButton
