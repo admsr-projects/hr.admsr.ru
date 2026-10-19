@@ -80,6 +80,7 @@ export interface StaffContact {
   phone?: string
   email?: string
   cabinet_number?: string
+  branch?: number | null
   branch_name?: string
   branch_address?: string
   is_management_head?: boolean

@@ -18,9 +18,10 @@
     <section
       v-for="group in groupedStaff"
       v-else
+      :id="group.anchor"
       :key="group.branchId"
       :aria-labelledby="`branch-${group.branchId}`"
-      class="rounded-xl bg-elevated"
+      class="scroll-mt-24 rounded-xl bg-elevated"
     >
       <header class="px-6 py-4">
         <h3
@@ -59,12 +60,15 @@ import type { StaffContact } from '~/components/ContactMemberCard.vue'
 
 interface StaffGroup {
   branchId: string
+  /** Якорь отдела для ссылок извне, например /contacts#otdel-3 (номер отдела в админке) */
+  anchor?: string
   branchName: string
   branchAddress: string
   members: StaffContact[]
 }
 
 const config = useRuntimeConfig()
+const route = useRoute()
 
 const { data: allStaff, pending } = await useAsyncData('contacts-staff', () =>
   $fetch<StaffContact[]>(`${config.public.apiBaseUrl}/api/staff/?contacts=true`), {
@@ -80,6 +84,7 @@ const groupedStaff = computed<StaffGroup[]>(() => {
     if (!groups[key]) {
       groups[key] = {
         branchId: key,
+        anchor: member.branch ? `otdel-${member.branch}` : undefined,
         branchName: member.branch_name || 'Без отдела',
         branchAddress: member.branch_address || '',
         members: [],
@@ -90,6 +95,13 @@ const groupedStaff = computed<StaffGroup[]>(() => {
 
   return Object.values(groups)
 })
+
+// Список приходит после открытия страницы, поэтому к отделу из ссылки вида #otdel-3 прокручиваем сами
+watch([groupedStaff, () => route.hash], async ([groups, hash]) => {
+  if (!import.meta.client || !hash.startsWith('#otdel-') || !groups.length) return
+  await nextTick()
+  document.getElementById(hash.slice(1))?.scrollIntoView({ block: 'start' })
+}, { immediate: true })
 
 function isPinnedHead(member: StaffContact) {
   return member.is_management_head === true

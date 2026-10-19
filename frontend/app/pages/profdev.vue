@@ -110,6 +110,26 @@ function sectionMetaForTab(tab: ProfdevTab) {
     >
       <template #content="{ item }">
         <div class="mt-6 space-y-10 lg:space-y-12">
+          <!-- Презентация — отдельная страница из public/presentations; в ней есть калькулятор, поэтому в киоске не показываем -->
+          <DsCalloutPanel
+            v-if="!kiosk && item.value === 'training'"
+            color="primary"
+            icon="i-lucide-presentation"
+            title="Обучение муниципальных служащих"
+            description="Справочная презентация отдела развития и мотивации персонала: виды программ, как попасть в план обучения, ученический договор и калькулятор срока отработки, ответы на частые вопросы, правовые акты и контакты."
+          >
+            <template #actions>
+              <UButton
+                label="Открыть презентацию"
+                trailing-icon="i-lucide-arrow-up-right"
+                to="/presentations/training.html"
+                target="_blank"
+                external
+                color="primary"
+              />
+            </template>
+          </DsCalloutPanel>
+
           <DsContentSection
             :title="sectionMetaForTab(item.value as ProfdevTab).title"
             :description="sectionMetaForTab(item.value as ProfdevTab).description"

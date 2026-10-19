@@ -1,0 +1,1207 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Обучение муниципальных служащих</title>
+<meta name="description" content="Справочный дашборд о дополнительном профессиональном образовании муниципальных служащих администрации Сургутского района">
+<style>
+/* Раскладка: кадровый портал — меню раздела слева (282px), справа шапка и панели; SOFT: тон вместо рамок.
+   Размеры, скругления, отступы — DESIGN-RULES.md (§2–§5). Цвета, градиент 135°, ромб, подчёркивание,
+   подача чисел — брендбук «Единый визуальный язык района», ред. 2025–2026. */
+:root{
+  --bg-default:#FFFFFF;
+  --bg-elevated:#EEF1F4;   /* бренд: светлый фон */
+  --bg-accented:#E4E7ED;   /* бренд: линии */
+  --bg-raised:#FFFFFF;
+  --text-primary:#1B1A40;
+  --text-muted:#5B6472;    /* бренд: сталь */
+  --primary:#2C238B;
+  --on-primary:#FFFFFF;
+  --primary-soft:#E4E3F5;
+  --bar-muted:#C9C6EA;
+  --border-default:#E4E7ED;
+  --success-bg:#E6F6EE; --success-fg:#11663F;   /* бренд: мятный */
+  --warning-bg:#FCF0DA; --warning-fg:#7D4A00;
+  --error-bg:#FBE6E8;   --error-fg:#A3142A;
+  --info-bg:#DFE6F5;    --info-fg:#2C238B;     /* бренд: голубой */
+  --focus:#2C238B;
+  /* бренд-константы: одинаковы в обеих темах */
+  --brand-indigo:#2C238B; --brand-graphite:#1B1A40; --brand-teal:#347D88; --brand-green:#50C891;
+  --brand-blue:#32568A; --brand-red:#D7263D;
+  --brand-gradient:linear-gradient(135deg,#2C238B 0%,#347D88 64%,#50C891 100%);
+  --brand-rule:linear-gradient(90deg,#2C238B,#347D88 64%,#50C891);
+  --cover-bg:var(--brand-gradient); --cover-fg:#FFFFFF; --cover-chip:rgba(255,255,255,.16);
+  --unit:#2D6E78;          /* единица в крупной цифре — бирюзовый бренда, затемнён до 4.5:1 на светлом фоне */
+  --data-accent:#347D88;   /* акцент данных */
+  --mark-good:#50C891; --mark-bad:#D7263D;
+  --font: "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --fs-h1:2.25rem; --lh-h1:2.5rem;
+  --fs-h2:1.25rem; --lh-h2:1.75rem;
+  --fs-h3:1.125rem; --lh-h3:1.75rem;
+  --fs-body:1rem; --lh-body:1.5rem;
+  --fs-cap:.875rem; --lh-cap:1.25rem;
+  --fs-xs:.75rem; --lh-xs:1rem;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg-default:#121320; --bg-elevated:#1C1D2E; --bg-accented:#272840; --bg-raised:#181928;
+    --text-primary:#ECECF5; --text-muted:#A6ABBB;
+    --primary:#B4AEFA; --on-primary:#15142E; --primary-soft:#2A2850; --bar-muted:#3D3A6E;
+    --border-default:#2F3047;
+    --success-bg:#12301F; --success-fg:#7EDDAB;
+    --warning-bg:#33270F; --warning-fg:#F0C574;
+    --error-bg:#3A141B;   --error-fg:#FF97A3;
+    --info-bg:#232650;    --info-fg:#C3BFFF;
+    --unit:#6FC3CD; --data-accent:#5FB8C2;
+    --cover-bg:linear-gradient(135deg,#1B1A40 0%,#2C238B 38%,#347D88 78%,#50C891 100%);
+    --focus:#B4AEFA;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg-default:#121320; --bg-elevated:#1C1D2E; --bg-accented:#272840; --bg-raised:#181928;
+  --text-primary:#ECECF5; --text-muted:#A6ABBB;
+  --primary:#B4AEFA; --on-primary:#15142E; --primary-soft:#2A2850; --bar-muted:#3D3A6E;
+  --border-default:#2F3047;
+  --success-bg:#12301F; --success-fg:#7EDDAB;
+  --warning-bg:#33270F; --warning-fg:#F0C574;
+  --error-bg:#3A141B;   --error-fg:#FF97A3;
+  --info-bg:#232650;    --info-fg:#C3BFFF;
+  --unit:#6FC3CD; --data-accent:#5FB8C2;
+  --cover-bg:linear-gradient(135deg,#1B1A40 0%,#2C238B 38%,#347D88 78%,#50C891 100%);
+  --focus:#B4AEFA;
+  color-scheme: dark;
+}
+/* Версия для слабовидящих: чёрное на белом, крупный кегль, подчёркнутые ссылки */
+:root[data-a11y="on"]{
+  --bg-default:#FFFFFF; --bg-elevated:#FFFFFF; --bg-accented:#F0F0F0; --bg-raised:#FFFFFF;
+  --text-primary:#000000; --text-muted:#000000;
+  --primary:#1A1466; --on-primary:#FFFFFF; --primary-soft:#FFFFFF; --bar-muted:#8C8C8C;
+  --border-default:#000000;
+  --success-bg:#FFFFFF; --success-fg:#000000;
+  --warning-bg:#FFFFFF; --warning-fg:#000000;
+  --error-bg:#FFFFFF; --error-fg:#000000;
+  --info-bg:#FFFFFF; --info-fg:#000000;
+  --focus:#000000;
+  --cover-bg:#FFFFFF; --cover-fg:#000000; --cover-chip:#FFFFFF;
+  --unit:#000000; --data-accent:#000000; --mark-good:#000000; --mark-bad:#8C8C8C;
+  color-scheme: light;
+}
+:root[data-a11y="on"] .panel, :root[data-a11y="on"] .tile, :root[data-a11y="on"] .badge,
+:root[data-a11y="on"] .alert, :root[data-a11y="on"] details{ outline:2px solid #000; outline-offset:-2px }
+:root[data-a11y="on"] a{ text-decoration:underline }
+html{ font-size:100% }
+html[data-scale="125"]{ font-size:125% }
+html[data-scale="150"]{ font-size:150% }
+
+*{ box-sizing:border-box }
+body{ margin:0; background:var(--bg-default); color:var(--text-primary); font-family:var(--font);
+  font-size:var(--fs-body); line-height:var(--lh-body); -webkit-font-smoothing:antialiased }
+h1,h2,h3,h4,p,ul,ol,dl{ margin:0 }
+h1,h2,h3{ text-wrap:balance }
+a{ color:var(--primary); text-underline-offset:.2em }
+p a, li a, .prose a{ text-decoration:underline }
+:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; border-radius:.375rem }
+.sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0 }
+.skip{ position:absolute; left:1rem; top:-3rem; background:var(--primary); color:var(--on-primary); padding:.5rem 1rem; border-radius:999px; z-index:50 }
+.skip:focus{ top:.75rem }
+.num{ font-variant-numeric:tabular-nums }
+.muted{ color:var(--text-muted) }
+.cap{ font-size:var(--fs-cap); line-height:var(--lh-cap) }
+.xs{ font-size:var(--fs-xs); line-height:var(--lh-xs); font-weight:500 }
+svg.i{ width:1.25rem; height:1.25rem; flex:none; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round }
+svg.i.s4{ width:1rem; height:1rem }
+svg.i.s6{ width:1.5rem; height:1.5rem }
+
+/* Контейнер */
+.wrap{ max-width:90rem; margin:0 auto; padding-inline:1rem; padding-block:0 }
+@media (min-width:40rem){ .wrap{ padding-inline:1.5rem } }
+@media (min-width:64rem){ .wrap{ padding-inline:2rem } }
+
+/* Шапка портала */
+.topbar{ border-bottom:1px solid var(--border-default) }
+.topbar .wrap{ display:flex; align-items:center; justify-content:space-between; gap:1rem; padding-block:.75rem; flex-wrap:wrap }
+.brand{ display:flex; align-items:center; gap:.75rem; min-width:0 }
+.brand-mark{ width:2rem; height:2rem; border-radius:999px; background:var(--primary); color:var(--on-primary); display:grid; place-items:center; flex:none }
+.brand b{ display:block; font-size:var(--fs-cap); line-height:var(--lh-cap); font-weight:600 }
+.brand span{ display:block; font-size:var(--fs-xs); line-height:var(--lh-xs); color:var(--text-muted); font-weight:500 }
+.tools{ display:flex; gap:.5rem; flex-wrap:wrap }
+
+/* Кнопки — круглые, soft; одна solid на блок */
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:.375rem; min-height:2.25rem; padding:.375rem .875rem;
+  border-radius:999px; border:0; font:inherit; font-size:var(--fs-cap); line-height:var(--lh-cap); font-weight:500; cursor:pointer;
+  background:var(--bg-elevated); color:var(--text-primary); text-decoration:none; transition:background-color .15s }
+.btn:hover{ background:var(--bg-accented) }
+.btn[aria-pressed="true"]{ background:var(--primary-soft); color:var(--primary) }
+.btn.solid{ background:var(--primary); color:var(--on-primary) }
+.btn.solid:hover{ filter:brightness(1.1) }
+.btn.link{ background:none; padding-inline:0; color:var(--primary); min-height:auto }
+.a11y-bar{ background:var(--bg-elevated) }
+.a11y-bar .wrap{ display:flex; gap:.5rem 1rem; align-items:center; flex-wrap:wrap; padding-block:.75rem }
+
+/* Шапка страницы */
+.head{ padding-block:1.5rem 1.5rem; display:grid; gap:1rem }
+.crumbs{ display:flex; flex-wrap:wrap; gap:.25rem .5rem; font-size:var(--fs-xs); line-height:var(--lh-xs); font-weight:500; color:var(--text-muted); list-style:none; padding:0 }
+.crumbs li+li::before{ content:"/"; margin-right:.5rem }
+.crumbs a{ color:inherit }
+h1{ font-size:1.75rem; line-height:2rem; font-weight:700 }
+@media (min-width:40rem){ h1{ font-size:var(--fs-h1); line-height:var(--lh-h1) } }
+.lead{ max-width:46rem; color:var(--text-muted) }
+.badges{ display:flex; flex-wrap:wrap; gap:.5rem }
+.badge{ display:inline-flex; align-items:center; gap:.375rem; padding:.125rem .625rem; border-radius:999px; font-size:var(--fs-xs); line-height:var(--lh-xs); font-weight:500;
+  background:var(--info-bg); color:var(--info-fg); min-height:1.5rem }
+.badge.success{ background:var(--success-bg); color:var(--success-fg) }
+.badge.warning{ background:var(--warning-bg); color:var(--warning-fg) }
+.badge.error{ background:var(--error-bg); color:var(--error-fg) }
+.badge.neutral{ background:var(--bg-accented); color:var(--text-primary) }
+
+/* Каркас: меню раздела + контент */
+.layout{ display:grid; grid-template-columns:minmax(0,1fr); gap:1.5rem; padding-bottom:3rem }
+.sidenav{ min-width:0; position:sticky; top:env(safe-area-inset-top,0px); z-index:5; background:var(--bg-default); margin-inline:-1rem; padding-inline:1rem; padding-block:.5rem; border-bottom:1px solid var(--border-default) }
+.sidenav ul{ list-style:none; padding:0; display:flex; gap:.25rem; overflow-x:auto; scrollbar-width:thin }
+.sidenav a{ display:block; white-space:nowrap; padding:.375rem .75rem; border-radius:.375rem; color:var(--text-muted); text-decoration:none; font-size:var(--fs-cap); line-height:var(--lh-cap); font-weight:500; transition:background-color .15s }
+.sidenav a:hover{ background:var(--bg-elevated); color:var(--text-primary) }
+.sidenav a[aria-current="true"]{ color:var(--primary); background:var(--primary-soft) }
+.sidenav .nav-title{ display:none }
+@media (min-width:64rem){
+  .layout{ grid-template-columns:17.625rem minmax(0,1fr) }
+  .sidenav{ margin:0; padding:0; border:0; top:1rem; align-self:start }
+  .sidenav .nav-title{ display:block; font-size:var(--fs-xs); line-height:var(--lh-xs); font-weight:500; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; padding:0 0 .75rem .875rem }
+  .sidenav ul{ flex-direction:column; gap:0; overflow:visible; border-left:1px solid var(--border-default) }
+  .sidenav a{ border-radius:0 .375rem .375rem 0; margin-left:-1px; border-left:2px solid transparent; padding:.5rem .875rem; white-space:normal }
+  .sidenav a[aria-current="true"]{ border-left-color:var(--primary) }
+}
+.content{ display:grid; gap:2.5rem; min-width:0 }
+section{ scroll-margin-top:4.5rem; display:grid; gap:1rem; min-width:0 }
+
+/* Заголовок раздела с подсказкой */
+.sh{ display:flex; align-items:center; gap:.5rem; flex-wrap:wrap }
+.sh h2{ font-size:var(--fs-h2); line-height:var(--lh-h2); font-weight:700 }
+.sh .tag{ font-size:var(--fs-xs); line-height:var(--lh-xs); font-weight:500; color:var(--text-muted) }
+.tip{ position:relative; display:inline-flex }
+.tip > button{ display:inline-grid; place-items:center; width:1.75rem; height:1.75rem; border:0; border-radius:999px; background:none; color:var(--text-muted); cursor:help }
+.tip > button:hover{ background:var(--bg-elevated); color:var(--text-primary) }
+.tip [role="tooltip"]{ position:absolute; left:50%; top:calc(100% + .375rem); transform:translateX(-50%); width:max-content; max-width:min(20rem,80vw);
+  background:var(--text-primary); color:var(--bg-default); padding:.5rem .75rem; border-radius:.5rem; font-size:var(--fs-cap); line-height:var(--lh-cap); font-weight:400;
+  box-shadow:0 8px 24px rgba(0,0,0,.18); z-index:20; display:none }
+.tip:hover [role="tooltip"], .tip:focus-within [role="tooltip"]{ display:block }
+
+/* Поверхности */
+.panel{ background:var(--bg-elevated); border-radius:.75rem; padding:1.5rem; display:grid; gap:1rem; align-content:start; min-width:0 }
+.panel h3{ font-size:var(--fs-h3); line-height:var(--lh-h3); font-weight:500 }
+.panel-head{ display:flex; gap:.75rem; align-items:flex-start }
+.panel-head .ic{ width:2.5rem; height:2.5rem; border-radius:999px; background:var(--bg-default); color:var(--primary); display:grid; place-items:center; flex:none }
+.tile{ background:var(--bg-default); border-radius:.5rem; padding:1rem; min-width:0 }
+.grid{ display:grid; gap:1rem }
+@media (min-width:40rem){ .g2{ grid-template-columns:repeat(2,minmax(0,1fr)) } }
+@media (min-width:64rem){ .g3{ grid-template-columns:repeat(3,minmax(0,1fr)) } }
+@media (min-width:40rem){ .g4{ grid-template-columns:repeat(2,minmax(0,1fr)) } }
+@media (min-width:80rem){ .g4{ grid-template-columns:repeat(4,minmax(0,1fr)) } }
+.basis{ display:inline-flex; align-items:center; gap:.375rem; font-size:var(--fs-xs); line-height:var(--lh-xs); font-weight:500; color:var(--text-muted) }
+.basis svg{ width:.875rem; height:.875rem }
+.quote{ border-left:2px solid var(--primary); padding-left:1rem; font-size:var(--fs-body) }
+.list{ display:grid; gap:.5rem; padding:0; list-style:none }
+.list li{ display:flex; gap:.5rem; align-items:flex-start }
+.list li::before{ content:""; flex:none; width:.375rem; height:.375rem; border-radius:999px; background:var(--primary); margin-top:.5625rem }
+.list.cap li::before{ margin-top:.4375rem }
+.alert{ display:flex; gap:.75rem; align-items:flex-start; padding:1rem; border-radius:.75rem; background:var(--info-bg); color:var(--info-fg); font-size:var(--fs-cap); line-height:var(--lh-cap) }
+.alert.warning{ background:var(--warning-bg); color:var(--warning-fg) }
+.alert.success{ background:var(--success-bg); color:var(--success-fg) }
+.alert p + p{ margin-top:.25rem }
+.ask{ color:var(--warning-fg); background:var(--warning-bg); padding:.0625rem .5rem; border-radius:999px; font-size:var(--fs-cap); line-height:var(--lh-cap); font-weight:500; display:inline-block }
+
+/* KPI */
+.kpi{ display:grid; gap:.25rem; align-content:start }
+.kpi .label{ font-size:var(--fs-cap); line-height:var(--lh-cap); color:var(--text-muted); font-weight:500 }
+.kpi .val{ font-size:var(--fs-h2); line-height:var(--lh-h2); font-weight:700; font-variant-numeric:tabular-nums }
+.kpi .sub{ font-size:var(--fs-cap); line-height:var(--lh-cap) }
+.kpi .basis{ margin-top:.5rem }
+
+/* Процесс */
+.steps{ list-style:none; padding:0; display:grid; gap:.75rem; counter-reset:st }
+@media (min-width:48rem){ .steps{ grid-template-columns:repeat(2,minmax(0,1fr)) } }
+@media (min-width:80rem){ .steps{ grid-template-columns:repeat(4,minmax(0,1fr)) } }
+.step{ counter-increment:st; background:var(--bg-default); border-radius:.5rem; padding:1rem; display:grid; gap:.375rem; align-content:start }
+.step-top{ display:flex; align-items:center; gap:.5rem; justify-content:space-between }
+.step-n{ width:1.75rem; height:1.75rem; border-radius:999px; background:var(--primary-soft); color:var(--primary); display:grid; place-items:center; font-size:var(--fs-cap); font-weight:600; flex:none }
+.step-n::before{ content:counter(st) }
+.step b{ font-weight:600 }
+
+/* Таблица */
+.tbl-wrap{ overflow-x:auto; border-radius:.5rem; background:var(--bg-default) }
+table{ border-collapse:collapse; width:100%; font-size:var(--fs-cap); line-height:var(--lh-cap) }
+th,td{ text-align:left; padding:.625rem 1rem; border-bottom:1px solid var(--border-default); vertical-align:top }
+th{ font-weight:500; color:var(--text-muted) }
+td.r, th.r{ text-align:right }
+tr:last-child td{ border-bottom:0 }
+tr.on td{ background:var(--primary-soft); color:var(--text-primary); font-weight:600 }
+
+/* Калькулятор */
+.calc{ display:grid; gap:1rem }
+@media (min-width:64rem){ .calc{ grid-template-columns:minmax(0,5fr) minmax(0,7fr) } }
+.field{ display:grid; gap:.375rem }
+.field label, .field legend, .field .lbl{ font-size:var(--fs-cap); line-height:var(--lh-cap); font-weight:500 }
+.field .hint{ font-size:var(--fs-xs); line-height:var(--lh-xs); color:var(--text-muted); font-weight:500 }
+fieldset{ border:0; padding:0; margin:0 }
+.seg{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.375rem }
+.seg label{ position:relative }
+.seg input{ position:absolute; opacity:0; inset:0; margin:0; cursor:pointer }
+.seg span{ display:inline-flex; align-items:center; min-height:2.25rem; padding:.375rem .875rem; border-radius:999px; background:var(--bg-default); font-size:var(--fs-cap); line-height:var(--lh-cap); font-weight:500; transition:background-color .15s }
+.seg input:checked + span{ background:var(--primary-soft); color:var(--primary) }
+.seg input:focus-visible + span{ outline:2px solid var(--focus); outline-offset:2px }
+.inp{ width:100%; min-height:2.5rem; padding:.5rem .75rem; border:1px solid var(--border-default); border-radius:.5rem; background:var(--bg-default); color:var(--text-primary); font:inherit; font-variant-numeric:tabular-nums }
+:root:not([data-a11y="on"]) .inp{ border-color:color-mix(in srgb, var(--text-muted) 45%, transparent) }
+.inp-wrap{ position:relative }
+.inp-wrap .unit{ position:absolute; right:.75rem; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:var(--fs-cap); pointer-events:none }
+.inp-wrap .inp{ padding-right:2rem }
+input[type="range"]{ width:100%; accent-color:var(--primary); margin:.25rem 0 }
+textarea.inp{ min-height:7rem; resize:vertical }
+.res{ display:grid; gap:1rem; align-content:start }
+.res-kpis{ display:grid; gap:1rem; grid-template-columns:repeat(auto-fit,minmax(11rem,1fr)) }
+.track{ display:flex; height:.75rem; border-radius:999px; overflow:hidden; background:var(--bg-accented); gap:2px }
+.track .w{ background:var(--mark-good) }
+.track .l{ background:var(--mark-bad) }
+.track-legend{ display:flex; flex-wrap:wrap; gap:.25rem 1rem; font-size:var(--fs-xs); line-height:var(--lh-xs); font-weight:500; color:var(--text-muted) }
+.dot{ display:inline-block; width:.5rem; height:.5rem; border-radius:999px; margin-right:.375rem; vertical-align:middle }
+
+/* График шкалы */
+.chart{ position:relative }
+.chart svg{ width:100%; height:auto; display:block; overflow:visible }
+.chart .ax{ fill:var(--text-muted); font-size:12px; font-family:var(--font) }
+.chart .lbl{ fill:var(--text-primary); font-size:13px; font-family:var(--font); font-weight:500 }
+.chart .val{ fill:var(--text-primary); font-size:13px; font-family:var(--font); font-weight:600 }
+.chart .grid line{ stroke:var(--border-default); stroke-width:1 }
+.chart .bar{ fill:var(--bar-muted); transition:fill .15s }
+.chart .bar.on{ fill:var(--data-accent) }
+.chart .hit{ fill:transparent; cursor:default }
+.chart .row:hover .bar{ fill:var(--data-accent); opacity:.85 }
+.ttip{ position:absolute; pointer-events:none; background:var(--text-primary); color:var(--bg-default); padding:.375rem .625rem; border-radius:.5rem; font-size:var(--fs-xs); line-height:var(--lh-xs); font-weight:500; box-shadow:0 8px 24px rgba(0,0,0,.18); white-space:nowrap; z-index:10 }
+
+/* FAQ */
+.faq{ display:grid; gap:.75rem }
+details{ background:var(--bg-elevated); border-radius:.75rem }
+summary{ list-style:none; cursor:pointer; padding:1rem 1.5rem; display:flex; justify-content:space-between; gap:1rem; align-items:center; font-weight:600; border-radius:.75rem; transition:background-color .15s }
+summary::-webkit-details-marker{ display:none }
+summary:hover{ background:var(--bg-accented) }
+summary svg{ transition:transform .2s }
+details[open] summary svg{ transform:rotate(180deg) }
+details .ans{ padding:0 1.5rem 1.5rem; display:grid; gap:.75rem; max-width:52rem }
+
+/* Документы */
+.docs{ display:grid; gap:.75rem }
+.doc{ background:var(--bg-default); border-radius:.5rem; padding:1rem; display:grid; gap:.25rem }
+.doc .t{ font-weight:600 }
+.doc .m{ display:flex; flex-wrap:wrap; gap:.25rem .75rem; align-items:center }
+.contact{ display:grid; gap:.75rem }
+.contact .row{ display:flex; gap:.75rem; align-items:flex-start }
+.contact .row svg{ margin-top:.125rem; color:var(--text-muted) }
+.copybox{ display:flex; gap:.5rem; align-items:center; flex-wrap:wrap }
+.letter{ white-space:pre-wrap; background:var(--bg-default); border-radius:.5rem; padding:1rem; font-size:var(--fs-cap); line-height:var(--lh-cap); user-select:all }
+
+footer{ border-top:1px solid var(--border-default) }
+footer .wrap{ padding-block:1.5rem 2rem; display:grid; gap:.75rem }
+
+/* ===== Брендбук Сургутского района ===== */
+/* Обложка: фирменный градиент 135°, текст только белый, ромбовидный паттерн в углу с затуханием (≤ ⅓ площади) */
+.cover{ position:relative; overflow:hidden; border-radius:.75rem; background:var(--cover-bg); color:var(--cover-fg); padding:1.5rem; display:grid; gap:1rem }
+@media (min-width:40rem){ .cover{ padding:2rem 1.5rem } }
+.cover > *{ position:relative; z-index:1 }
+.cover .lead{ color:var(--cover-fg); opacity:.88 }
+.cover .badge{ background:var(--cover-chip); color:var(--cover-fg) }
+.cover::after{ content:""; position:absolute; z-index:0; top:0; right:0; width:min(33%,22rem); height:100%; pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M20 4 36 20 20 36 4 20Z' fill='none' stroke='%23FFFFFF' stroke-width='1.5'/%3E%3Cpath d='M20 13 27 20 20 27 13 20Z' fill='%23FFFFFF' fill-opacity='.35'/%3E%3C/svg%3E");
+  background-size:2.5rem 2.5rem; opacity:.32;
+  -webkit-mask-image:linear-gradient(225deg,#000 0%,rgba(0,0,0,.45) 45%,transparent 80%); mask-image:linear-gradient(225deg,#000 0%,rgba(0,0,0,.45) 45%,transparent 80%) }
+:root[data-a11y="on"] .cover{ outline:2px solid #000; outline-offset:-2px }
+:root[data-a11y="on"] .cover::after{ display:none }
+/* Надзаголовок — РАЗДЕЛ КАПСОМ */
+.eyebrow{ font-size:var(--fs-xs); line-height:var(--lh-xs); font-weight:600; text-transform:uppercase; letter-spacing:.14em }
+/* Зелёное подчёркивание под ключевыми заголовками */
+.sh{ position:relative; padding-bottom:.625rem }
+.sh::after{ content:""; position:absolute; left:0; bottom:0; width:2rem; height:.1875rem; border-radius:999px; background:var(--brand-green) }
+:root[data-a11y="on"] .sh::after{ background:#000 }
+/* Крупные цифры: число — жирно, единица — мелко и бирюзовым */
+.kpi .val .u{ font-size:var(--fs-cap); line-height:var(--lh-cap); font-weight:500; color:var(--unit); margin-left:.25rem }
+.kpi .val .p{ font-size:var(--fs-cap); line-height:var(--lh-cap); font-weight:500; color:var(--unit); margin-right:.25rem }
+/* Знак в шапке: место под файл логотипа из брендбука; без файла — нейтральная плашка */
+.brand-mark{ background:var(--brand-gradient); color:#FFFFFF }
+.brand-logo{ height:2.5rem; width:auto; display:block }
+.brand b{ text-transform:uppercase; letter-spacing:.04em }
+/* Фирменная линейка-разделитель */
+.rule-tri{ height:.1875rem; background:var(--brand-rule) }
+:root[data-a11y="on"] .rule-tri{ background:#000 }
+footer{ border-top:0 }
+.slogan{ font-weight:600 }
+.foot-row{ display:flex; flex-wrap:wrap; gap:.5rem 1.5rem; align-items:baseline; justify-content:space-between }
+
+@media (prefers-reduced-motion: reduce){ *{ transition:none !important; scroll-behavior:auto !important } }
+@media (forced-colors: active){ .track .w, .track .l, .chart .bar{ forced-color-adjust:none } }
+</style>
+
+</head>
+<body>
+<a class="skip" href="#main">Перейти к содержанию</a>
+
+<header class="topbar">
+  <div class="wrap">
+    <div class="brand">
+      <span id="brandSlot"><span class="brand-mark" aria-hidden="true"><svg class="i s4" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span></span>
+      <div><b>Сургутский муниципальный район</b><span id="orgName">Администрация Сургутского района · кадровый портал</span></div>
+    </div>
+    <div class="tools">
+      <button class="btn" id="a11yBtn" type="button" aria-pressed="false" aria-controls="a11yBar">
+        <svg class="i s4" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+        Версия для слабовидящих
+      </button>
+      <button class="btn" id="themeBtn" type="button" aria-label="Сменить тему оформления">
+        <svg class="i s4" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        <span id="themeLbl">Тема: системная</span>
+      </button>
+    </div>
+  </div>
+</header>
+<div class="rule-tri" aria-hidden="true"></div>
+<div class="a11y-bar" id="a11yBar" hidden>
+  <div class="wrap" role="group" aria-label="Настройки версии для слабовидящих">
+    <span class="cap">Размер шрифта:</span>
+    <button class="btn" type="button" data-scale="100" aria-pressed="false">A</button>
+    <button class="btn" type="button" data-scale="125" aria-pressed="false">A+</button>
+    <button class="btn" type="button" data-scale="150" aria-pressed="false">A++</button>
+    <button class="btn link" type="button" id="a11yOff">Обычная версия</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="head">
+    <nav aria-label="Хлебные крошки"><ol class="crumbs"><li><a href="#top">Главная</a></li><li>Муниципальная служба</li><li aria-current="page">Обучение</li></ol></nav>
+    <div class="cover">
+      <p class="eyebrow">Муниципальная служба · Дополнительное профессиональное образование</p>
+      <h1 id="top">Обучение муниципальных служащих</h1>
+      <p class="lead">Дополнительное профессиональное образование: на что вы имеете право, какие условия действуют и что будет, если не отработать срок после переподготовки. Каждое утверждение — со ссылкой на пункт акта.</p>
+      <div class="badges" aria-label="Для кого этот раздел">
+        <span class="badge">Для муниципальных служащих администрации района</span>
+        <span class="badge">Для лиц в кадровом резерве</span>
+        <span class="badge" id="checkedBadge">Сверено с актами</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <nav class="sidenav" aria-label="Разделы страницы">
+      <div class="nav-title">В разделе</div>
+      <ul id="navList">
+        <li><a href="#overview">Главное</a></li>
+        <li><a href="#benefits">Что даёт обучение</a></li>
+        <li><a href="#process">Как это работает</a></li>
+        <li><a href="#terms">Условия</a></li>
+        <li><a href="#calc">Калькулятор отработки</a></li>
+        <li><a href="#faq">Вопросы и ответы</a></li>
+        <li><a href="#docs">Документы и контакты</a></li>
+      </ul>
+    </nav>
+
+    <main class="content" id="main" tabindex="-1">
+      <!-- 0. Главное -->
+      <section id="overview" aria-labelledby="h-overview">
+        <div class="sh"><h2 id="h-overview">Главное в цифрах</h2>
+          <span class="tip"><button type="button" aria-describedby="tt-ov" aria-label="О разделе"><svg class="i s4" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button><span role="tooltip" id="tt-ov">Ключевые параметры из Положения о ДПО. Источник указан под каждой цифрой.</span></span>
+        </div>
+        <div class="grid g4" id="kpis"></div>
+        <div class="grid g2">
+          <div class="panel" id="whyPanel"></div>
+          <div class="panel" id="fundPanel"></div>
+        </div>
+      </section>
+
+      <!-- A. Что даёт обучение -->
+      <section id="benefits" aria-labelledby="h-benefits">
+        <div class="sh"><h2 id="h-benefits">Что даёт обучение</h2>
+          <span class="tip"><button type="button" aria-describedby="tt-b" aria-label="О разделе"><svg class="i s4" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button><span role="tooltip" id="tt-b">Только правовые факты. Связь с кадровым резервом показывается, если она закреплена в муниципальном акте.</span></span>
+        </div>
+        <div class="grid g2" id="benefitCards"></div>
+      </section>
+
+      <!-- Как это работает -->
+      <section id="process" aria-labelledby="h-process">
+        <div class="sh"><h2 id="h-process">Как это работает</h2>
+          <span class="tip"><button type="button" aria-describedby="tt-p" aria-label="О разделе"><svg class="i s4" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button><span role="tooltip" id="tt-p">Путь от планирования до отработки по Положению о ДПО.</span></span>
+        </div>
+        <div class="panel">
+          <ol class="steps" id="steps"></ol>
+        </div>
+        <div class="grid g2">
+          <div class="panel" id="planPanel"></div>
+          <div class="panel" id="hrPanel"></div>
+        </div>
+      </section>
+
+      <!-- B. Условия -->
+      <section id="terms" aria-labelledby="h-terms">
+        <div class="sh"><h2 id="h-terms">Условия, которые важно знать</h2>
+          <span class="tip"><button type="button" aria-describedby="tt-t" aria-label="О разделе"><svg class="i s4" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button><span role="tooltip" id="tt-t">Формы обучения, ученический договор, возмещение затрат и исключения из срока отработки.</span></span>
+        </div>
+        <div class="grid g2" id="termCards"></div>
+        <div class="alert warning" role="note">
+          <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+          <p>Расчёт носит справочный характер; окончательные условия — в ученическом договоре.</p>
+        </div>
+      </section>
+
+      <!-- C. Калькулятор -->
+      <section id="calc" aria-labelledby="h-calc">
+        <div class="sh"><h2 id="h-calc">Калькулятор отработки</h2>
+          <span class="tip"><button type="button" aria-describedby="tt-c" aria-label="О разделе"><svg class="i s4" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button><span role="tooltip" id="tt-c">Срок — по шкале приложения 2 к Положению; сумма — пропорционально недоработанному сроку (п. 3.3 договора). Данные никуда не передаются.</span></span>
+        </div>
+        <div id="calcRoot"></div>
+      </section>
+
+      <!-- D. FAQ -->
+      <section id="faq" aria-labelledby="h-faq">
+        <div class="sh"><h2 id="h-faq">Вопросы и ответы</h2></div>
+        <div class="faq" id="faqList"></div>
+      </section>
+
+      <!-- E. Документы и контакты -->
+      <section id="docs" aria-labelledby="h-docs">
+        <div class="sh"><h2 id="h-docs">Документы и контакты</h2></div>
+        <div class="grid g2">
+          <div class="panel"><h3>Правовые акты</h3><div class="docs" id="docList"></div></div>
+          <div class="grid" style="align-content:start">
+            <div class="panel" id="contactPanel"></div>
+            <div class="panel" id="feedbackPanel"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<!-- F. Дисклеймер -->
+<footer>
+  <div class="rule-tri" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="cap" id="disclaimer"></p>
+    <div class="foot-row">
+      <p class="cap"><span class="slogan" id="slogan">В сердце Югры, в центре развития</span></p>
+      <p class="xs muted">Администрация Сургутского муниципального района · ХМАО — Югра · <a href="https://www.admsr.ru" target="_blank" rel="noopener">admsr.ru</a></p>
+    </div>
+    <p class="xs muted" id="footMeta"></p>
+  </div>
+</footer>
+
+<script type="application/json" id="cfg">{
+ "_comment": "Конфиг дашборда «Обучение муниципальных служащих». Заполнен по актам, переданным 09.10.2026 (редакции ГАРАНТ на эту дату). Ключи, начинающиеся с «_», — комментарии, дашборд их не читает. Пустая строка \"\" или null = «Уточните в <отдел>» в интерфейсе. Ничего не вписывайте «на глаз» — только из действующего акта с указанием пункта.",
+ "municipality_name": "Сургутский муниципальный район Ханты-Мансийского автономного округа — Югры",
+ "organ_name": "Администрация Сургутского района",
+ "last_checked": "09.10.2026",
+ "_last_checked": "Дата последней сверки конфига с актами. Показывается в шапке и в дисклеймере.",
+ "brand": {
+  "_comment": "Фирменный стиль по брендбуку «Единый визуальный язык района» (ред. 2025–2026). logo_mark_url — путь к готовому файлу знака из брендбука (mark-gradient.png или mark-indigo.png), не пересобирать вручную. Пусто — в шапке нейтральная плашка.",
+  "slogan": "В сердце Югры, в центре развития",
+  "logo_mark_url": ""
+ },
+ "contacts": {
+  "_comment": "Контакты ответственного подразделения. Телефон и e-mail в переданных актах отсутствуют — заполните. Пока поле пустое, интерфейс пишет «Уточните в …».",
+  "department": "управление муниципальной службы, кадров и наград администрации Сургутского района",
+  "department_short": "управлении муниципальной службы, кадров и наград",
+  "unit": "отдел развития и мотивации персонала",
+  "unit_basis": "Распоряжение № 611-р, гл. 2 п. 9; Распоряжение № 307-р, гл. 4 п. 2",
+  "address": "ул. Энгельса, д. 10, г. Сургут, ХМАО — Югра, 628408",
+  "address_note": "Адрес администрации района (из форм согласия к постановлениям № 45-пг и № 80-пг). Кабинет уточните.",
+  "phone": "",
+  "email": "",
+  "site": "https://www.admsr.ru",
+  "portal_contacts_url": "https://hr.admsr.ru/contacts#otdel-3",
+  "_portal_contacts_url": "Контакты отдела развития и мотивации персонала на кадровом портале. Пока телефон и e-mail пусты, вместо них показывается эта ссылка."
+ },
+ "feedback": {
+  "_comment": "Форма обратной связи ничего не отправляет и не хранит: она лишь собирает текст письма, который пользователь копирует или открывает в своей почте. Работает, только если contacts.email заполнен.",
+  "enabled": true
+ },
+ "federal_norms": [
+  {
+   "id": "fz11",
+   "ref": "ст. 11 ч. 1 п. 7",
+   "title": "Право на дополнительное профессиональное образование",
+   "quote": "Муниципальный служащий имеет право на получение дополнительного профессионального образования в соответствии с муниципальным правовым актом за счет средств местного бюджета.",
+   "url": "https://www.consultant.ru/document/cons_doc_LAW_66530/ccc9dd1e528c5ce50dd152c3269b70104ad92ae1/"
+  },
+  {
+   "id": "fz18",
+   "ref": "ст. 18 ч. 4",
+   "title": "Рекомендация аттестационной комиссии",
+   "quote": "По результатам аттестации аттестационная комиссия может давать рекомендации о направлении отдельных муниципальных служащих для получения дополнительного профессионального образования.",
+   "url": "https://www.consultant.ru/document/cons_doc_LAW_66530/24acb74c9e8b8befdd791bcf030e7098e1376932/"
+  },
+  {
+   "id": "fz28",
+   "ref": "ст. 28",
+   "title": "Кадровая работа в муниципальном образовании",
+   "quote": "Кадровая работа включает в себя, в том числе, проведение аттестации муниципальных служащих (п. 9), организацию работы с кадровым резервом и его эффективное использование (п. 10), консультирование муниципальных служащих по правовым и иным вопросам муниципальной службы (п. 13).",
+   "note": "В действующей редакции ст. 28 организация ДПО прямо не названа. Полномочие по организации ДПО закреплено муниципальными актами: п. 1.6 Положения о ДПО (611-р) и Положением об управлении (307-р).",
+   "url": "https://www.consultant.ru/document/cons_doc_LAW_66530/b5f6c92451f0fca1a59bfb4c0e8ce9326d605db0/"
+  },
+  {
+   "id": "fz32",
+   "ref": "ст. 32 п. 3",
+   "title": "Приоритетное направление кадровой политики",
+   "quote": "Приоритетными направлениями формирования кадрового состава муниципальной службы являются: … подготовка кадров для муниципальной службы и дополнительное профессиональное образование муниципальных служащих.",
+   "url": "https://www.consultant.ru/document/cons_doc_LAW_66530/39cd22313d3c54391e71ad4d086b6115083379ba/"
+  }
+ ],
+ "federal_law": {
+  "title": "Федеральный закон от 02.03.2007 № 25-ФЗ «О муниципальной службе в Российской Федерации»",
+  "url": "https://www.consultant.ru/document/cons_doc_LAW_66530/"
+ },
+ "legal_acts": [
+  {
+   "id": "611",
+   "title": "Положение о дополнительном профессиональном образовании муниципальных служащих администрации Сургутского района",
+   "kind": "Распоряжение администрации Сургутского района",
+   "number": "611-р",
+   "date": "14.11.2022",
+   "edition": "ред. от 04.02.2025",
+   "url": "",
+   "_url": "Вставьте ссылку на официальный текст (admsr.ru или правовая система). Пусто — ссылка не показывается."
+  },
+  {
+   "id": "307",
+   "title": "Положение об управлении муниципальной службы, кадров и наград администрации Сургутского района",
+   "kind": "Распоряжение администрации Сургутского района",
+   "number": "307-р",
+   "date": "11.06.2020",
+   "edition": "ред. от 03.06.2026",
+   "url": ""
+  },
+  {
+   "id": "80",
+   "title": "О кадровом резерве для замещения вакантных должностей муниципальной службы в органах местного самоуправления Сургутского района",
+   "kind": "Постановление Главы Сургутского района",
+   "number": "80-пг",
+   "date": "28.06.2018",
+   "edition": "с изменениями",
+   "url": ""
+  },
+  {
+   "id": "45",
+   "title": "Положение о резерве управленческих кадров для замещения целевых управленческих должностей муниципальной службы в администрации Сургутского района",
+   "kind": "Постановление Главы Сургутского района",
+   "number": "45-пг",
+   "date": "31.05.2019",
+   "edition": "ред. от 21.02.2025",
+   "url": ""
+  }
+ ],
+ "training_rules": {
+  "frequency": "не реже одного раза в три года",
+  "frequency_short": "1 раз в 3 года",
+  "frequency_subject": "повышение квалификации — по мере необходимости",
+  "frequency_basis": "611-р, гл. 1 п. 1.3",
+  "forms": [
+   "с отрывом от службы",
+   "с частичным отрывом",
+   "без отрыва от службы",
+   "с использованием дистанционных образовательных технологий"
+  ],
+  "forms_basis": "611-р, гл. 1 п. 1.7",
+  "programs": [
+   {
+    "id": "pp",
+    "name": "Профессиональная переподготовка",
+    "aim": "Развитие имеющихся и приобретение новых знаний, умений и навыков для замещаемой или планируемой к замещению должности, в том числе для лиц в кадровом резерве.",
+    "basis": "611-р, гл. 1 п. 1.2"
+   },
+   {
+    "id": "pk",
+    "name": "Повышение квалификации",
+    "aim": "Совершенствование и (или) получение новой компетенции, повышение профессионального уровня в рамках имеющейся квалификации.",
+    "basis": "611-р, гл. 1 п. 1.2"
+   }
+  ],
+  "contract_threshold_rub": 30000,
+  "contract_applies_to": "pp",
+  "_contract_applies_to": "id программы из programs, для которой порог обязателен. В 611-р — только профессиональная переподготовка.",
+  "contract_basis": "611-р, гл. 2 п. 10; форма — приложение 1 к Положению",
+  "retention_scale": [
+   {
+    "min": 30000,
+    "max": 70000,
+    "months": 12
+   },
+   {
+    "min": 70000,
+    "max": 120000,
+    "months": 24
+   },
+   {
+    "min": 120000,
+    "max": 200000,
+    "months": 36
+   },
+   {
+    "min": 200000,
+    "max": null,
+    "min_exclusive": true,
+    "months": 60
+   }
+  ],
+  "_retention_scale": "Приложение 2 к Положению 611-р. max = null — «свыше». В акте границы 70 000 и 120 000 ₽ входят в два диапазона одновременно, 200 000 ₽ — «до 200 000» и «свыше 200 000»; калькулятор на таких суммах предупреждает о неоднозначности. Если шкала пустая [] — калькулятор скрывается.",
+  "retention_basis": "611-р, приложение 2",
+  "reimbursement_rule": "Работник возмещает сумму фактической стоимости обучения, рассчитанную пропорционально недоработанному сроку отработки.",
+  "reimbursement_basis": "Ученический договор (приложение 1 к 611-р), п. 2.3.4, 3.3",
+  "reimbursement_grounds": [
+   "увольнение по собственному желанию (п. 3 ч. 1 ст. 77 ТК РФ), если не было уважительной причины",
+   "несоответствие занимаемой должности вследствие недостаточной квалификации, подтверждённой аттестацией (п. 3 ч. 1 ст. 81 ТК РФ)",
+   "неоднократное неисполнение трудовых обязанностей без уважительных причин при наличии дисциплинарного взыскания (п. 5 ч. 1 ст. 81 ТК РФ)",
+   "однократное грубое нарушение трудовых обязанностей (п. 6 ч. 1 ст. 81 ТК РФ)",
+   "представление подложных документов при заключении трудового договора (п. 11 ч. 1 ст. 81 ТК РФ)",
+   "осуждение к наказанию, исключающему продолжение прежней работы (п. 4 ч. 1 ст. 83 ТК РФ)"
+  ],
+  "valid_excuses": [
+   "выход на пенсию",
+   "направление мужа (жены) на работу в другую местность (за границу), к новому месту службы",
+   "болезнь, препятствующая продолжению работы или проживанию в данной местности",
+   "необходимость ухода за больным членом семьи (ребёнком)",
+   "иные основания, предусмотренные трудовым законодательством РФ"
+  ],
+  "valid_excuses_note": "Уважительность каждой причины подтверждается документально.",
+  "valid_excuses_basis": "Ученический договор, п. 3.3",
+  "excluded_periods": [
+   "временная нетрудоспособность",
+   "отпуск по беременности и родам",
+   "отпуск по уходу за ребёнком",
+   "отпуск без сохранения заработной платы свыше 14 календарных дней в течение рабочего года",
+   "отпуск без сохранения денежного содержания продолжительностью не более года по 25-ФЗ"
+  ],
+  "excluded_periods_basis": "Ученический договор, п. 5.4",
+  "full_reimbursement_cases": [
+   {
+    "text": "Отчисление из образовательной организации без получения диплома о профессиональной переподготовке",
+    "basis": "Ученический договор, п. 3.4"
+   },
+   {
+    "text": "Отказ от дальнейшего обучения на любой стадии — с извещением работодателя и возмещением понесённых затрат в полном объёме",
+    "basis": "Ученический договор, п. 2.4.2"
+   },
+   {
+    "text": "Необоснованный отказ от выезда на согласованное и оплаченное обучение — работодатель вправе удержать оплаченную стоимость из денежного содержания",
+    "basis": "Ученический договор, п. 2.2.2"
+   }
+  ],
+  "report_days": 5,
+  "report_text": "В течение 5 рабочих дней после окончания обучения передать копию диплома или удостоверения в отдел развития и мотивации персонала; копия приобщается к личному делу.",
+  "report_basis": "611-р, гл. 2 п. 9",
+  "funding_text": "Обучение оплачивается из местного бюджета в рамках муниципальной программы «Повышение эффективности управления муниципальным районом» на основании муниципального контракта.",
+  "funding_basis": "611-р, гл. 2 п. 2, гл. 3 п. 1; 25-ФЗ, ст. 11 ч. 1 п. 7",
+  "organizer_text": "Координацию и контроль организации ДПО осуществляет управление муниципальной службы, кадров и наград. Организация профессионального образования и ДПО муниципальных служащих — одно из полномочий управления.",
+  "organizer_basis": "611-р, гл. 1 п. 1.6; 307-р, гл. 2 п. 1 пп. 2, гл. 3 п. 4",
+  "guarantees_text": "На время обучения распространяются гарантии и компенсации, предусмотренные законодательством о труде, об образовании и о муниципальной службе. По ученическому договору работодатель сохраняет место работы и выплачивает денежное содержание.",
+  "guarantees_basis": "611-р, гл. 4 п. 1; ученический договор, п. 2.1.2–2.1.3",
+  "plan_criteria": [
+   "обязанные пройти обучение в силу закона или муниципальных правовых актов",
+   "повышение квалификации которых было более 2 лет назад",
+   "показывающие высокие результаты деятельности",
+   "потребность в обучении которых определена по оценке управления",
+   "назначенные на иную должность в порядке должностного роста",
+   "включённые в кадровый резерв",
+   "по результатам аттестации"
+  ],
+  "plan_criteria_note": "При обоснованной потребности — по служебной записке руководителя органа или курирующего заместителя главы района.",
+  "plan_basis": "611-р, гл. 2 п. 4",
+  "process_steps": [
+   {
+    "title": "Оценка потребности",
+    "when": "ежегодно",
+    "text": "Управление определяет потребность в обучении по составу кадров, результатам аттестации, опросу и с учётом мнения руководителей органов.",
+    "basis": "611-р, гл. 2 п. 1"
+   },
+   {
+    "title": "План обучения",
+    "when": "до 1 июля",
+    "text": "Управление утверждает план ДПО на следующий год.",
+    "basis": "611-р, гл. 2 п. 3"
+   },
+   {
+    "title": "Включение в план",
+    "when": "",
+    "text": "По критериям отбора; при отсутствии служащего его место может занять резервный кандидат.",
+    "basis": "611-р, гл. 2 п. 4–5"
+   },
+   {
+    "title": "Ученический договор",
+    "when": "до начала обучения",
+    "text": "Для профессиональной переподготовки стоимостью свыше 30 000 ₽.",
+    "basis": "611-р, гл. 2 п. 10"
+   },
+   {
+    "title": "Обучение",
+    "when": "",
+    "text": "В аккредитованной образовательной организации, в одной из установленных форм.",
+    "basis": "611-р, гл. 1 п. 1.5, 1.7"
+   },
+   {
+    "title": "Документ об обучении",
+    "when": "5 рабочих дней",
+    "text": "Копия диплома или удостоверения — в отдел развития и мотивации персонала.",
+    "basis": "611-р, гл. 2 п. 9"
+   },
+   {
+    "title": "Отработка",
+    "when": "12–60 месяцев",
+    "text": "Если заключён ученический договор — срок по шкале приложения 2.",
+    "basis": "611-р, приложение 2"
+   }
+  ],
+  "reserve_priority_applies": true,
+  "reserve_priority_legal_basis": "611-р, гл. 2 п. 11",
+  "reserve_priority_text": "Прохождение профессиональной переподготовки является преимущественным основанием для включения муниципального служащего в кадровый резерв, а также учитывается при рассмотрении кандидатур на замещение вакантных должностей в администрации Сургутского района.",
+  "reserve_extra": [
+   {
+    "text": "Для лиц в кадровом резерве индивидуальный план профессионального развития включает теоретическую подготовку: профессиональную переподготовку, второе высшее образование, повышение квалификации, индивидуальные формы обучения.",
+    "basis": "80-пг, гл. 6 п. 5, приложение 2 разд. 2"
+   },
+   {
+    "text": "Аналогичный раздел — в индивидуальном плане лиц, включённых в резерв управленческих кадров.",
+    "basis": "45-пг, п. 8.3, приложение 2 разд. II"
+   },
+   {
+    "text": "Включённые в кадровый резерв — один из критериев включения в план обучения.",
+    "basis": "611-р, гл. 2 п. 4"
+   }
+  ],
+  "_payment_criteria": "Блок «Связь с персональной выплатой» отключён 14.10.2026: распоряжение № 175-р от 21.03.2019 утратило актуальность. Включать только при наличии действующего акта с пунктом, где обучение входит в критерии выплаты.",
+  "payment_criteria_applies": false,
+  "payment_criteria_legal_basis": null
+ },
+ "faq": [
+  {
+   "q": "Можно ли отказаться от обучения?",
+   "a": "Да. По ученическому договору работник вправе на любой стадии отказаться от дальнейшего обучения, известив работодателя и возместив понесённые затраты в полном объёме. При необоснованном отказе от выезда на согласованное и оплаченное обучение работодатель вправе удержать его стоимость из денежного содержания. Работник также вправе отказаться от отработки, выплатив сумму, потраченную на обучение.",
+   "basis": "Ученический договор, п. 2.4.1, 2.4.2, 2.2.2"
+  },
+  {
+   "q": "Что если я уволюсь по собственному желанию до окончания срока отработки?",
+   "a": "Если у вас не было уважительной причины, нужно будет возместить фактическую стоимость обучения пропорционально недоработанному сроку. Уважительные причины перечислены в договоре и подтверждаются документально.",
+   "basis": "Ученический договор, п. 3.3"
+  },
+  {
+   "q": "Входит ли отпуск по уходу за ребёнком в срок отработки?",
+   "a": "Нет. В срок отработки не включаются отпуск по уходу за ребёнком, отпуск по беременности и родам, периоды временной нетрудоспособности и отдельные виды отпусков без сохранения содержания.",
+   "basis": "Ученический договор, п. 5.4"
+  },
+  {
+   "q": "Кто оплачивает обучение?",
+   "a": "Местный бюджет: в рамках муниципальной программы «Повышение эффективности управления муниципальным районом», на основании муниципального контракта. Если обучение проходит за пределами района, в расчёт включаются командировочные расходы.",
+   "basis": "25-ФЗ, ст. 11 ч. 1 п. 7; 611-р, гл. 2 п. 2, 7, гл. 3 п. 1"
+  },
+  {
+   "q": "Нужен ли ученический договор для повышения квалификации?",
+   "a": "Положение устанавливает обязательность ученического договора только для программ профессиональной переподготовки стоимостью свыше 30 000 ₽. Для повышения квалификации такое условие в Положении не установлено.",
+   "basis": "611-р, гл. 2 п. 10"
+  },
+  {
+   "q": "Как часто проходит повышение квалификации?",
+   "a": "По мере необходимости, но не реже одного раза в три года. В план обучения, в частности, включаются служащие, чьё повышение квалификации было более двух лет назад.",
+   "basis": "611-р, гл. 1 п. 1.3, гл. 2 п. 4"
+  },
+  {
+   "q": "Что сделать после окончания обучения?",
+   "a": "В течение 5 рабочих дней передать копию диплома или удостоверения в отдел развития и мотивации персонала. Копия приобщается к личному делу.",
+   "basis": "611-р, гл. 2 п. 9"
+  },
+  {
+   "q": "Сохраняется ли зарплата во время обучения?",
+   "a": "По ученическому договору работодатель сохраняет место работы и выплачивает денежное содержание по условиям трудового договора.",
+   "basis": "Ученический договор, п. 2.1.2–2.1.3; 611-р, гл. 4 п. 1"
+  }
+ ]
+}</script>
+<script>
+(function(){
+"use strict";
+var CFG = {};
+try { CFG = JSON.parse(document.getElementById("cfg").textContent); } catch(e) { CFG = {}; }
+
+/* ---------- утилиты ---------- */
+var $ = function(id){ return document.getElementById(id); };
+function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]; }); }
+function empty(v){ return v === null || v === undefined || v === "" || (Array.isArray(v) && v.length === 0); }
+function C(){ return CFG.contacts || {}; }
+function R(){ return CFG.training_rules || {}; }
+function dept(){ return C().department_short || C().department || "кадровой службе"; }
+function askText(){ return "Уточните в " + dept(); }
+function ask(){ return '<span class="ask">' + esc(askText()) + '</span>'; }
+function v(x){ return empty(x) ? ask() : esc(x); }
+var nf = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 0 });
+var nf2 = new Intl.NumberFormat("ru-RU", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+function rub(n){ return nf.format(n) + " ₽"; }
+function rub2(n){ return nf2.format(n) + " ₽"; }
+function months(n){ var m = n % 10, h = n % 100; var w = (m===1&&h!==11)?"месяц":(m>=2&&m<=4&&(h<12||h>14))?"месяца":"месяцев"; return n + " " + w; }
+var IC = {
+  doc:'<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 13H8"/><path d="M16 17H8"/></svg>',
+  scale:'<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>',
+  check:'<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>',
+  users:'<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  wallet:'<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>',
+  book:'<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+  ext:'<svg class="i s4" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>',
+  chev:'<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>',
+  pin:'<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 4.99-5.54 10.19-7.4 11.8a1 1 0 0 1-1.2 0C9.54 20.19 4 14.99 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>',
+  phone:'<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+  mail:'<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>',
+  globe:'<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>',
+  unit:'<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>',
+  info:'<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>',
+  warn:'<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>'
+};
+function basis(t){ return empty(t) ? "" : '<span class="basis">' + IC.doc.replace('class="i"','class="i"') + esc(t) + '</span>'; }
+function bigNum(t){
+  /* бренд: число жирно, единица — мелко и бирюзовым */
+  var m = String(t).match(/^(\D*?)(\d[\d\s\u00A0\u202F.,–-]*\d|\d)(.*)$/);
+  if (!m) return esc(t);
+  return (m[1].trim() ? '<span class="p">' + esc(m[1].trim()) + '</span>' : "") + '<span class="num">' + esc(m[2]) + '</span>' + (m[3].trim() ? '<span class="u">' + esc(m[3].trim()) + '</span>' : "");
+}
+function head(icon, title){ return '<div class="panel-head"><span class="ic">' + IC[icon] + '</span><h3>' + esc(title) + '</h3></div>'; }
+function ul(items, cls){ if (empty(items)) return '<p>' + ask() + '</p>'; return '<ul class="list ' + (cls||"") + '">' + items.map(function(x){ return '<li><span>' + esc(x) + '</span></li>'; }).join("") + '</ul>'; }
+function fz(id){ return (CFG.federal_norms || []).filter(function(n){ return n.id === id; })[0]; }
+function fzLink(n){ if (!n) return ""; return n.url ? '<a href="' + esc(n.url) + '" target="_blank" rel="noopener">25-ФЗ, ' + esc(n.ref) + ' ' + IC.ext + '</a>' : '25-ФЗ, ' + esc(n.ref); }
+function fzBlock(n){ if (!n) return ""; return '<p class="quote">' + esc(n.quote) + '</p><p class="cap">' + fzLink(n) + '</p>' + (n.note ? '<p class="cap muted">' + esc(n.note) + '</p>' : ""); }
+
+/* ---------- шкала ---------- */
+function scale(){ return Array.isArray(R().retention_scale) ? R().retention_scale : []; }
+function bandMatches(cost){
+  return scale().filter(function(b){
+    var lo = b.min_exclusive ? cost > b.min : cost >= b.min;
+    var hi = (b.max === null || b.max === undefined) ? true : cost <= b.max;
+    return lo && hi;
+  });
+}
+function bandLabel(b){
+  if (b.max === null || b.max === undefined) return "свыше " + nf.format(b.min) + " ₽";
+  return nf.format(b.min) + "–" + nf.format(b.max) + " ₽";
+}
+function bandShort(b){
+  var k = function(x){ return nf.format(x/1000); };
+  if (b.max === null || b.max === undefined) return "свыше " + k(b.min) + " тыс. ₽";
+  return k(b.min) + "–" + k(b.max) + " тыс. ₽";
+}
+
+/* ---------- рендер ---------- */
+function render(){
+  var r = R(), c = C();
+  document.getElementById("orgName").textContent = (CFG.organ_name || "Администрация") + " · кадровый портал";
+  var br = CFG.brand || {};
+  if (br.slogan) $("slogan").textContent = br.slogan;
+  if (br.logo_mark_url) $("brandSlot").innerHTML = '<img class="brand-logo" src="' + esc(br.logo_mark_url) + '" alt="Знак Сургутского муниципального района">';
+  $("checkedBadge").textContent = CFG.last_checked ? "Сверено с актами " + CFG.last_checked : "Дата сверки не указана";
+
+  /* KPI */
+  var sc = scale(), mm = sc.map(function(b){ return b.months; });
+  var kp = [
+    { label:"Повышение квалификации", val: empty(r.frequency_short) ? null : r.frequency_short, sub: r.frequency ? "по мере необходимости, " + r.frequency : "", b: r.frequency_basis },
+    { label:"Порог ученического договора", val: empty(r.contract_threshold_rub) ? null : "свыше " + rub(r.contract_threshold_rub), sub:"для профессиональной переподготовки", b: r.contract_basis },
+    { label:"Срок отработки после переподготовки", val: mm.length ? (Math.min.apply(null,mm) + "–" + Math.max.apply(null,mm) + " мес.") : null, sub:"зависит от стоимости программы", b: r.retention_basis },
+    { label:"Сдать копию диплома или удостоверения", val: empty(r.report_days) ? null : r.report_days + " раб. дней", sub:"после окончания обучения", b: r.report_basis }
+  ];
+  $("kpis").innerHTML = kp.map(function(k){
+    return '<div class="panel kpi"><span class="label">' + esc(k.label) + '</span><span class="val">' + (k.val === null ? ask() : bigNum(k.val)) + '</span><span class="sub muted">' + esc(k.sub) + '</span>' + basis(k.b) + '</div>';
+  }).join("");
+
+  var n32 = fz("fz32");
+  $("whyPanel").innerHTML = head("users", "Почему это важно") + fzBlock(n32);
+  $("fundPanel").innerHTML = head("wallet", "Кто оплачивает") + '<p>' + v(r.funding_text) + '</p>' + basis(r.funding_basis) +
+    (r.guarantees_text ? '<p class="cap">' + esc(r.guarantees_text) + '</p>' + basis(r.guarantees_basis) : "");
+
+  /* A */
+  var cards = [];
+  cards.push(head("scale","Право на обучение") + fzBlock(fz("fz11")));
+  cards.push(head("check","Связь с аттестацией") + fzBlock(fz("fz18")));
+  if (r.reserve_priority_applies === true && !empty(r.reserve_priority_legal_basis)) {
+    cards.push(head("users","Связь с кадровым резервом") + '<p>' + esc(r.reserve_priority_text) + '</p>' + basis(r.reserve_priority_legal_basis) +
+      (empty(r.reserve_extra) ? "" : '<div class="grid">' + r.reserve_extra.map(function(x){ return '<div class="tile cap"><p>' + esc(x.text) + '</p>' + basis(x.basis) + '</div>'; }).join("") + '</div>'));
+  }
+  if (r.payment_criteria_applies === true && !empty(r.payment_criteria_legal_basis)) {
+    cards.push(head("wallet","Связь с персональной выплатой") + '<p>' + esc(r.payment_criteria_text) + '</p>' + basis(r.payment_criteria_legal_basis) +
+      (r.payment_criteria_docs ? '<div class="tile cap"><p><b>Подтверждающие документы:</b> ' + esc(r.payment_criteria_docs) + '.</p></div>' : "") +
+      (r.payment_criteria_note ? '<p class="cap muted">' + esc(r.payment_criteria_note) + '</p>' : ""));
+  }
+  $("benefitCards").innerHTML = cards.map(function(h){ return '<article class="panel">' + h + '</article>'; }).join("");
+
+  /* Процесс */
+  $("steps").innerHTML = (r.process_steps || []).map(function(s){
+    return '<li class="step"><div class="step-top"><span class="step-n" aria-hidden="true"></span>' + (s.when ? '<span class="badge neutral">' + esc(s.when) + '</span>' : "") + '</div><b>' + esc(s.title) + '</b><span class="cap">' + esc(s.text) + '</span>' + basis(s.basis) + '</li>';
+  }).join("") || '<li>' + ask() + '</li>';
+  $("planPanel").innerHTML = head("check","Кого включают в план обучения") + ul(r.plan_criteria, "cap") + (r.plan_criteria_note ? '<p class="cap muted">' + esc(r.plan_criteria_note) + '</p>' : "") + basis(r.plan_basis);
+  var n28 = fz("fz28");
+  $("hrPanel").innerHTML = head("unit","Кто организует обучение") + '<p>' + v(r.organizer_text) + '</p>' + basis(r.organizer_basis) +
+    (n28 ? '<div class="tile cap"><p>' + esc(n28.quote) + '</p><p class="muted" style="margin-top:.5rem">' + esc(n28.note || "") + '</p><p style="margin-top:.5rem">' + fzLink(n28) + '</p></div>' : "");
+
+  /* B */
+  var t = [];
+  t.push(head("book","Формы обучения") + ul(r.forms) + basis(r.forms_basis) +
+    (empty(r.programs) ? "" : '<div class="grid">' + r.programs.map(function(p){ return '<div class="tile cap"><p><b>' + esc(p.name) + '.</b> ' + esc(p.aim) + '</p></div>'; }).join("") + '</div>'));
+  var thr = empty(r.contract_threshold_rub) ? ask() : '<b class="num">свыше ' + esc(rub(r.contract_threshold_rub)) + '</b>';
+  var prg = (r.programs || []).filter(function(p){ return p.id === r.contract_applies_to; })[0];
+  t.push(head("doc","Ученический договор") +
+    '<p>Заключается до начала обучения' + (prg ? ', если вид программы — ' + esc(prg.name.toLowerCase()) + ',' : ',') + ' а её стоимость ' + thr + '. В договоре фиксируется срок обязательной работы после обучения.</p>' + basis(r.contract_basis) +
+    (sc.length ? '<div class="tbl-wrap"><table><caption class="sr-only">Срок обязательной работы по стоимости переподготовки</caption><thead><tr><th scope="col">Стоимость переподготовки</th><th scope="col" class="r">Срок отработки</th></tr></thead><tbody>' +
+      sc.map(function(b,i){ return '<tr data-band="' + i + '"><td class="num">' + esc(bandLabel(b)) + '</td><td class="r num">' + esc(months(b.months)) + '</td></tr>'; }).join("") + '</tbody></table></div>' + basis(r.retention_basis) : '<p>' + ask() + '</p>'));
+  t.push(head("wallet","Возмещение затрат") + '<p>' + v(r.reimbursement_rule) + ' Основания:</p>' + ul(r.reimbursement_grounds, "cap") + basis(r.reimbursement_basis) +
+    (empty(r.full_reimbursement_cases) ? "" : '<div class="grid">' + r.full_reimbursement_cases.map(function(x){ return '<div class="tile cap"><p>' + esc(x.text) + '</p>' + basis(x.basis) + '</div>'; }).join("") + '</div>'));
+  t.push(head("check","Уважительные причины увольнения") + '<p class="cap">При увольнении по собственному желанию по этим причинам затраты не возмещаются:</p>' + ul(r.valid_excuses) +
+    (r.valid_excuses_note ? '<p class="cap muted">' + esc(r.valid_excuses_note) + '</p>' : "") + basis(r.valid_excuses_basis) +
+    '<div class="tile"><p class="cap"><b>Не входят в срок отработки:</b></p>' + ul(r.excluded_periods, "cap") + '<div style="margin-top:.5rem">' + basis(r.excluded_periods_basis) + '</div></div>');
+  $("termCards").innerHTML = t.map(function(h){ return '<article class="panel">' + h + '</article>'; }).join("");
+
+  renderCalc();
+
+  /* D */
+  $("faqList").innerHTML = (CFG.faq || []).map(function(f, i){
+    return '<details id="faq-' + i + '"><summary>' + esc(f.q) + IC.chev + '</summary><div class="ans"><p>' + v(f.a) + '</p>' + basis(f.basis) + '</div></details>';
+  }).join("") || '<p>' + ask() + '</p>';
+
+  /* E */
+  var docs = [];
+  if (CFG.federal_law) docs.push('<div class="doc"><span class="t">' + esc(CFG.federal_law.title) + '</span><span class="m cap">' +
+    (CFG.federal_norms || []).map(function(n){ return n.url ? '<a href="' + esc(n.url) + '" target="_blank" rel="noopener">' + esc(n.ref) + '</a>' : esc(n.ref); }).join(" · ") +
+    (CFG.federal_law.url ? ' · <a href="' + esc(CFG.federal_law.url) + '" target="_blank" rel="noopener">полный текст ' + IC.ext + '</a>' : "") + '</span></div>');
+  (CFG.legal_acts || []).forEach(function(a){
+    var req = (empty(a.number) || empty(a.date)) ? '<span class="ask">Реквизиты не указаны</span>' : '<span class="num">№ ' + esc(a.number) + ' от ' + esc(a.date) + '</span>';
+    docs.push('<div class="doc"><span class="t">' + esc(a.title) + '</span><span class="cap muted">' + esc(a.kind || "") + '</span><span class="m cap">' + req +
+      (a.edition ? '<span class="muted">' + esc(a.edition) + '</span>' : "") +
+      (a.url ? '<a href="' + esc(a.url) + '" target="_blank" rel="noopener">текст акта ' + IC.ext + '</a>' : '<span class="muted">текст — в ' + esc(dept()) + '</span>') + '</span></div>');
+  });
+  $("docList").innerHTML = docs.join("");
+
+  var row = function(icon, label, val, copy){ return '<div class="row">' + IC[icon] + '<div><div class="xs muted">' + esc(label) + '</div><div class="copybox">' + val + (copy ? '<button class="btn link cap" type="button" data-copy="' + esc(copy) + '">Скопировать</button>' : "") + '</div></div></div>'; };
+  $("contactPanel").innerHTML = '<h3>Куда обращаться</h3><div class="contact">' +
+    row("unit", "Ответственное подразделение", '<span>' + v(c.department) + (c.unit ? ', ' + esc(c.unit) : "") + '</span>') +
+    row("pin", "Адрес", '<span>' + v(c.address) + '</span>' + (c.address_note ? '' : '')) +
+    (empty(c.phone) && c.portal_contacts_url ? "" : row("phone", "Телефон", empty(c.phone) ? ask() : '<span class="num" style="user-select:all">' + esc(c.phone) + '</span>', empty(c.phone) ? "" : c.phone)) +
+    (empty(c.email) && c.portal_contacts_url ? "" : row("mail", "Электронная почта", empty(c.email) ? ask() : '<span style="user-select:all">' + esc(c.email) + '</span>', empty(c.email) ? "" : c.email)) +
+    (c.portal_contacts_url ? row("phone", "Телефоны и электронная почта", '<a href="' + esc(c.portal_contacts_url) + '">Контакты отдела на кадровом портале</a>') : "") +
+    (c.site ? row("globe", "Официальный сайт", '<a href="' + esc(c.site) + '" target="_blank" rel="noopener">' + esc(c.site.replace(/^https?:\/\//,"")) + '</a>') : "") +
+    '</div>' + (c.address_note ? '<p class="xs muted">' + esc(c.address_note) + '</p>' : "");
+
+  renderFeedback();
+
+  /* F */
+  $("disclaimer").textContent = "Информация носит справочный характер. Актуальные условия обучения, сроки отработки и порядок возмещения затрат определяются муниципальными правовыми актами и ученическим договором. Уточняйте в " + dept() + ".";
+  $("footMeta").textContent = (CFG.organ_name || "") + (CFG.last_checked ? " · сверено с актами " + CFG.last_checked : "") + " · страница не использует счётчики и не собирает персональные данные.";
+
+  bindCopy(document);
+  spy();
+}
+
+/* ---------- калькулятор ---------- */
+var calcState = { prog: null, cost: 85000, worked: 6 };
+function renderCalc(){
+  var r = R(), sc = scale(), root = $("calcRoot");
+  if (!sc.length) {
+    root.innerHTML = '<div class="alert">' + IC.info + '<p>Информация о сроках отработки уточняется в ' + esc(dept()) + '.</p></div>';
+    return;
+  }
+  var progs = r.programs || [];
+  if (!calcState.prog) calcState.prog = r.contract_applies_to || (progs[0] && progs[0].id);
+  root.innerHTML =
+  '<div class="calc">' +
+    '<form class="panel" id="calcForm" novalidate aria-describedby="calcNote">' +
+      '<span class="badge neutral" style="justify-self:start">Пример расчёта — подставьте свои значения</span>' +
+      (progs.length ? '<fieldset class="field"><legend>Вид программы</legend><div class="seg">' + progs.map(function(p){
+        return '<label><input type="radio" name="prog" id="prog-' + esc(p.id) + '" value="' + esc(p.id) + '"' + (calcState.prog === p.id ? " checked" : "") + '><span>' + esc(p.name) + '</span></label>'; }).join("") + '</div></fieldset>' : "") +
+      '<div class="field"><label for="cost">Стоимость программы</label><div class="inp-wrap"><input class="inp" id="cost" name="cost" inputmode="numeric" autocomplete="off" value="' + esc(nf.format(calcState.cost)) + '"><span class="unit">₽</span></div><span class="hint">Сумма из муниципального контракта или ученического договора</span></div>' +
+      '<div class="field" id="workedField"><label for="worked">Проработано после окончания обучения: <span id="workedOut" class="num"></span></label><input type="range" id="worked" name="worked" min="0" max="60" step="1" value="' + calcState.worked + '"><span class="hint">Периоды из п. 5.4 договора (больничный, отпуск по уходу за ребёнком и др.) в этот срок не включаются</span></div>' +
+      '<p class="xs muted" id="calcNote">Расчёт выполняется в браузере. Введённые значения никуда не передаются и не сохраняются.</p>' +
+    '</form>' +
+    '<div class="panel res" aria-live="polite" id="calcRes"></div>' +
+  '</div>';
+  var f = $("calcForm");
+  f.addEventListener("submit", function(e){ e.preventDefault(); });
+  f.addEventListener("input", function(e){
+    if (e.target.name === "prog") calcState.prog = e.target.value;
+    if (e.target.id === "cost") {
+      var raw = e.target.value.replace(/[^\d]/g, "");
+      calcState.cost = raw ? Math.min(parseInt(raw,10), 99999999) : 0;
+    }
+    if (e.target.id === "worked") calcState.worked = parseInt(e.target.value,10) || 0;
+    updateCalc();
+  });
+  $("cost").addEventListener("blur", function(){ this.value = calcState.cost ? nf.format(calcState.cost) : ""; });
+  updateCalc();
+}
+function updateCalc(){
+  var r = R(), cost = calcState.cost, out = $("calcRes");
+  var thr = r.contract_threshold_rub;
+  var progName = ((r.programs||[]).filter(function(p){ return p.id === calcState.prog; })[0] || {}).name || "";
+  var applies = !r.contract_applies_to || calcState.prog === r.contract_applies_to;
+  var html = "";
+  var matches = bandMatches(cost);
+  var M = null;
+
+  if (!cost) {
+    html = '<div class="alert">' + IC.info + '<p>Введите стоимость программы.</p></div>';
+  } else if (!applies) {
+    html = '<div class="alert success">' + IC.info + '<p>Для программы «' + esc(progName) + '» Положение не устанавливает обязательный ученический договор и срок отработки (' + esc(r.contract_basis || "") + '). Если договор с вами всё же заключается, условия определяет он.</p></div>';
+  } else if (empty(thr)) {
+    html = '<div class="alert warning">' + IC.warn + '<p>Порог стоимости для ученического договора не указан. ' + esc(askText()) + '.</p></div>';
+  } else if (cost <= thr) {
+    html = '<div class="alert success">' + IC.info + '<p>Стоимость не превышает ' + esc(rub(thr)) + ': ученический договор по п. 10 Положения не обязателен, срок отработки шкалой не устанавливается.</p></div>';
+  } else if (!matches.length) {
+    html = '<div class="alert warning">' + IC.warn + '<p>Сумма не попадает в шкалу. ' + esc(askText()) + '.</p></div>';
+  } else {
+    M = matches[0].months;
+    var w = Math.min(calcState.worked, M);
+    var left = M - w;
+    var refund = cost * left / M;
+    html =
+      '<div class="res-kpis">' +
+        '<div class="kpi"><span class="label">Срок обязательной работы</span><span class="val">' + bigNum(months(M)) + '</span><span class="sub muted">' + esc(bandLabel(matches[0])) + '</span></div>' +
+        '<div class="kpi"><span class="label">Возмещение при увольнении через ' + esc(months(w)) + '</span><span class="val">' + bigNum(rub2(refund)) + '</span><span class="sub muted">' + (left ? esc(nf.format(cost)) + " × " + left + "/" + M : "срок отработан полностью") + '</span></div>' +
+      '</div>' +
+      '<div class="grid" style="gap:.5rem"><div class="track" role="img" aria-label="Отработано ' + w + ' из ' + M + ' месяцев">' +
+        (w ? '<span class="w" style="flex:' + w + '"></span>' : "") + (left ? '<span class="l" style="flex:' + left + '"></span>' : "") + '</div>' +
+        '<div class="track-legend"><span><i class="dot" style="background:var(--mark-good)"></i>отработано: ' + esc(months(w)) + '</span><span><i class="dot" style="background:var(--mark-bad)"></i>не отработано: ' + esc(months(left)) + '</span></div></div>' +
+      (matches.length > 1 ? '<div class="alert warning">' + IC.warn + '<p>Сумма ' + esc(rub(cost)) + ' попадает на границу двух диапазонов приложения 2 (' + matches.map(function(b){ return months(b.months); }).join(" или ") + '). Срок определяется ученическим договором — ' + esc(askText().toLowerCase()) + '.</p></div>' : "") +
+      '<p class="cap">Возмещение применяется при увольнении по основаниям п. 3.3 договора — например, по собственному желанию без уважительной причины. При уважительной причине, подтверждённой документально, затраты не возмещаются.</p>';
+  }
+  html += '<div><p class="cap" style="font-weight:500;margin-bottom:.5rem">Шкала сроков отработки' + (r.retention_basis ? ' <span class="muted">· ' + esc(r.retention_basis) + '</span>' : "") + '</p><div class="chart" id="chart"></div></div>' +
+          '<p class="xs muted">Расчёт носит справочный характер; окончательные условия — в ученическом договоре.</p>';
+  out.innerHTML = html;
+
+  var wf = $("workedField");
+  if (wf) {
+    var rng = $("worked");
+    wf.hidden = (M === null);
+    if (M !== null) { rng.max = M; if (calcState.worked > M) { calcState.worked = M; rng.value = M; } }
+    $("workedOut").textContent = months(Math.min(calcState.worked, M || 60));
+  }
+  drawChart(applies && cost > (thr||0) ? matches : []);
+  /* подсветка строки таблицы в «Условиях» */
+  var on = matches.map(function(b){ return scale().indexOf(b); });
+  document.querySelectorAll("tr[data-band]").forEach(function(tr){ tr.classList.toggle("on", applies && cost > (thr||0) && on.indexOf(+tr.dataset.band) > -1); });
+}
+
+function drawChart(active){
+  var host = $("chart"); if (!host) return;
+  var sc = scale(), maxM = Math.max.apply(null, sc.map(function(b){ return b.months; }));
+  var top = Math.ceil(maxM / 12) * 12;
+  var W = 560, L = 128, Rp = 64, rowH = 34, barH = 16, T = 8, H = T + sc.length * rowH + 24;
+  var x = function(m){ return L + (W - L - Rp) * m / top; };
+  var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Срок отработки в месяцах по диапазонам стоимости переподготовки"><g class="grid">';
+  for (var g = 0; g <= top; g += 12) s += '<line x1="' + x(g) + '" x2="' + x(g) + '" y1="' + T + '" y2="' + (T + sc.length*rowH) + '"/><text class="ax" x="' + x(g) + '" y="' + (T + sc.length*rowH + 16) + '" text-anchor="middle">' + g + '</text>';
+  s += '<text class="ax" x="' + (W - Rp + 8) + '" y="' + (T + sc.length*rowH + 16) + '">мес.</text></g>';
+  sc.forEach(function(b, i){
+    var y = T + i*rowH + (rowH - barH)/2, on = active.indexOf(b) > -1, w = Math.max(x(b.months) - L, 4);
+    s += '<g class="row" data-i="' + i + '"><rect class="hit" x="0" y="' + (T + i*rowH) + '" width="' + W + '" height="' + rowH + '"/>' +
+      '<text class="lbl" x="' + (L - 12) + '" y="' + (y + barH/2 + 4) + '" text-anchor="end">' + esc(bandShort(b)) + '</text>' +
+      '<path class="bar' + (on ? " on" : "") + '" d="M' + L + ' ' + y + 'h' + (w-4) + 'a4 4 0 0 1 4 4v' + (barH-8) + 'a4 4 0 0 1 -4 4h-' + (w-4) + 'z"/>' +
+      '<text class="val" x="' + (L + w + 8) + '" y="' + (y + barH/2 + 4) + '">' + b.months + '</text></g>';
+  });
+  s += '</svg><div class="ttip" hidden></div>';
+  host.innerHTML = s;
+  var tip = host.querySelector(".ttip");
+  host.querySelectorAll(".row").forEach(function(g){
+    g.addEventListener("mousemove", function(e){
+      var b = sc[+g.dataset.i], rc = host.getBoundingClientRect();
+      tip.textContent = bandLabel(b) + " → " + months(b.months);
+      tip.hidden = false;
+      var tx = Math.min(e.clientX - rc.left + 12, rc.width - tip.offsetWidth - 4);
+      tip.style.left = Math.max(0, tx) + "px"; tip.style.top = (e.clientY - rc.top - 36) + "px";
+    });
+    g.addEventListener("mouseleave", function(){ tip.hidden = true; });
+  });
+}
+
+/* ---------- обратная связь (без отправки и хранения) ---------- */
+function renderFeedback(){
+  var c = C(), p = $("feedbackPanel");
+  if (!CFG.feedback || CFG.feedback.enabled === false) { p.hidden = true; return; }
+  if (empty(c.email)) {
+    p.innerHTML = '<h3>Задать вопрос</h3><p class="cap">' + (c.portal_contacts_url
+      ? 'С вопросами об обучении обращайтесь к сотрудникам отдела развития и мотивации персонала: <a href="' + esc(c.portal_contacts_url) + '">контакты на кадровом портале</a>.'
+      : 'Адрес для обращений по вопросам обучения пока не опубликован. ' + ask()) + '</p>';
+    return;
+  }
+  p.innerHTML = '<h3>Задать вопрос</h3>' +
+    '<form id="fb" class="grid" novalidate>' +
+      '<div class="field"><label for="fbTopic">Тема</label><select class="inp" id="fbTopic"><option>Вопрос о плане обучения</option><option>Ученический договор и отработка</option><option>Документ об окончании обучения</option><option>Другое</option></select></div>' +
+      '<div class="field"><label for="fbText">Вопрос</label><textarea class="inp" id="fbText" maxlength="2000" placeholder="Опишите вопрос. Не указывайте паспортные и другие персональные данные."></textarea></div>' +
+      '<label class="cap" style="display:flex;gap:.5rem;align-items:flex-start"><input type="checkbox" id="fbOk" style="margin-top:.25rem;accent-color:var(--primary)"> Понимаю, что страница ничего не отправляет: письмо уйдёт из моей почты, и я сам решаю, какие сведения в нём указать.</label>' +
+      '<button class="btn solid" type="submit" style="justify-self:start">Подготовить письмо</button>' +
+      '<p class="cap" id="fbErr" role="alert" hidden></p>' +
+    '</form><div id="fbOut" class="grid" hidden></div>';
+  $("fb").addEventListener("submit", function(e){
+    e.preventDefault();
+    var txt = $("fbText").value.trim(), err = $("fbErr");
+    if (!txt) { err.textContent = "Напишите вопрос, чтобы подготовить письмо."; err.hidden = false; $("fbText").focus(); return; }
+    if (!$("fbOk").checked) { err.textContent = "Отметьте согласие с тем, что письмо отправляется из вашей почты."; err.hidden = false; $("fbOk").focus(); return; }
+    err.hidden = true;
+    var subj = "Обучение муниципальных служащих: " + $("fbTopic").value;
+    var letter = "Кому: " + c.email + "\nТема: " + subj + "\n\n" + txt;
+    $("fbOut").innerHTML = '<p class="cap">Письмо готово. Скопируйте текст и отправьте его на адрес <b style="user-select:all">' + esc(c.email) + '</b>.</p><div class="letter" id="fbLetter">' + esc(letter) + '</div>' +
+      '<div class="copybox"><button class="btn" type="button" data-copy-el="fbLetter">Скопировать текст</button><a class="btn" href="mailto:' + esc(c.email) + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(txt) + '">Открыть в почте</a></div>';
+    $("fbOut").hidden = false; bindCopy($("fbOut"));
+  });
+}
+
+/* ---------- копирование ---------- */
+function bindCopy(root){
+  root.querySelectorAll("[data-copy],[data-copy-el]").forEach(function(b){
+    if (b._bound) return; b._bound = true;
+    b.addEventListener("click", function(){
+      var text = b.dataset.copy || ($(b.dataset.copyEl) || {}).textContent || "";
+      var done = function(){ var o = b.textContent; b.textContent = "Скопировано"; setTimeout(function(){ b.textContent = o; }, 1600); };
+      var fallback = function(){ var el = b.dataset.copyEl ? $(b.dataset.copyEl) : b.previousElementSibling; if (el) { var rg = document.createRange(); rg.selectNodeContents(el); var sel = getSelection(); sel.removeAllRanges(); sel.addRange(rg); } };
+      try { navigator.clipboard.writeText(text).then(done, fallback); } catch(e) { fallback(); }
+    });
+  });
+}
+
+/* ---------- подсветка меню ---------- */
+var spyOn = false;
+function spy(){
+  if (spyOn || !("IntersectionObserver" in window)) return; spyOn = true;
+  var links = {}; document.querySelectorAll("#navList a").forEach(function(a){ links[a.getAttribute("href").slice(1)] = a; });
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if (e.isIntersecting) { Object.keys(links).forEach(function(k){ links[k].removeAttribute("aria-current"); }); if (links[e.target.id]) links[e.target.id].setAttribute("aria-current","true"); } });
+  }, { rootMargin: "-30% 0px -60% 0px" });
+  Object.keys(links).forEach(function(k){ var s = $(k); if (s) io.observe(s); });
+}
+
+/* ---------- тема и версия для слабовидящих ---------- */
+var root = document.documentElement;
+function store(k, v){ try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch(e){} }
+function load(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }
+var themes = ["system","light","dark"], tNames = { system:"системная", light:"светлая", dark:"тёмная" };
+function applyTheme(t){ if (t === "system") root.removeAttribute("data-theme"); else root.setAttribute("data-theme", t); $("themeLbl").textContent = "Тема: " + tNames[t]; }
+var theme = load("dpo-theme") || "system"; if (themes.indexOf(theme) < 0) theme = "system"; applyTheme(theme);
+$("themeBtn").addEventListener("click", function(){ theme = themes[(themes.indexOf(theme)+1)%3]; applyTheme(theme); store("dpo-theme", theme); });
+
+function applyA11y(on, sc){
+  if (on) { root.setAttribute("data-a11y","on"); root.setAttribute("data-scale", sc || "125"); }
+  else { root.removeAttribute("data-a11y"); root.removeAttribute("data-scale"); }
+  $("a11yBtn").setAttribute("aria-pressed", on ? "true" : "false");
+  $("a11yBar").hidden = !on; $("themeBtn").hidden = !!on;
+  document.querySelectorAll("[data-scale].btn").forEach(function(b){ b.setAttribute("aria-pressed", on && b.dataset.scale === (sc||"125") ? "true" : "false"); });
+  store("dpo-a11y", on ? (sc || "125") : null);
+}
+var a11y = load("dpo-a11y"); if (a11y) applyA11y(true, a11y);
+$("a11yBtn").addEventListener("click", function(){ applyA11y(root.getAttribute("data-a11y") !== "on", "125"); });
+$("a11yOff").addEventListener("click", function(){ applyA11y(false); $("a11yBtn").focus(); });
+document.querySelectorAll("[data-scale].btn").forEach(function(b){ b.addEventListener("click", function(){ applyA11y(true, b.dataset.scale); }); });
+
+/* ---------- загрузка ---------- */
+render();
+/* Если рядом лежит data.json (размещение на сайте) — он главнее встроенной копии */
+if (location.protocol !== "file:" && window.fetch) {
+  fetch("data.json", { cache: "no-store" }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
+    if (j && typeof j === "object" && j.training_rules) { CFG = j; render(); }
+  }).catch(function(){});
+}
+})();
+</script>
+
+</body>
+</html>
