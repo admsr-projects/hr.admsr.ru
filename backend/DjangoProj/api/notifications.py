@@ -63,7 +63,7 @@ def recipient_emails(kind):
     )
 
 
-def notify_recipients(kind, subject, fields, files=(), emails=None):
+def notify_recipients(kind, subject, fields, files=(), emails=None, reply_to=None):
     """
     Отправить копию заявки уполномоченным лицам.
 
@@ -71,6 +71,7 @@ def notify_recipients(kind, subject, fields, files=(), emails=None):
     fields  — список пар («Название поля», значение)
     files   — FieldFile'ы, которые нужно приложить к письму
     emails  — явный список адресов (для проверочной отправки); по умолчанию — получатели из админки
+    reply_to — адрес отправителя заявки: ответ на письмо уйдёт ему
 
     Ошибка отправки никогда не ломает приём заявки: она только пишется в лог.
     Возвращает число получателей, которым ушло письмо.
@@ -89,6 +90,7 @@ def notify_recipients(kind, subject, fields, files=(), emails=None):
         body='',
         from_email=settings.DEFAULT_FROM_EMAIL,
         to=emails,
+        reply_to=[reply_to] if reply_to else None,
     )
 
     attached = []
@@ -168,36 +170,39 @@ def email_from_unsubscribe_token(token):
 
 
 # ---------------------------------------------------------------------------
-# Подтверждение email кодом из письма перед подпиской
+# Подтверждение email кодом из письма (подписка на вакансии, обратная связь)
 # ---------------------------------------------------------------------------
 
 CODE_LENGTH = 6
 CODE_TTL = timedelta(minutes=10)
 CODE_RESEND_COOLDOWN = timedelta(seconds=60)
 CODE_MAX_ATTEMPTS = 5  # неверных вводов, после чего нужен новый код
-CODE_MAX_SENDS = 5  # писем с кодом на одну подписку
+CODE_MAX_SENDS = 5  # писем с кодом на одну запись
 
 
-def _code_hash(sub, code):
-    return salted_hmac('vacancy-subscription-code', f'{sub.pk}:{sub.email}:{code}').hexdigest()
+def _code_hash(obj, code):
+    return salted_hmac('email-confirmation-code', f'{obj._meta.label_lower}:{obj.pk}:{obj.email}:{code}').hexdigest()
 
 
-def seconds_until_resend(sub):
+def seconds_until_resend(obj):
     """Сколько секунд осталось до следующей отправки кода (0 — можно отправлять)."""
-    if not sub.code_sent_at:
+    if not obj.code_sent_at:
         return 0
-    left = sub.code_sent_at + CODE_RESEND_COOLDOWN - timezone.now()
+    left = obj.code_sent_at + CODE_RESEND_COOLDOWN - timezone.now()
     return max(0, int(left.total_seconds()) + (1 if left.microseconds else 0))
 
 
-def send_subscription_code(sub):
+def send_email_code(obj, action, reason):
     """
-    Сгенерировать новый код, сохранить его хэш и отправить письмо на адрес подписки.
-    Если письмо не ушло — исключение пробрасывается, а состояние подписки не меняется.
+    Сгенерировать новый код, сохранить его хэш и отправить письмо на obj.email.
+
+    action — что произойдёт после подтверждения («включить подписку на новые вакансии»);
+    reason — почему пришло письмо («для подписки на вакансии»).
+    Если письмо не ушло — исключение пробрасывается, а состояние записи не меняется.
     """
     code = ''.join(secrets.choice('0123456789') for _ in range(CODE_LENGTH))
     ttl_minutes = int(CODE_TTL.total_seconds() // 60)
-    name = (sub.name or '').strip()
+    name = (getattr(obj, 'name', '') or '').strip()
     greeting = f'Здравствуйте, {name}!' if name else 'Здравствуйте!'
 
     message = EmailMultiAlternatives(
@@ -205,13 +210,13 @@ def send_subscription_code(sub):
         body='\n'.join([
             greeting,
             '',
-            f'Код подтверждения email для подписки на вакансии: {code}',
-            f'Введите его на сайте {_site_host()}. Код действует {ttl_minutes} минут.',
+            f'Код подтверждения email: {code}',
+            f'Введите его на сайте {_site_host()}, чтобы {action}. Код действует {ttl_minutes} минут.',
             '',
-            'Если вы не оформляли подписку, просто проигнорируйте это письмо — без кода подписка не включится.',
+            f'Если вы не запрашивали код ({reason}), просто проигнорируйте это письмо.',
         ]),
         from_email=settings.DEFAULT_FROM_EMAIL,
-        to=[sub.email],
+        to=[obj.email],
     )
     message.attach_alternative(
         render_to_string('api/emails/subscription_code.html', {
@@ -219,6 +224,8 @@ def send_subscription_code(sub):
             'preheader': f'Ваш код: {code}',
             'greeting': greeting,
             'code': code,
+            'action': action,
+            'reason': reason,
             'ttl_minutes': ttl_minutes,
             'site_url': _site_url(),
             'site_host': _site_host(),
@@ -227,11 +234,11 @@ def send_subscription_code(sub):
     )
     message.send()
 
-    sub.code_hash = _code_hash(sub, code)
-    sub.code_sent_at = timezone.now()
-    sub.code_attempts = 0
-    sub.code_sends += 1
-    sub.save(update_fields=['code_hash', 'code_sent_at', 'code_attempts', 'code_sends'])
+    obj.code_hash = _code_hash(obj, code)
+    obj.code_sent_at = timezone.now()
+    obj.code_attempts = 0
+    obj.code_sends += 1
+    obj.save(update_fields=['code_hash', 'code_sent_at', 'code_attempts', 'code_sends'])
 
 
 CODE_OK = 'ok'
@@ -240,18 +247,18 @@ CODE_EXPIRED = 'expired'
 CODE_LOCKED = 'locked'
 
 
-def check_subscription_code(sub, code):
+def check_email_code(obj, code):
     """Проверить введённый код: CODE_OK / CODE_WRONG / CODE_EXPIRED / CODE_LOCKED. Неверный ввод учитывается."""
     code = ''.join(str(code or '').split())
-    if not sub.code_hash or not sub.code_sent_at or timezone.now() > sub.code_sent_at + CODE_TTL:
+    if not obj.code_hash or not obj.code_sent_at or timezone.now() > obj.code_sent_at + CODE_TTL:
         return CODE_EXPIRED
-    if sub.code_attempts >= CODE_MAX_ATTEMPTS:
+    if obj.code_attempts >= CODE_MAX_ATTEMPTS:
         return CODE_LOCKED
-    if constant_time_compare(_code_hash(sub, code), sub.code_hash):
+    if constant_time_compare(_code_hash(obj, code), obj.code_hash):
         return CODE_OK
-    sub.code_attempts += 1
-    sub.save(update_fields=['code_attempts'])
-    return CODE_LOCKED if sub.code_attempts >= CODE_MAX_ATTEMPTS else CODE_WRONG
+    obj.code_attempts += 1
+    obj.save(update_fields=['code_attempts'])
+    return CODE_LOCKED if obj.code_attempts >= CODE_MAX_ATTEMPTS else CODE_WRONG
 
 
 def _subscribers_for(vacancy):

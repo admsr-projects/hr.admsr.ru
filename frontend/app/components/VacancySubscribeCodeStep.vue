@@ -15,7 +15,7 @@
         <p class="text-pretty text-caption text-text-muted">
           Мы отправили 6-значный код на
           <span class="font-semibold text-text-primary break-all">{{ verification.email }}</span>.
-          Введите его, чтобы включить подписку. Если письма нет, проверьте папку «Спам».
+          Введите его, чтобы {{ purpose }}. Если письма нет, проверьте папку «Спам».
         </p>
       </div>
     </div>
@@ -77,9 +77,13 @@
 <script setup lang="ts">
 import type { SubscribeVerification } from '~/utils/subscription-verification'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   verification: SubscribeVerification
-}>()
+  /** Что произойдёт после подтверждения: «включить подписку», «отправить сообщение» */
+  purpose?: string
+}>(), {
+  purpose: 'включить подписку'
+})
 
 const emit = defineEmits<{
   confirm: [code: string]

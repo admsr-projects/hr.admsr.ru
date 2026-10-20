@@ -386,9 +386,11 @@ custom_admin_site.register(WorkPartner, WorkPartnerAdmin)
 
 
 class FeedbackAdmin(admin.ModelAdmin):
-    list_display = ['message', 'created_at']
-    list_filter = ['created_at']
-    search_fields = ['message']
+    list_display = ['message', 'email', 'email_verified', 'created_at']
+    list_filter = ['email_verified', 'created_at']
+    search_fields = ['message', 'email']
+    readonly_fields = ['created_at']
+    fields = ['message', 'email', 'email_verified', 'photo', 'created_at']
 
 custom_admin_site.register(Feedback, FeedbackAdmin)
 custom_admin_site.register(VacancySubscription, VacancySubscriptionAdmin)

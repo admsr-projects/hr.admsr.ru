@@ -21,8 +21,8 @@ from .models import (
 from .education import build_education_payload
 from .search import search_portal
 from .notifications import (
-    CODE_MAX_ATTEMPTS, CODE_MAX_SENDS, CODE_OK, CODE_EXPIRED, CODE_LOCKED, CODE_TTL, check_subscription_code,
-    seconds_until_resend, send_subscription_code, email_from_unsubscribe_token, notify_recipients, KIND_VACANCIES, KIND_RESERVE, KIND_PRACTICE, KIND_TRAINING, KIND_FEEDBACK,
+    CODE_MAX_ATTEMPTS, CODE_MAX_SENDS, CODE_OK, CODE_EXPIRED, CODE_LOCKED, CODE_TTL, check_email_code,
+    seconds_until_resend, send_email_code, email_from_unsubscribe_token, notify_recipients, KIND_VACANCIES, KIND_RESERVE, KIND_PRACTICE, KIND_TRAINING, KIND_FEEDBACK,
 )
 from .serializers import (
     TenderSerializer, VacancySerializer, StaffMemberSerializer,
@@ -359,82 +359,82 @@ def _notify_subscription_resume(sub):
     )
 
 
-def _code_sent_payload(sub):
+SUBSCRIBE_CODE_ACTION = 'включить подписку на новые вакансии'
+SUBSCRIBE_CODE_REASON = 'для подписки на вакансии'
+FEEDBACK_CODE_ACTION = 'отправить сообщение команде портала'
+FEEDBACK_CODE_REASON = 'в форме обратной связи'
+
+NOT_FOUND_TEXT = 'Заявка не найдена или уже подтверждена. Отправьте форму заново.'
+
+
+def _code_sent_payload(obj):
     return {
-        'id': sub.pk,
-        'email': sub.email,
+        'id': obj.pk,
+        'email': obj.email,
         'expires_in': int(CODE_TTL.total_seconds()),
-        'resend_after': seconds_until_resend(sub),
+        'resend_after': seconds_until_resend(obj),
     }
 
 
-def _pending_subscription(pk):
-    """Неподтверждённая подписка по id или None."""
+def _pending_record(model, pk):
+    """Неподтверждённая запись по id или None."""
     try:
-        return VacancySubscription.objects.filter(pk=int(pk), email_verified=False).first()
+        return model.objects.filter(pk=int(pk), email_verified=False).first()
     except (TypeError, ValueError):
         return None
 
 
-@api_view(['POST'])
-def vacancy_subscribe(request):
-    """Шаг 1: сохранить заявку на подписку (неактивной) и отправить на email код подтверждения."""
-    serializer = VacancySubscriptionSerializer(data=request.data)
-    if not serializer.is_valid():
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+def _throttled_by_email(model, email):
+    """Ответ 429, если на этот адрес код отправляли меньше минуты назад."""
+    last = (
+        model.objects.filter(email__iexact=email, email_verified=False)
+        .exclude(code_sent_at=None).order_by('-code_sent_at').first()
+    )
+    wait = seconds_until_resend(last) if last else 0
+    if not wait:
+        return None
+    return Response(
+        {'detail': f'Код уже отправлен. Повторно запросить его можно через {wait} с.', 'resend_after': wait},
+        status=status.HTTP_429_TOO_MANY_REQUESTS,
+    )
 
-    email = serializer.validated_data['email']
-    pending = VacancySubscription.objects.filter(email__iexact=email, email_verified=False)
-    last = pending.exclude(code_sent_at=None).order_by('-code_sent_at').first()
-    if last and seconds_until_resend(last):
-        wait = seconds_until_resend(last)
-        return Response(
-            {'detail': f'Код уже отправлен. Повторно запросить его можно через {wait} с.', 'resend_after': wait},
-            status=status.HTTP_429_TOO_MANY_REQUESTS,
-        )
 
-    # Прошлые неподтверждённые заявки с этим адресом и просроченные чужие — мусор, убираем
+def _purge_unverified(model, email, file_field):
+    """Прошлые неподтверждённые записи с этим адресом и просроченные чужие — мусор: удаляем вместе с файлами."""
     stale = timezone.now() - timedelta(days=1)
-    VacancySubscription.objects.filter(email_verified=False).filter(
-        Q(email__iexact=email) | Q(created_at__lt=stale)
-    ).delete()
+    for record in model.objects.filter(email_verified=False).filter(Q(email__iexact=email) | Q(created_at__lt=stale)):
+        getattr(record, file_field).delete(save=False)
+        record.delete()
 
-    sub = serializer.save(is_active=False, email_verified=False)
+
+def _issue_code(record, action, reason):
+    """Отправить первый код. При сбое письма запись удаляется, возвращается ответ 503."""
     try:
-        send_subscription_code(sub)
+        send_email_code(record, action, reason)
     except Exception:
-        logger.exception('Не удалось отправить код подтверждения подписки на %s', email)
-        sub.delete()
+        logger.exception('Не удалось отправить код подтверждения на %s', record.email)
+        record.delete()
         return Response(
             {'detail': 'Не удалось отправить письмо с кодом. Проверьте адрес и попробуйте позже.'},
             status=status.HTTP_503_SERVICE_UNAVAILABLE,
         )
     return Response(
-        {**_code_sent_payload(sub), 'message': f'Код подтверждения отправлен на {sub.email}.'},
+        {**_code_sent_payload(record), 'message': f'Код подтверждения отправлен на {record.email}.'},
         status=status.HTTP_201_CREATED,
     )
 
 
-@api_view(['POST'])
-def vacancy_subscribe_confirm(request):
-    """Шаг 2: проверить код из письма и включить подписку."""
-    sub = _pending_subscription(request.data.get('id'))
-    if not sub:
-        return Response(
-            {'detail': 'Заявка не найдена или уже подтверждена. Оформите подписку заново.'},
-            status=status.HTTP_404_NOT_FOUND,
-        )
-    result = check_subscription_code(sub, request.data.get('code'))
+def _confirm_email(model, request, confirmed):
+    """Проверить код из письма; при успехе confirmed(запись) возвращает итоговый ответ."""
+    record = _pending_record(model, request.data.get('id'))
+    if not record:
+        return Response({'detail': NOT_FOUND_TEXT}, status=status.HTTP_404_NOT_FOUND)
+    result = check_email_code(record, request.data.get('code'))
     if result == CODE_OK:
-        sub.email_verified = True
-        sub.is_active = True
-        sub.code_hash = ''
-        sub.save(update_fields=['email_verified', 'is_active', 'code_hash'])
-        _notify_subscription_resume(sub)
-        return Response({
-            'message': 'Подписка оформлена. Уведомления о новых вакансиях будут приходить на указанный email.',
-            'id': sub.pk,
-        })
+        record.email_verified = True
+        record.code_hash = ''
+        record.save(update_fields=['email_verified', 'code_hash'])
+        return confirmed(record)
     if result == CODE_EXPIRED:
         return Response(
             {'detail': 'Срок действия кода истёк. Запросите новый код.', 'reason': 'expired'},
@@ -449,41 +449,73 @@ def vacancy_subscribe_confirm(request):
         {
             'detail': 'Неверный код. Проверьте письмо и попробуйте ещё раз.',
             'reason': 'wrong',
-            'attempts_left': CODE_MAX_ATTEMPTS - sub.code_attempts,
+            'attempts_left': CODE_MAX_ATTEMPTS - record.code_attempts,
         },
         status=status.HTTP_400_BAD_REQUEST,
     )
 
 
-@api_view(['POST'])
-def vacancy_subscribe_resend(request):
-    """Отправить код подтверждения ещё раз (не чаще раза в минуту и не больше пяти раз)."""
-    sub = _pending_subscription(request.data.get('id'))
-    if not sub:
-        return Response(
-            {'detail': 'Заявка не найдена или уже подтверждена. Оформите подписку заново.'},
-            status=status.HTTP_404_NOT_FOUND,
-        )
-    wait = seconds_until_resend(sub)
+def _resend_email_code(model, request, action, reason):
+    """Отправить код ещё раз (не чаще раза в минуту и не больше пяти раз на запись)."""
+    record = _pending_record(model, request.data.get('id'))
+    if not record:
+        return Response({'detail': NOT_FOUND_TEXT}, status=status.HTTP_404_NOT_FOUND)
+    wait = seconds_until_resend(record)
     if wait:
         return Response(
             {'detail': f'Повторно запросить код можно через {wait} с.', 'resend_after': wait},
             status=status.HTTP_429_TOO_MANY_REQUESTS,
         )
-    if sub.code_sends >= CODE_MAX_SENDS:
+    if record.code_sends >= CODE_MAX_SENDS:
         return Response(
-            {'detail': 'Лимит отправки кодов исчерпан. Оформите подписку заново позже.', 'reason': 'limit'},
+            {'detail': 'Лимит отправки кодов исчерпан. Отправьте форму заново позже.', 'reason': 'limit'},
             status=status.HTTP_429_TOO_MANY_REQUESTS,
         )
     try:
-        send_subscription_code(sub)
+        send_email_code(record, action, reason)
     except Exception:
-        logger.exception('Не удалось повторно отправить код подтверждения на %s', sub.email)
+        logger.exception('Не удалось повторно отправить код подтверждения на %s', record.email)
         return Response(
             {'detail': 'Не удалось отправить письмо с кодом. Попробуйте позже.'},
             status=status.HTTP_503_SERVICE_UNAVAILABLE,
         )
-    return Response({**_code_sent_payload(sub), 'message': f'Новый код отправлен на {sub.email}.'})
+    return Response({**_code_sent_payload(record), 'message': f'Новый код отправлен на {record.email}.'})
+
+
+@api_view(['POST'])
+def vacancy_subscribe(request):
+    """Шаг 1: сохранить заявку на подписку (неактивной) и отправить на email код подтверждения."""
+    serializer = VacancySubscriptionSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    email = serializer.validated_data['email']
+    throttled = _throttled_by_email(VacancySubscription, email)
+    if throttled:
+        return throttled
+    _purge_unverified(VacancySubscription, email, 'resume')
+
+    sub = serializer.save(is_active=False, email_verified=False)
+    return _issue_code(sub, SUBSCRIBE_CODE_ACTION, SUBSCRIBE_CODE_REASON)
+
+
+@api_view(['POST'])
+def vacancy_subscribe_confirm(request):
+    """Шаг 2: проверить код из письма и включить подписку."""
+    def confirmed(sub):
+        sub.is_active = True
+        sub.save(update_fields=['is_active'])
+        _notify_subscription_resume(sub)
+        return Response({
+            'message': 'Подписка оформлена. Уведомления о новых вакансиях будут приходить на указанный email.',
+            'id': sub.pk,
+        })
+    return _confirm_email(VacancySubscription, request, confirmed)
+
+
+@api_view(['POST'])
+def vacancy_subscribe_resend(request):
+    return _resend_email_code(VacancySubscription, request, SUBSCRIBE_CODE_ACTION, SUBSCRIBE_CODE_REASON)
 
 
 @csrf_exempt  # токен в ссылке подписан, а почтовые клиенты шлют одношаговую отписку POST-ом без cookie
@@ -605,17 +637,19 @@ def deputies(request):
     return Response(serializer.data)
 
 
+FEEDBACK_COOLDOWN_SECONDS = 60
+
+
 @api_view(['POST'])
 @parser_classes([MultiPartParser, FormParser])
 def submit_feedback(request):
-    cooldown_seconds = 60
-
+    """Шаг 1: сохранить сообщение (неподтверждённым) и отправить на email код подтверждения."""
     last_submit = request.COOKIES.get('feedback_cooldown')
     if last_submit:
         try:
-            last_time = float(last_submit)
-            if time.time() - last_time < cooldown_seconds:
-                remaining = int(cooldown_seconds - (time.time() - last_time))
+            elapsed = time.time() - float(last_submit)
+            if elapsed < FEEDBACK_COOLDOWN_SECONDS:
+                remaining = int(FEEDBACK_COOLDOWN_SECONDS - elapsed)
                 return Response(
                     {'error': f'Слишком частая отправка. Подождите {remaining} сек.'},
                     status=status.HTTP_429_TOO_MANY_REQUESTS
@@ -624,25 +658,42 @@ def submit_feedback(request):
             pass
 
     serializer = FeedbackSerializer(data=request.data)
-    if serializer.is_valid():
-        instance = serializer.save()
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    email = serializer.validated_data['email']
+    throttled = _throttled_by_email(Feedback, email)
+    if throttled:
+        return throttled
+    _purge_unverified(Feedback, email, 'photo')
+
+    feedback = serializer.save(email_verified=False)
+    return _issue_code(feedback, FEEDBACK_CODE_ACTION, FEEDBACK_CODE_REASON)
+
+
+@api_view(['POST'])
+def submit_feedback_confirm(request):
+    """Шаг 2: проверить код из письма и передать сообщение команде портала."""
+    def confirmed(feedback):
         notify_recipients(
             KIND_FEEDBACK,
             'Обратная связь с портала',
-            [('Сообщение', instance.message)],
-            files=[instance.photo],
+            [('Сообщение', feedback.message), ('Email для ответа', feedback.email)],
+            files=[feedback.photo],
+            reply_to=feedback.email,
         )
-
-        response = Response(
-            {"message": "Сообщение отправлено!", "id": instance.id},
-            status=status.HTTP_201_CREATED
-        )
+        response = Response({'message': 'Сообщение отправлено!', 'id': feedback.pk})
         response.set_cookie(
             'feedback_cooldown',
             str(time.time()),
-            max_age=cooldown_seconds,
+            max_age=FEEDBACK_COOLDOWN_SECONDS,
             httponly=True,
             samesite='Lax'
         )
         return response
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return _confirm_email(Feedback, request, confirmed)
+
+
+@api_view(['POST'])
+def submit_feedback_resend(request):
+    return _resend_email_code(Feedback, request, FEEDBACK_CODE_ACTION, FEEDBACK_CODE_REASON)

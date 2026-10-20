@@ -6,7 +6,7 @@ from django.core import mail
 from django.test import Client, TestCase
 from django.utils import timezone
 
-from .models import ApplicationRecipient, Vacancy, VacancySubscription
+from .models import ApplicationRecipient, Feedback, Vacancy, VacancySubscription
 from .notifications import CODE_MAX_ATTEMPTS, CODE_RESEND_COOLDOWN, CODE_TTL, _subscribers_for
 
 
@@ -170,3 +170,79 @@ class SubscriptionEmailConfirmationTests(TestCase):
         response = client.post(self.subscribe_url, {'name': 'Иван', 'email': 'ivan@example.com', 'branch': ''})
 
         self.assertEqual(response.status_code, 201)
+
+
+class FeedbackEmailConfirmationTests(TestCase):
+    """Сообщение из формы обратной связи уходит команде портала только после ввода кода из письма."""
+
+    submit_url = '/api/submit-feedback/'
+    confirm_url = '/api/submit-feedback/confirm/'
+    resend_url = '/api/submit-feedback/resend/'
+
+    def submit(self, email='ivan@example.com', message='Не открывается раздел'):
+        return self.client.post(self.submit_url, {'message': message, 'email': email})
+
+    def last_code(self):
+        return re.search(r'\b(\d{6})\b', mail.outbox[-1].body).group(1)
+
+    def test_email_is_required(self):
+        response = self.client.post(self.submit_url, {'message': 'Привет'})
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('email', response.json())
+        self.assertEqual(Feedback.objects.count(), 0)
+
+    def test_submit_sends_code_but_not_the_message(self):
+        ApplicationRecipient.objects.create(email='team@example.com', receives_feedback=True)
+
+        response = self.submit()
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual([m.to for m in mail.outbox], [['ivan@example.com']])
+        feedback = Feedback.objects.get()
+        self.assertFalse(feedback.email_verified)
+        self.assertNotIn('code_hash', response.json())
+
+    def test_correct_code_delivers_message_with_reply_to(self):
+        ApplicationRecipient.objects.create(email='team@example.com', receives_feedback=True)
+        feedback_id = self.submit().json()['id']
+
+        response = self.client.post(self.confirm_url, {'id': feedback_id, 'code': self.last_code()})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(Feedback.objects.get(pk=feedback_id).email_verified)
+        self.assertEqual(len(mail.outbox), 2)
+        team_mail = mail.outbox[1]
+        self.assertEqual(team_mail.to, ['team@example.com'])
+        self.assertEqual(team_mail.reply_to, ['ivan@example.com'])
+        self.assertIn('ivan@example.com', team_mail.body)
+        self.assertIn('feedback_cooldown', response.cookies)
+
+    def test_wrong_code_does_not_deliver(self):
+        ApplicationRecipient.objects.create(email='team@example.com', receives_feedback=True)
+        feedback_id = self.submit().json()['id']
+        wrong = '000000' if self.last_code() != '000000' else '111111'
+
+        response = self.client.post(self.confirm_url, {'id': feedback_id, 'code': wrong})
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertFalse(Feedback.objects.get(pk=feedback_id).email_verified)
+
+    def test_code_from_subscription_does_not_work_for_feedback(self):
+        """Хэш кода привязан к модели: код подписки с тем же номером записи не подходит."""
+        feedback_id = self.submit().json()['id']
+        code = self.last_code()
+        VacancySubscription.objects.create(pk=feedback_id, email='ivan@example.com', is_active=False)
+
+        response = self.client.post('/api/vacancy-subscribe/confirm/', {'id': feedback_id, 'code': code})
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_resend_is_throttled(self):
+        feedback_id = self.submit().json()['id']
+
+        response = self.client.post(self.resend_url, {'id': feedback_id})
+
+        self.assertEqual(response.status_code, 429)
+        self.assertEqual(len(mail.outbox), 1)

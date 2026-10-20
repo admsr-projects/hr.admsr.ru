@@ -553,8 +553,21 @@ class JobApplication(models.Model):
         return f'{self.last_name} {self.first_name} — {self.vacancy_title or "без вакансии"}'
 
 
-class Feedback(models.Model):
+class EmailCodeMixin(models.Model):
+    """Подтверждение email кодом из письма: запись считается принятой только после ввода кода."""
+    email_verified = models.BooleanField('Email подтверждён', default=False)
+    code_hash = models.CharField('Хэш кода подтверждения', max_length=64, blank=True, editable=False)
+    code_sent_at = models.DateTimeField('Код отправлен', null=True, blank=True, editable=False)
+    code_attempts = models.PositiveSmallIntegerField('Неверных попыток ввода кода', default=0, editable=False)
+    code_sends = models.PositiveSmallIntegerField('Отправлено кодов', default=0, editable=False)
+
+    class Meta:
+        abstract = True
+
+
+class Feedback(EmailCodeMixin):
     message = models.TextField('Сообщение')
+    email = models.EmailField('Email для ответа', blank=True)
     photo = models.ImageField('Фото', upload_to='feedback_photos/', blank=True, null=True)
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
 
@@ -567,19 +580,12 @@ class Feedback(models.Model):
         return f'Обратная связь ({self.created_at.strftime("%d.%m.%Y %H:%M")})'
 
 
-class VacancySubscription(models.Model):
+class VacancySubscription(EmailCodeMixin):
     name = models.CharField('Имя', max_length=150, blank=True)
     email = models.EmailField('Email')
     branch = models.CharField('Отраслевой функциональный орган', max_length=255, blank=True)
     is_active = models.BooleanField('Активна', default=True)
     created_at = models.DateTimeField('Дата подписки', auto_now_add=True)
-
-    # Подтверждение email: подписка включается только после ввода кода из письма
-    email_verified = models.BooleanField('Email подтверждён', default=False)
-    code_hash = models.CharField('Хэш кода подтверждения', max_length=64, blank=True, editable=False)
-    code_sent_at = models.DateTimeField('Код отправлен', null=True, blank=True, editable=False)
-    code_attempts = models.PositiveSmallIntegerField('Неверных попыток ввода кода', default=0, editable=False)
-    code_sends = models.PositiveSmallIntegerField('Отправлено кодов', default=0, editable=False)
 
     # Резюме (необязательно): файлом или заполненное в электронной форме
     resume = models.FileField('Файл резюме', upload_to='subscription_resumes/', blank=True, null=True)

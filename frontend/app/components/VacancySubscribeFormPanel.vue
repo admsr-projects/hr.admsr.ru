@@ -54,7 +54,7 @@
         <UInput
           v-model="form.name"
           type="text"
-          placeholder="Иван Иванов"
+          placeholder="Иван"
           autocomplete="name"
           class="w-full min-w-0"
         />

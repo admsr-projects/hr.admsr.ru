@@ -203,7 +203,12 @@ class WorkPartnerSerializer(serializers.ModelSerializer):
 class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
-        fields = '__all__'
+        fields = ['id', 'message', 'email', 'photo', 'created_at']
+        read_only_fields = ['id', 'created_at']
+        extra_kwargs = {'email': {'required': True, 'allow_blank': False}}
+
+    def validate_email(self, value):
+        return value.strip().lower()
 
 
 class VacancySubscriptionSerializer(serializers.ModelSerializer):
