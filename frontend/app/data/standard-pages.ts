@@ -5,12 +5,11 @@ import {
   careerNavGroup,
   educationNavItems,
   navIcons,
-  profdevNavItems,
   teamNavGroup,
   type NavItem
 } from '~/data/navigation'
 
-export type StandardSectionId = 'team' | 'career' | 'profdev' | 'anticorruption' | 'education' | 'info'
+export type StandardSectionId = 'team' | 'career' | 'anticorruption' | 'education' | 'info'
 
 export interface StandardSection {
   id: StandardSectionId
@@ -32,11 +31,6 @@ export const standardSections: StandardSection[] = [
     id: 'career',
     label: careerNavGroup.label,
     items: careerNavGroup.items
-  },
-  {
-    id: 'profdev',
-    label: 'Профразвитие',
-    items: profdevNavItems
   },
   {
     id: 'anticorruption',
@@ -70,14 +64,11 @@ function resolveMenuPath(path: string): string {
 }
 
 export const EDUCATION_PATH = '/anti-corruption/education'
-export const PROFDEV_PATH = '/profdev'
 
 export function resolveStandardSection(path: string): StandardSection | undefined {
   // Вложенные страницы «Антикоррупционного просвещения» показывают меню своего раздела,
   // а сама страница раздела — меню «Нет коррупции!»
   if (path.startsWith(`${EDUCATION_PATH}/`)) return standardSections.find(section => section.id === 'education')
-  // То же у «Профразвития»: вложенные страницы показывают меню раздела, а /profdev — меню «Карьеры»
-  if (path.startsWith(`${PROFDEV_PATH}/`)) return standardSections.find(section => section.id === 'profdev')
   const menuPath = resolveMenuPath(path)
   return standardSections.find(section =>
     section.items.some(item => item.to === menuPath)

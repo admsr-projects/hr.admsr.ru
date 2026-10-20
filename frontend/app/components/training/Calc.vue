@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+  <div class="grid grid-cols-1 gap-4 xl:grid-cols-2">
     <form
       class="flex flex-col gap-6 rounded-xl bg-elevated p-6"
       novalidate
@@ -82,18 +82,24 @@
 
         <div class="flex flex-col gap-2">
           <div
-            class="flex h-3 w-full overflow-hidden rounded-full bg-accented"
+            class="flex h-3 w-full gap-0.5 overflow-hidden rounded-full bg-accented"
             role="img"
             :aria-label="`Отработано ${verdict.worked} из ${verdict.months} месяцев`"
           >
             <span
-              class="bg-primary"
+              v-if="verdict.worked"
+              class="bg-(--training-good)"
               :style="{ flex: verdict.worked }"
             />
+            <span
+              v-if="verdict.left"
+              class="bg-(--training-bad)"
+              :style="{ flex: verdict.left }"
+            />
           </div>
-          <p class="flex flex-wrap justify-between gap-x-4 text-overline text-text-muted">
-            <span>отработано: {{ monthsText(verdict.worked) }}</span>
-            <span>не отработано: {{ monthsText(verdict.left) }}</span>
+          <p class="flex flex-wrap justify-between gap-x-4 text-overline font-medium text-text-muted">
+            <span><i class="mr-1.5 inline-block size-2 rounded-full bg-(--training-good)" />отработано: {{ monthsText(verdict.worked) }}</span>
+            <span><i class="mr-1.5 inline-block size-2 rounded-full bg-(--training-bad)" />не отработано: {{ monthsText(verdict.left) }}</span>
           </p>
         </div>
 
@@ -137,7 +143,7 @@
             <span class="h-3 rounded-full bg-accented">
               <span
                 class="block h-3 rounded-full"
-                :class="active.includes(band) ? 'bg-primary' : 'bg-primary/30'"
+                :class="active.includes(band) ? 'bg-(--training-bar-on)' : 'bg-(--training-bar)'"
                 :style="{ width: `${band.months / scaleTop * 100}%` }"
               />
             </span>

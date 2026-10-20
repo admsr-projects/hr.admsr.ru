@@ -141,7 +141,7 @@ function sectionMetaForTab(tab: ProfdevTab) {
                 title="Обучение муниципальных служащих"
                 description="На что вы имеете право, как попасть в план обучения, ученический договор и срок отработки, ответы на частые вопросы, правовые акты и контакты."
                 icon="i-lucide-graduation-cap"
-                to="/profdev/training"
+                to="/training"
               />
             </div>
           </DsContentSection>

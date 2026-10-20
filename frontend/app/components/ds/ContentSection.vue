@@ -9,6 +9,7 @@
       :description="description"
       :overline="overline"
       :heading-id="headingId"
+      :accent="accent"
     >
       <template
         v-if="$slots.action"
@@ -30,6 +31,7 @@ const props = withDefaults(defineProps<{
   tocLabel?: string
   spacing?: 'md' | 'lg'
   tocActive?: boolean
+  accent?: boolean
 }>(), {
   title: undefined,
   description: undefined,
@@ -38,6 +40,7 @@ const props = withDefaults(defineProps<{
   tocLabel: undefined,
   spacing: 'md',
   tocActive: true,
+  accent: false,
 })
 
 const resolvedTocLabel = computed(() => props.title || props.tocLabel)
