@@ -60,6 +60,12 @@ function bandLabel(band: (typeof rules.retention_scale)[number]) {
     : `${nf.format(band.min)}–${nf.format(band.max)} ₽`
 }
 
+const heroFacts = [
+  { icon: 'i-lucide-users', text: 'Для муниципальных служащих администрации района' },
+  { icon: 'i-lucide-bookmark', text: 'Для лиц в кадровом резерве' },
+  { icon: 'i-lucide-badge-check', text: `Сверено с актами ${trainingInfo.last_checked}` }
+]
+
 const faqItems: AccordionItem[] = faq.map((item, index) => ({ label: item.q, value: String(index) }))
 </script>
 
@@ -69,27 +75,33 @@ const faqItems: AccordionItem[] = faq.map((item, index) => ({ label: item.q, val
     overline="Муниципальная служба · Дополнительное профессиональное образование"
     description="Дополнительное профессиональное образование: на что вы имеете право, какие условия действуют и что будет, если не отработать срок после переподготовки. Каждое утверждение — со ссылкой на пункт акта."
   >
-    <template #header>
-      <TrainingCover
-        overline="Муниципальная служба · Дополнительное профессиональное образование"
-        :title="TITLE"
-        lead="Дополнительное профессиональное образование: на что вы имеете право, какие условия действуют и что будет, если не отработать срок после переподготовки. Каждое утверждение — со ссылкой на пункт акта."
-        :facts="[
-          { icon: 'i-lucide-users', text: 'Для муниципальных служащих администрации района' },
-          { icon: 'i-lucide-bookmark', text: 'Для лиц в кадровом резерве' },
-          { icon: 'i-lucide-badge-check', text: `Сверено с актами ${trainingInfo.last_checked}` }
-        ]"
-      />
+    <template #heroAside>
+      <ul
+        class="flex flex-col gap-3"
+        aria-label="Для кого этот раздел"
+      >
+        <li
+          v-for="fact in heroFacts"
+          :key="fact.text"
+          class="flex items-start gap-3 text-caption"
+        >
+          <UIcon
+            :name="fact.icon"
+            class="mt-0.5 size-5 shrink-0"
+            aria-hidden="true"
+          />
+          <span class="text-pretty">{{ fact.text }}</span>
+        </li>
+      </ul>
     </template>
 
-    <!-- Пилот фирменного стиля («Единый визуальный язык района»): цвета и акценты только внутри этого блока -->
+    <!-- Индиго как основной цвет и цвета калькулятора — только внутри этого блока (пилот, в правила не внесён) -->
     <div class="training-page flex flex-col gap-4">
       <DsContentSection
         title="Главное в цифрах"
         description="Ключевые параметры из Положения о ДПО. Источник указан под каждой цифрой."
         heading-id="training-overview"
         spacing="lg"
-        accent
       >
         <dl class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div
@@ -150,7 +162,6 @@ const faqItems: AccordionItem[] = faq.map((item, index) => ({ label: item.q, val
         description="Только правовые факты. Связь с кадровым резервом показывается, если она закреплена в муниципальном акте."
         heading-id="training-benefits"
         spacing="lg"
-        accent
       >
         <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <TrainingPanel
@@ -212,7 +223,6 @@ const faqItems: AccordionItem[] = faq.map((item, index) => ({ label: item.q, val
         description="Путь от планирования до отработки по Положению о ДПО."
         heading-id="training-process"
         spacing="lg"
-        accent
       >
         <ol class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <li
@@ -305,7 +315,6 @@ const faqItems: AccordionItem[] = faq.map((item, index) => ({ label: item.q, val
         description="Формы обучения, ученический договор, возмещение затрат и исключения из срока отработки."
         heading-id="training-terms"
         spacing="lg"
-        accent
       >
         <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <TrainingPanel
@@ -459,7 +468,6 @@ const faqItems: AccordionItem[] = faq.map((item, index) => ({ label: item.q, val
         description="Срок — по шкале приложения 2 к Положению; сумма — пропорционально недоработанному сроку (п. 3.3 договора). Данные никуда не передаются."
         heading-id="training-calc"
         spacing="lg"
-        accent
       >
         <TrainingCalc />
       </DsContentSection>
@@ -468,7 +476,6 @@ const faqItems: AccordionItem[] = faq.map((item, index) => ({ label: item.q, val
         title="Вопросы и ответы"
         heading-id="training-faq"
         spacing="lg"
-        accent
       >
         <UAccordion
           :items="faqItems"
@@ -492,7 +499,6 @@ const faqItems: AccordionItem[] = faq.map((item, index) => ({ label: item.q, val
         title="Документы и контакты"
         heading-id="training-docs"
         spacing="lg"
-        accent
       >
         <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <TrainingPanel

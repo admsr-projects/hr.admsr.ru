@@ -1,10 +1,7 @@
 <template>
   <header
-    class="mb-4"
-    :class="[
-      align === 'center' ? 'text-center mx-auto max-w-2xl' : undefined,
-      accent ? 'relative pb-2.5 after:absolute after:bottom-0 after:left-0 after:h-[3px] after:w-8 after:rounded-full after:bg-[#50C891]' : undefined
-    ]"
+    class="relative mb-4 pb-2.5 after:absolute after:bottom-0 after:left-0 after:h-[3px] after:w-8 after:rounded-full after:bg-[#50C891]"
+    :class="align === 'center' ? 'text-center mx-auto max-w-2xl after:left-1/2 after:-translate-x-1/2' : undefined"
   >
     <div
       class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
@@ -20,9 +17,9 @@
         >
           {{ title }}
         </h2>
-        <!-- Фирменный вариант: круглая кнопка «i», тёмная подсказка по наведению и фокусу -->
+        <!-- Описание раздела — круглая кнопка «i» с тёмной подсказкой по наведению и фокусу -->
         <span
-          v-if="description && accent"
+          v-if="description"
           class="group relative inline-flex"
         >
           <button
@@ -45,25 +42,6 @@
             {{ description }}
           </span>
         </span>
-        <!-- Описание раздела — в подсказке по кнопке «i», чтобы не загромождать страницу -->
-        <UPopover
-          v-else-if="description"
-          :content="{ side: 'bottom', align: 'start' }"
-        >
-          <UButton
-            icon="i-lucide-info"
-            color="neutral"
-            variant="ghost"
-            size="sm"
-            class="cursor-pointer text-text-muted"
-            :aria-label="`Описание раздела «${title}»`"
-          />
-          <template #content>
-            <p class="max-w-xs p-4 text-sm leading-5 text-text-muted text-pretty">
-              {{ description }}
-            </p>
-          </template>
-        </UPopover>
       </div>
       <div
         v-if="$slots.action"
@@ -85,13 +63,10 @@ withDefaults(defineProps<{
   overline?: string
   headingId?: string
   align?: 'left' | 'center'
-  /** Короткая зелёная черта под заголовком (фирменный акцент) */
-  accent?: boolean
 }>(), {
   description: undefined,
   overline: undefined,
   headingId: undefined,
   align: 'left',
-  accent: false
 })
 </script>

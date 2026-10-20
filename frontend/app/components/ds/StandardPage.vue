@@ -24,21 +24,24 @@
         </aside>
 
         <div class="flex w-full min-w-0 flex-col gap-4">
-          <!-- Слот header заменяет стандартную шапку (например, обложка с фирменным градиентом) -->
-          <slot name="header">
-            <DsStandardPageHeader
-              :title="title"
-              :overline="overline"
-              :description="description"
+          <DsStandardPageHeader
+            :title="title"
+            :overline="overline"
+            :description="description"
+          >
+            <template
+              v-if="$slots.heroActions"
+              #actions
             >
-              <template
-                v-if="$slots.heroActions"
-                #actions
-              >
-                <slot name="heroActions" />
-              </template>
-            </DsStandardPageHeader>
-          </slot>
+              <slot name="heroActions" />
+            </template>
+            <template
+              v-if="$slots.heroAside"
+              #aside
+            >
+              <slot name="heroAside" />
+            </template>
+          </DsStandardPageHeader>
 
           <DsMarkdown
             v-if="intro"

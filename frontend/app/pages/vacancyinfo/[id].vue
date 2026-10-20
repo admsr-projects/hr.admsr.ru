@@ -228,9 +228,9 @@ async function handleFormSubmit(formData: Record<string, unknown>) {
       >
         <UButton
           label="Откликнуться"
-          color="primary"
+          color="neutral"
           trailing-icon="i-lucide-arrow-right"
-          class="cursor-pointer"
+          class="cursor-pointer bg-white text-[#2c238b] hover:bg-white/90"
           @click="openApplicationForm"
         />
       </template>
