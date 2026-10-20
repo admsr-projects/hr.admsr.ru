@@ -1,8 +1,9 @@
 import re
 from datetime import timedelta
 
+from django.contrib.auth import get_user_model
 from django.core import mail
-from django.test import TestCase
+from django.test import Client, TestCase
 from django.utils import timezone
 
 from .models import ApplicationRecipient, Vacancy, VacancySubscription
@@ -159,3 +160,13 @@ class SubscriptionEmailConfirmationTests(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(len(mail.outbox), 0)
         self.assertEqual(VacancySubscription.objects.count(), 0)
+
+    def test_logged_in_admin_can_subscribe_without_csrf_token(self):
+        """У вошедшего в админку cookie сессии общая на весь домен: публичное API не должно требовать CSRF."""
+        user = get_user_model().objects.create_user('admin', password='x', is_staff=True, is_superuser=True)
+        client = Client(enforce_csrf_checks=True)
+        client.force_login(user)
+
+        response = client.post(self.subscribe_url, {'name': 'Иван', 'email': 'ivan@example.com', 'branch': ''})
+
+        self.assertEqual(response.status_code, 201)

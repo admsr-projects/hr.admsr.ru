@@ -139,6 +139,13 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_CREDENTIALS = True
 
+# Публичное API (формы, подписка, списки) без аутентификации. По умолчанию DRF проверяет сессию,
+# и у вошедшего в админку (cookie общая на весь домен) любой POST с сайта падает с 403 «CSRF Failed».
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [],
+    'UNAUTHENTICATED_USER': None,
+}
+
 CSRF_TRUSTED_ORIGINS = [
     "https://diploma-project-k4pygafxg-vlads-projects-76ef279f.vercel.app",
     "https://diploma-project-gamma.vercel.app",
